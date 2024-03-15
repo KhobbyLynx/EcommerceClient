@@ -1,0 +1,112 @@
+.footer{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px 40px; 
+    background-color: var(--cl-gray-800);
+
+    .footer__logo{
+        padding-bottom: 48px;
+        img{
+            width: 70px;
+        }
+    }
+    .footer__content{
+        display: flex;
+        align-items: start;
+        gap: 60px;
+        @media screen and (max-width: '999px') {
+            flex-direction: column;
+            align-items: center;
+        }
+        .footer__contact{
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            .contact__section{
+                padding-bottom: 40px;
+                .contact__info{
+                    display: flex;
+                    flex-direction: column;
+                }
+            }
+            .socials__section{
+                .social__icons{
+                    display: flex;
+                    align-items: center;
+                    justify-content: start;
+                    gap: 12px;
+                    font-size: 26px;
+                    color: var(--cl-gray-400);
+                    .icon{
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+        .footer__links{
+            display: flex;
+            gap: 60px;
+
+            @media screen and (max-width: '299px') {
+                flex-direction: column;
+                align-self: start;
+            }
+
+            .footer__about{
+                display: flex;
+                align-items: start;
+                flex-direction: column;
+            }
+            .footer__account{
+                display: flex;
+                align-items: start;
+                flex-direction: column;
+            }
+        }
+        .footer__others{
+            display: flex;
+            align-items: start;
+            flex-direction: column;
+            h6{
+                font-size: 14px;
+                font-weight: 600;
+                padding-bottom: 16px;
+                color: var(--cl-gray-400);
+            }
+            .mobile__app{
+                padding-bottom: 30px;
+                .app__store{
+                    display: flex;
+                    gap: 26px;
+                    img{
+                        cursor: pointer;
+                        @media screen and (max-width: '999px') {
+                            width: 140px;
+                        }
+                        @media screen and (max-width: '299px') {
+                            width: 100px;
+                        }
+                    }
+                }
+            }
+            .payment__gateways{
+                display: flex;
+                align-items: start;
+                flex-direction: column;
+            }
+        }
+    }
+   
+    h2{
+        font-size: 20px;
+        font-weight: 500;
+        color: var(--cl-orange-400);
+        padding-bottom: 20px;
+    }
+    .span{
+        font-size: 14px;
+        padding-bottom: 10px;
+        color: var(--cl-gray-400);
+    }
+}

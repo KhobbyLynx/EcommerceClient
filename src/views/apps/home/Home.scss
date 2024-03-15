@@ -1,0 +1,273 @@
+.home {
+    padding: 20px 40px 0;
+
+    @media screen and (max-width: "999px") {
+        padding: 0;
+    }
+    .products__section {
+        padding-top: 99px;
+        padding-bottom: 60px;
+        background-color: #f1f1f1;
+        @media screen and (max-width: "677px") {
+            padding-bottom: 30px;
+        }
+        .products__heading {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+
+            @media screen and (max-width: "380px") {
+                padding: 8px;
+            }
+
+            h1 {
+                font-size: 30px;
+                font-weight: 400;
+                color: #dc6608;
+                padding-bottom: 10px;
+                @media screen and (max-width: "599px") {
+                    font-size: 26px;
+                }
+            }
+            p {
+                font-size: 16px;
+                font-weight: 400;
+                color: #01ddc1;
+                @media screen and (max-width: "599px") {
+                    font-size: 14px;
+                }
+            }
+        }
+        .product-grid {
+            padding: 20px;
+
+            @media screen and (max-width: "500px") {
+                padding: 10px;
+            }
+        }
+    }
+    .banner__explore {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background-image: url("https://res.cloudinary.com/khobbylynx/image/upload/v1683975713/lynxmart/img/banner/b2_axkion.jpg");
+        background-position: center;
+        background-size: cover;
+        width: 100%;
+        height: 32vh;
+        gap: 18px;
+        @media screen and (max-width: "499px") {
+            height: 40vh;
+        }
+        h4 {
+            font-size: 30px;
+            font-weight: 500;
+            color: #fff;
+            @media screen and (max-width: "499px") {
+                font-size: 26px;
+            }
+        }
+        p {
+            font-size: 20px;
+            font-weight: 400;
+            color: #fff;
+            span {
+                color: #f00;
+            }
+            @media screen and (max-width: "499px") {
+                font-size: 16px;
+            }
+        }
+        button {
+            padding: 16px 36px;
+            font-size: 16px;
+            background-color: #dc6608;
+            color: #f1f1f1;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    }
+
+    .big__banner {
+        display: flex;
+        justify-content: space-between;
+        padding: 60px 0 10px;
+        flex-wrap: wrap;
+        @media screen and (max-width: "999px") {
+            background-color: #f1f1f1;
+            padding: 60px 50px 3px;
+        }
+        @media screen and (max-width: "699px") {
+            padding: 60px 20px 0;
+        }
+        @media screen and (max-width: "457px") {
+            justify-content: center;
+        }
+
+        .banner__box {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            background-image: url("https://res.cloudinary.com/khobbylynx/image/upload/v1683975705/lynxmart/img/banner/b17_gqisnz.jpg");
+            background-position: center;
+            background-size: cover;
+            flex-basis: 49.5%;
+            min-width: 520px;
+            height: 40vh;
+            background-size: cover;
+            background-position: center;
+            padding: 30px;
+            margin-bottom: 3px;
+
+            @media screen and (max-width: "1220px") {
+                min-width: 400px;
+                height: 30vh;
+            }
+            @media screen and (max-width: "999px") {
+                min-width: 300px;
+                height: 26vh;
+            }
+            @media screen and (max-width: "657px") {
+                min-width: 100%;
+                height: 35vh;
+            }
+
+            h4 {
+                color: #fff;
+                font-size: 20px;
+                font-weight: 300;
+                @media screen and (max-width: "999px") {
+                    font-size: 16px;
+                }
+            }
+
+            h2 {
+                color: #fff;
+                font-size: 28px;
+                font-weight: 800;
+                @media screen and (max-width: "999px") {
+                    font-size: 20px;
+                }
+            }
+
+            span {
+                color: #fff;
+                font-size: 14px;
+                font-weight: 500;
+                padding-bottom: 15px;
+                @media screen and (max-width: "999px") {
+                    font-size: 12px;
+                }
+            }
+            button {
+                font-size: 13px;
+                font-weight: 600;
+                padding: 11px 18px;
+                color: #fff;
+                background-color: transparent;
+                cursor: pointer;
+                border: 1px solid #fff;
+                outline: none;
+                transition: 0.2s;
+            }
+
+            &:last-child {
+                background-image: url("https://res.cloudinary.com/khobbylynx/image/upload/v1682616419/samples/ecommerce/analog-classic.jpg");
+            }
+            &:hover button {
+                background-color: #088178;
+                border: 1px solid #088178;
+            }
+        }
+    }
+
+    .small__banner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding-bottom: 50px;
+
+        @media screen and (max-width: "999px") {
+            background-color: #f1f1f1;
+            padding: 0 50px 60px;
+        }
+        @media screen and (max-width: "699px") {
+            padding: 0 20px 20px;
+        }
+        .banner__box {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            background-image: url("https://res.cloudinary.com/khobbylynx/image/upload/v1682616429/samples/ecommerce/leather-bag-gray.jpg");
+            background-position: center;
+            background-size: cover;
+            min-width: 200px;
+            height: 26vh;
+            background-size: cover;
+            background-position: center;
+            padding: 20px;
+            margin-bottom: 20px;
+            flex-basis: 33%;
+
+            @media screen and (max-width: "1220px") {
+                height: 20vh;
+            }
+            @media screen and (max-width: "999px") {
+                min-width: 180px;
+                height: 16vh;
+            }
+            @media screen and (max-width: "777px") {
+                min-width: 160px;
+                height: 12vh;
+            }
+            @media screen and (max-width: "620px") {
+                min-width: 120px;
+                height: 12vh;
+            }
+            @media screen and (max-width: "590px") {
+                min-width: 70px;
+                height: 16vh;
+                padding: 8px;
+            }
+
+            &:nth-child(2) {
+                background-image: url("https://res.cloudinary.com/khobbylynx/image/upload/v1682616448/cld-sample-5.jpg");
+            }
+            &:last-child {
+                background-image: url("https://res.cloudinary.com/khobbylynx/image/upload/v1683975712/lynxmart/img/banner/laps2_ucpx4w.jpg");
+            }
+        }
+
+        h2 {
+            color: #fff;
+            font-size: 22px;
+            font-weight: 900;
+            @media screen and (max-width: "999px") {
+                font-size: 13px;
+                padding-bottom: 0;
+            }
+            @media screen and (max-width: "590px") {
+                font-size: 10px;
+            }
+        }
+
+        h3 {
+            color: #ec544e;
+            font-size: 15px;
+            font-weight: 800;
+            @media screen and (max-width: "999px") {
+                font-size: 12px;
+            }
+            @media screen and (max-width: "590px") {
+                font-size: 8px;
+            }
+        }
+    }
+}

@@ -1,0 +1,36 @@
+/*================================================================================
+	Item Name:
+	Version: 2.0
+	Author: 
+	Author URL: 
+================================================================================
+
+NOTE:
+------
+PLACE HERE YOUR OWN SCSS CODES AND IF NEEDED, OVERRIDE THE STYLES FROM THE OTHER STYLESHEETS.
+WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BETTER LIKE THIS.  */
+
+// ** Custom styles
+.avatar-border {
+	outline: solid 3px #293655;
+	outline-offset: 3px;
+}
+
+.user-info-dropdown {
+	padding: 1.28rem, 0.65rem;
+}
+
+// ** Overides
+.text-secondary {
+	--bs-text-opacity: 1;
+	color: #9b9ea6 !important;
+}
+
+.dropzone {
+	border: 1px dashed rgba(#f37216, 0.5) !important;
+}
+
+// ** hover buttons style
+// main navbar and header navbar shadow(generic navbar)
+// ** Menu Item Hover Animation
+// Profile Dropdown (Common)
