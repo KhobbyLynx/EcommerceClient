@@ -1,5 +1,5 @@
 // ** React Imports
-import { Link } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 
 // ** Third Party Components
 import classnames from 'classnames'
@@ -7,19 +7,51 @@ import InputNumber from 'rc-input-number'
 import { X, Heart, Star, Plus, Minus } from 'react-feather'
 
 // ** Reactstrap Imports
-import { Card, CardBody, CardText, Button, Badge, InputGroup, Input, InputGroupText } from 'reactstrap'
+import {
+  Card,
+  CardBody,
+  CardText,
+  Button,
+  Badge,
+  InputGroup,
+  Input,
+  InputGroupText,
+} from 'reactstrap'
 
 // ** Styles
 import '@styles/react/libs/input-number/input-number.scss'
+import { getUserData } from '../../../../../utility/Utils'
 
-const Cart = props => {
+const Cart = (props) => {
   // ** Props
-  const { products, stepper, deleteCartItem, dispatch, addToWishlist, deleteWishlistItem, getCartItems } = props
+  const {
+    products,
+    stepper,
+    deleteCartItem,
+    dispatch,
+    addToWishlist,
+    deleteWishlistItem,
+    getCartItems,
+  } = props
+
+  // ** Hooks
+  const navigate = useNavigate()
 
   // ** Function to convert Date
-  const formatDate = (value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) => {
+  const formatDate = (
+    value,
+    formatting = { month: 'short', day: 'numeric', year: 'numeric' }
+  ) => {
     if (!value) return value
     return new Intl.DateTimeFormat('en-US', formatting).format(new Date(value))
+  }
+  const handleCheckout = () => {
+    const user = getUserData()
+    if (!user) {
+      navigate('/login')
+    } else {
+      stepper.next()
+    }
   }
 
   // ** Funciton Function to toggle wishlist item
@@ -34,7 +66,7 @@ const Cart = props => {
 
   // ** Render cart items
   const renderCart = () => {
-    return products.map(item => {
+    return products.map((item) => {
       return (
         <Card key={item.name} className='ecommerce-card'>
           <div className='item-img'>
@@ -45,11 +77,17 @@ const Cart = props => {
           <CardBody>
             <div className='item-name'>
               <h6 className='mb-0'>
-                <Link to={`/apps/ecommerce/product-detail/${item.slug}`}>{item.name}</Link>
+                <Link to={`/apps/ecommerce/product-detail/${item.slug}`}>
+                  {item.name}
+                </Link>
               </h6>
               <span className='item-company'>
                 By
-                <a className='ms-25' href='/' onClick={e => e.preventDefault()}>
+                <a
+                  className='ms-25'
+                  href='/'
+                  onClick={(e) => e.preventDefault()}
+                >
                   {item.brand}
                 </a>
               </span>
@@ -61,7 +99,7 @@ const Cart = props => {
                         <Star
                           className={classnames({
                             'filled-star': index + 1 <= item.rating,
-                            'unfilled-star': index + 1 > item.rating
+                            'unfilled-star': index + 1 > item.rating,
                           })}
                         />
                       </li>
@@ -82,7 +120,9 @@ const Cart = props => {
                 downHandler={<Minus />}
               />
             </div>
-            <div className='delivery-date text-muted'>Delivery by, {formatDate(item.shippingDate)}</div>
+            <div className='delivery-date text-muted'>
+              Delivery by, {formatDate(item.shippingDate)}
+            </div>
             <span className='text-success'>
               {item.discountPercentage}% off {item.offers} offers Available
             </span>
@@ -100,7 +140,11 @@ const Cart = props => {
                 ) : null}
               </div>
             </div>
-            <Button className='mt-1 remove-wishlist' color='light' onClick={() => dispatch(deleteCartItem(item.id))}>
+            <Button
+              className='mt-1 remove-wishlist'
+              color='light'
+              onClick={() => dispatch(deleteCartItem(item.id))}
+            >
               <X size={14} className='me-25' />
               <span>Remove</span>
             </Button>
@@ -112,7 +156,7 @@ const Cart = props => {
               <Heart
                 size={14}
                 className={classnames('me-25', {
-                  'fill-current': item.isInWishlist
+                  'fill-current': item.isInWishlist,
                 })}
               />
               <span className='text-truncate'>Wishlist</span>
@@ -125,14 +169,18 @@ const Cart = props => {
 
   return (
     <div className='list-view product-checkout'>
-      <div className='checkout-items'>{products.length ? renderCart() : <h4>Your cart is empty</h4>}</div>
+      <div className='checkout-items'>
+        {products.length ? renderCart() : <h4>Your cart is empty</h4>}
+      </div>
       <div className='checkout-options'>
         <Card>
           <CardBody>
             <label className='section-label mb-1'>Options</label>
             <InputGroup className='input-group-merge coupons'>
               <Input placeholder='Coupons' />
-              <InputGroupText className='text-primary ms-0'>Apply</InputGroupText>
+              <InputGroupText className='text-primary ms-0'>
+                Apply
+              </InputGroupText>
             </InputGroup>
             <hr />
             <div className='price-details'>
@@ -144,7 +192,9 @@ const Cart = props => {
                 </li>
                 <li className='price-detail'>
                   <div className='detail-title'>Bag Discount</div>
-                  <div className='detail-amt discount-amt text-success'>-25$</div>
+                  <div className='detail-amt discount-amt text-success'>
+                    -25$
+                  </div>
                 </li>
                 <li className='price-detail'>
                   <div className='detail-title'>Estimated Tax</div>
@@ -152,13 +202,19 @@ const Cart = props => {
                 </li>
                 <li className='price-detail'>
                   <div className='detail-title'>EMI Eligibility</div>
-                  <a href='/' className='detail-amt text-primary' onClick={e => e.preventDefault()}>
+                  <a
+                    href='/'
+                    className='detail-amt text-primary'
+                    onClick={(e) => e.preventDefault()}
+                  >
                     Details
                   </a>
                 </li>
                 <li className='price-detail'>
                   <div className='detail-title'>Delivery Charges</div>
-                  <div className='detail-amt discount-amt text-success'>Free</div>
+                  <div className='detail-amt discount-amt text-success'>
+                    Free
+                  </div>
                 </li>
               </ul>
               <hr />
@@ -172,7 +228,7 @@ const Cart = props => {
                 block
                 color='primary'
                 disabled={!products.length}
-                onClick={() => stepper.next()}
+                onClick={() => handleCheckout()}
                 classnames='btn-next place-order'
               >
                 Place Order
