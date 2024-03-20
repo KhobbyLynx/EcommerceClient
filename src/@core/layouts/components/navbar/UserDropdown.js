@@ -117,7 +117,7 @@ const UserDropdown = () => {
         </DropdownItem>
         <DropdownItem
           tag={Link}
-          to='/login'
+          to='/home'
           onClick={() => dispatch(handleLogout())}
         >
           <Power size={14} className='me-75' />
