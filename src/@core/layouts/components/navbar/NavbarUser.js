@@ -10,13 +10,18 @@ import { CgDarkMode } from 'react-icons/cg'
 import { MdDarkMode } from 'react-icons/md'
 
 // ** Reactstrap Imports
-import { NavItem, NavLink } from 'reactstrap'
+import { Button, NavItem, NavLink } from 'reactstrap'
 import CartDropdown from './CartDropdown'
 import { Heart } from 'react-feather'
+import { getUserData } from '../../../../utility/Utils'
+import { Link } from 'react-router-dom'
 
 const NavbarUser = (props) => {
   // ** Props
   const { skin, setSkin } = props
+
+  // ** Check if user is loggedIn
+  const user = getUserData()
 
   // ** Function to toggle Theme (Light/Dark/SemiDark)
   const ThemeToggler = () => {
@@ -35,9 +40,25 @@ const NavbarUser = (props) => {
           <ThemeToggler />
         </NavLink>
       </NavItem>
-      <CartDropdown />
-      <NotificationDropdown />
-      <UserDropdown />
+
+      {user ? (
+        <>
+          <CartDropdown />
+          <NotificationDropdown />
+          <UserDropdown />
+        </>
+      ) : (
+        <>
+          <Link to='/login'>
+            <Button color='primary'>Sign In</Button>
+          </Link>
+          <Link to='/register'>
+            <Button color='primary' outline>
+              Sign Up
+            </Button>
+          </Link>
+        </>
+      )}
     </ul>
   )
 }
