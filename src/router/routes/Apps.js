@@ -53,6 +53,7 @@ const AppRoutes = [
     element: <EcommerceWishlist />,
     path: '/wishlist',
     meta: {
+      publicRoute: true,
       className: 'ecommerce-application',
     },
   },
@@ -60,6 +61,7 @@ const AppRoutes = [
     path: '/product-detail',
     element: <Navigate to='/product-detail/apple-i-phone-11-64-gb-black-26' />,
     meta: {
+      publicRoute: true,
       className: 'ecommerce-application',
     },
   },
@@ -67,6 +69,7 @@ const AppRoutes = [
     path: '/product-detail/:product',
     element: <EcommerceDetail />,
     meta: {
+      publicRoute: true,
       className: 'ecommerce-application',
     },
   },
@@ -74,32 +77,51 @@ const AppRoutes = [
     path: '/cart',
     element: <EcommerceCheckout />,
     meta: {
+      publicRoute: true,
       className: 'ecommerce-application',
     },
   },
   {
     path: '/blog',
     element: <BlogList />,
+    meta: {
+      publicRoute: true,
+    },
   },
   {
     path: '/blog/detail/:id',
     element: <BlogDetails />,
+    meta: {
+      publicRoute: true,
+    },
   },
   {
     path: '/blog/detail',
     element: <Navigate to='/blog/detail/1' />,
+    meta: {
+      publicRoute: true,
+    },
   },
   {
     path: '/about',
     element: <About />,
+    meta: {
+      publicRoute: true,
+    },
   },
   {
     path: '/contact',
     element: <Contact />,
+    meta: {
+      publicRoute: true,
+    },
   },
   {
     path: '/faq',
     element: <Faq />,
+    meta: {
+      publicRoute: true,
+    },
   },
   {
     path: '/inbox',
