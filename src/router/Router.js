@@ -31,7 +31,7 @@ const Router = () => {
     if (user) {
       return getHomeRouteForLoggedInUser(user.role)
     } else {
-      return '/login'
+      return '/home'
     }
   }
 
