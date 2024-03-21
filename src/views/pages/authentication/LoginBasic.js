@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom'
 
 // ** Icons Imports
-import { Facebook, Twitter, Mail, GitHub } from 'react-feather'
+import { FcGoogle } from 'react-icons/fc'
 
 // ** Custom Components
 import InputPasswordToggle from '@components/input-password-toggle'
@@ -69,7 +69,7 @@ const LoginBasic = () => {
                   <Label className='form-label' for='login-password'>
                     Password
                   </Label>
-                  <Link to='/pages/forgot-password-basic'>
+                  <Link to='/forgot-password'>
                     <small>Forgot Password?</small>
                   </Link>
                 </div>
@@ -90,7 +90,7 @@ const LoginBasic = () => {
             </Form>
             <p className='text-center mt-2'>
               <span className='me-25'>New on our platform?</span>
-              <Link to='/pages/register-basic'>
+              <Link to='/register'>
                 <span>Create an account</span>
               </Link>
             </p>
@@ -98,17 +98,12 @@ const LoginBasic = () => {
               <div className='divider-text'>or</div>
             </div>
             <div className='auth-footer-btn d-flex justify-content-center'>
-              <Button color='facebook'>
-                <Facebook size={14} />
-              </Button>
-              <Button color='twitter'>
-                <Twitter size={14} />
-              </Button>
-              <Button color='google'>
-                <Mail size={14} />
-              </Button>
-              <Button className='me-0' color='github'>
-                <GitHub size={14} />
+              <Button
+                color='google'
+                className='d-flex align-items-center justify-content-center'
+              >
+                <h6 className='m-0 pe-1 text-primary'>Google</h6>
+                <FcGoogle size={14} />
               </Button>
             </div>
           </CardBody>
