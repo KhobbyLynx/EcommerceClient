@@ -33,7 +33,7 @@ const getLayout = {
 }
 
 // ** Document title
-const TemplateTitle = '%s - Lynx DS'
+const TemplateTitle = '%s - Lynx Client'
 
 // ** Default Route
 const DefaultRoute = '/home'
