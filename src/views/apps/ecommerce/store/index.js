@@ -96,7 +96,7 @@ export const appEcommerceSlice = createSlice({
         state.cart = action.payload.products
       })
       .addCase(getProduct.fulfilled, (state, action) => {
-        console.log('<<<<<<<Products>>>>>>>>>'.action.payload)
+        console.log('<<<<<<<Products>>>>>>>>>', action.payload)
         state.productDetail = action.payload.product
       })
   },
