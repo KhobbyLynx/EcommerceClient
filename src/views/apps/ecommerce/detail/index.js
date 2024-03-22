@@ -15,7 +15,12 @@ import { Card, CardBody } from 'reactstrap'
 
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux'
-import { getProduct, deleteWishlistItem, addToWishlist, addToCart } from '../store'
+import {
+  getProduct,
+  deleteWishlistItem,
+  addToWishlist,
+  addToCart,
+} from '../store'
 
 import '@styles/base/pages/app-ecommerce-details.scss'
 
@@ -23,10 +28,10 @@ const Details = () => {
   // ** Vars
   const params = useParams().product
   const productId = params.substring(params.lastIndexOf('-') + 1)
-
   // ** Store Vars
   const dispatch = useDispatch()
-  const store = useSelector(state => state.ecommerce)
+  const store = useSelector((state) => state.ecommerce)
+  console.log('@@@@@@Params and Product ID', params, '#', productId, '#', store)
 
   // ** ComponentDidMount : Get product
   useEffect(() => {
@@ -35,7 +40,7 @@ const Details = () => {
 
   return (
     <Fragment>
-      <BreadCrumbs title='Product Details' data={[{ title: 'eCommerce' }, { title: 'Details' }]} />
+      <BreadCrumbs title='Product Details' data={[{ title: 'Details' }]} />
       <div className='app-ecommerce-details'>
         {Object.keys(store.productDetail).length ? (
           <Card>
