@@ -12,11 +12,8 @@ const Inbox = lazy(() => import('../../views/apps/email'))
 const AccountSettings = lazy(() => import('../../views/pages/account-settings'))
 const Profile = lazy(() => import('../../views/pages/profile'))
 
-const Todo = lazy(() => import('../../views/apps/todo'))
 const Chat = lazy(() => import('../../views/apps/chat'))
 const Email = lazy(() => import('../../views/apps/email'))
-const Kanban = lazy(() => import('../../views/apps/kanban'))
-const Calendar = lazy(() => import('../../views/apps/calendar'))
 
 const InvoiceAdd = lazy(() => import('../../views/apps/invoice/add'))
 const InvoiceList = lazy(() => import('../../views/apps/invoice/list'))
@@ -35,11 +32,6 @@ const EcommerceCheckout = lazy(() =>
 
 const UserList = lazy(() => import('../../views/apps/user/list'))
 const UserView = lazy(() => import('../../views/apps/user/view'))
-
-const Roles = lazy(() => import('../../views/apps/roles-permissions/roles'))
-const Permissions = lazy(() =>
-  import('../../views/apps/roles-permissions/permissions')
-)
 
 const AppRoutes = [
   {
@@ -177,42 +169,6 @@ const AppRoutes = [
     },
   },
   {
-    element: <Todo />,
-    path: '/apps/todo',
-    meta: {
-      appLayout: true,
-      className: 'todo-application',
-    },
-  },
-  {
-    element: <Todo />,
-    path: '/apps/todo/:filter',
-    meta: {
-      appLayout: true,
-      className: 'todo-application',
-    },
-  },
-  {
-    element: <Todo />,
-    path: '/apps/todo/tag/:tag',
-    meta: {
-      appLayout: true,
-      className: 'todo-application',
-    },
-  },
-  {
-    element: <Calendar />,
-    path: '/apps/calendar',
-  },
-  {
-    element: <Kanban />,
-    path: '/apps/kanban',
-    meta: {
-      appLayout: true,
-      className: 'kanban-application',
-    },
-  },
-  {
     element: <InvoiceList />,
     path: '/apps/invoice/list',
   },
@@ -263,14 +219,6 @@ const AppRoutes = [
   {
     element: <UserView />,
     path: '/apps/user/view/:id',
-  },
-  {
-    element: <Roles />,
-    path: '/apps/roles',
-  },
-  {
-    element: <Permissions />,
-    path: '/apps/permissions',
   },
 ]
 
