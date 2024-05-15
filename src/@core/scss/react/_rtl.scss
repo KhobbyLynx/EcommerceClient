@@ -1,4 +1,4 @@
-html[dir='rtl'] {
+html[dir="rtl"] {
   body .ps__rail-y {
     right: auto !important;
     left: 1px !important;
@@ -31,7 +31,7 @@ html[dir='rtl'] {
 
   // Horizontal menu
   .horizontal-menu .header-navbar.navbar-horizontal .dropdown-menu .dropdown-toggle::after {
-    background-image: url(str-replace(str-replace($chevron-left, 'currentColor', $body-color), '#', '%23'));
+    background-image: url(str-replace(str-replace($chevron-left, "currentColor", $body-color), "#", "%23"));
   }
 
   // Dropdown RTL Changes
@@ -68,7 +68,7 @@ html[dir='rtl'] {
   }
 
   // Breadcrumbs
-  .breadcrumb:not([class*='breadcrumb-']),
+  .breadcrumb:not([class*="breadcrumb-"]),
   .breadcrumb.breadcrumb-chevron {
     .breadcrumb-item + .breadcrumb-item {
       &:before {
@@ -133,14 +133,14 @@ html[dir='rtl'] {
 
   // Popover
   .popover {
-    &[data-popper-placement^='left'] {
+    &[data-popper-placement^="left"] {
       .popover-arrow {
         left: unset;
         right: -0.5rem;
         transform: translate3d(0px, 58px, 0px) !important;
       }
     }
-    &[data-popper-placement^='right'] {
+    &[data-popper-placement^="right"] {
       .popover-arrow {
         right: unset;
         left: -0.5rem;
@@ -151,13 +151,13 @@ html[dir='rtl'] {
 
   // Tooltip
   .bs-tooltip-left .arrow,
-  .bs-tooltip-auto[data-popper-placement^='left'] .arrow {
+  .bs-tooltip-auto[data-popper-placement^="left"] .arrow {
     right: -1px;
     transform: translate3d(0px, 15px, 0px) !important;
   }
 
   .bs-tooltip-right .arrow,
-  .bs-tooltip-auto[data-popper-placement^='right'] .arrow {
+  .bs-tooltip-auto[data-popper-placement^="right"] .arrow {
     right: auto;
     left: 0;
     transform: translate3d(0px, 15px, 0px) !important;
@@ -196,7 +196,10 @@ html[dir='rtl'] {
   // Invoice List
   .invoice-list-table-header {
     select {
-      background-position: calc(100% - (100% - 13px)) 13px, calc(100% - (100% - 20px)) 13px, 0% 0 !important;
+      background-position:
+        calc(100% - (100% - 13px)) 13px,
+        calc(100% - (100% - 20px)) 13px,
+        0% 0 !important;
     }
   }
 
@@ -252,7 +255,7 @@ html[dir='rtl'] {
 
   // Datatables
   .rdt_Table {
-    [aria-label='Expand Row'] {
+    [aria-label="Expand Row"] {
       svg {
         transform: rotate(180deg);
       }

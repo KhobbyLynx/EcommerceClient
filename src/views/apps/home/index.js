@@ -1,38 +1,56 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import Hero from './hero/Hero'
 import './Home.scss'
 import Category from './category/Category'
 // import BookSlider from '../../components/bookSlider/BookSlider'
-// import ProductCard from '../../components/products/ProductCard'
-// import Brands from '../../components/brands/Brands'
+
+import ProductCards from '../ecommerce/shop/ProductCards'
+import Brands from './brands/Brands'
+
+// ** Store & Actions
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  addToCart,
+  getProducts,
+  getCartItems,
+  addToWishlist,
+  deleteCartItem,
+  deleteWishlistItem,
+} from '../ecommerce/store'
+
+// ** Styles
+import '@styles/react/apps/app-ecommerce.scss'
+import SingleProductCard from '../ecommerce/shop/SingleProductCard'
 
 const Home = () => {
-  //   const products = useLoaderData()
-  //   const productsSetOne = products.slice(0, 8)
-  //   const productsSetTwo = products.slice(8, 16)
+  // ** States
+
+  // ** Vars
+  const dispatch = useDispatch()
+  const store = useSelector((state) => state.ecommerce)
+
+  // ** Get products
+  useEffect(() => {
+    dispatch(
+      getProducts({
+        q: '',
+        sortBy: 'featured',
+        perPage: 9,
+        page: 1,
+      })
+    )
+  }, [dispatch])
+
+  const productsSetOne = store.allProducts.filter(
+    (pro) => pro.featuredHomeTwo === true
+  )
+  const productsSetTwo = store.allProducts.filter(
+    (pro) => pro.featuredHome === true
+  )
+
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
-
-  //   const ProductsGridOne = productsSetOne.map((product) => {
-  //     return (
-  //       <div key={product._id}>
-  //         <Link to={`/${product._id}`} className='product_link link'>
-  //           <ProductCard {...product} />
-  //         </Link>
-  //       </div>
-  //     )
-  //   })
-
-  //   const ProductsGridTwo = productsSetTwo.map((product) => {
-  //     return (
-  //       <div key={product._id}>
-  //         <Link to={`/${product._id}`} className='product_link link'>
-  //           <ProductCard {...product} />
-  //         </Link>
-  //       </div>
-  //     )
-  //   })
 
   const handleFilterChange = (key, value) => {
     setTimeout(() => {
@@ -58,7 +76,22 @@ const Home = () => {
           <h1>Latest Trends and Styles | Fashion</h1>
           <p>Summer Collections - New Modern Design</p>
         </div>
-        {/* <div className='product-grid'>{ProductsGridOne}</div> */}
+        <div className='product-grid '>
+          <div className='ecommerce-application'>
+            <ProductCards
+              store={store}
+              dispatch={dispatch}
+              addToCart={addToCart}
+              activeView='grid'
+              products={productsSetTwo}
+              getProducts={getProducts}
+              getCartItems={getCartItems}
+              addToWishlist={addToWishlist}
+              deleteCartItem={deleteCartItem}
+              deleteWishlistItem={deleteWishlistItem}
+            />
+          </div>
+        </div>
       </section>
       <section className='banner__explore'>
         <h4>Evolution Of Fashion</h4>
@@ -74,9 +107,24 @@ const Home = () => {
           <h1>Best Sellers | Collections</h1>
           <p>There’s Something Here for Everyone - No Matter Your Style</p>
         </div>
-        {/* <div className='product-grid'>{ProductsGridTwo}</div> */}
+        <div className='product-grid'>
+          <div className='ecommerce-application'>
+            <ProductCards
+              store={store}
+              dispatch={dispatch}
+              addToCart={addToCart}
+              activeView='grid'
+              products={productsSetOne}
+              getProducts={getProducts}
+              getCartItems={getCartItems}
+              addToWishlist={addToWishlist}
+              deleteCartItem={deleteCartItem}
+              deleteWishlistItem={deleteWishlistItem}
+            />
+          </div>
+        </div>
       </section>
-      {/* <Brands /> */}
+      <Brands />
       <section className='big__banner'>
         <div className='banner__box'>
           <h4>crazy deals</h4>

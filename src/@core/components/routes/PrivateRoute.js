@@ -16,7 +16,7 @@ const PrivateRoute = ({ children, route }) => {
   if (route) {
     let action = null
     let resource = null
-    let restrictedRoute = false
+    let restrictedRoute = true
 
     if (route.meta) {
       action = route.meta.action
@@ -37,7 +37,11 @@ const PrivateRoute = ({ children, route }) => {
     }
   }
 
-  return <Suspense fallback={<Spinner className='content-loader' />}>{children}</Suspense>
+  return (
+    <Suspense fallback={<Spinner className='content-loader' />}>
+      {children}
+    </Suspense>
+  )
 }
 
 export default PrivateRoute

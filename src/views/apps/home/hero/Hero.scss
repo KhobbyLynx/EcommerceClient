@@ -16,7 +16,14 @@
     .hero__content {
         display: flex;
         flex-direction: column;
-        width: 89%;
+        max-width: 80%;
+
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+
         @media screen and (max-width: "1400px") {
             width: 80%;
         }
@@ -41,7 +48,7 @@
                 font-size: 32px;
                 font-weight: 400;
                 font-family: "Iceberg", cursive;
-                color: #010204;
+                color: #dddcdb;
                 margin-top: 10px;
                 @media screen and (min-width: "1499px") {
                     font-size: 46px;
@@ -65,7 +72,7 @@
             background-repeat: no-repeat;
             background-color: transparent;
             cursor: pointer;
-            margin-top: 60px;
+            margin-bottom: auto;
 
             @media screen and (min-width: "1499px") {
                 font-size: 32px;
@@ -82,6 +89,17 @@
             }
         }
     }
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(24, 23, 23, 0.5);
+    filter: blur(16px);
 }
 
 .next__arrow {

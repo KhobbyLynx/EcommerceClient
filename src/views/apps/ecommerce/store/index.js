@@ -3,12 +3,57 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import axios from 'axios'
+import { collection, onSnapshot } from 'firebase/firestore'
+import { db } from '../../../../configs/firebase'
+import { paginateArray } from '../../../../utility/HelperFunctions'
 
 export const getProducts = createAsyncThunk(
   'appEcommerce/getProducts',
-  async (params) => {
-    const response = await axios.get('/apps/ecommerce/products', { params })
-    return { params, data: response.data }
+  async (params, { dispatch }) => {
+    const { q = '', sortBy = 'featured', perPage = 9, page = 1 } = params
+    try {
+      const queryLowered = q.toLowerCase()
+
+      const productsRef = collection(db, 'products')
+      const unsubscribe = onSnapshot(productsRef, (snapshot) => {
+        const allData = snapshot.docs
+          .map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+          .sort((a, b) => b.createdAt - a.createdAt)
+
+        const filteredData = allData.filter((product) =>
+          product.name.toLowerCase().includes(queryLowered)
+        )
+
+        let sortedData = filteredData
+        if (sortBy === 'price-desc') {
+          sortedData = filteredData.sort((a, b) => b.salePrice - a.salePrice)
+        } else if (sortBy === 'price-asc') {
+          sortedData = filteredData.sort((a, b) => a.salePrice - b.salePrice)
+        }
+
+        const paginatedData = paginateArray(sortedData, perPage, page)
+
+        console.log('@Products', paginatedData)
+
+        dispatch({
+          type: 'appEcommerce/getProductsSuccess',
+          payload: {
+            params,
+            products: paginatedData,
+            allProducts: allData,
+            total: filteredData.length,
+            unsubscribe,
+          },
+        })
+      })
+
+      return Promise.resolve()
+    } catch (error) {
+      console.log('Error Fetching Products', error)
+    }
   }
 )
 
@@ -77,17 +122,26 @@ export const appEcommerceSlice = createSlice({
     cart: [],
     params: {},
     products: [],
+    allProducts: [],
     wishlist: [],
     totalProducts: 0,
     productDetail: {},
+    unsubscribeProducts: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getProducts.fulfilled, (state, action) => {
+      .addCase('appEcommerce/getProductsSuccess', (state, action) => {
         state.params = action.payload.params
-        state.products = action.payload.data.products
-        state.totalProducts = action.payload.data.total
+        state.products = action.payload.products
+        state.allProducts = action.payload.allProducts
+        state.totalProducts = action.payload.total
+
+        if (state.unsubscribeProducts) {
+          state.unsubscribeProducts()
+        }
+
+        state.unsubscribeProducts = action.payload.unsubscribe
       })
       .addCase(getWishlistItems.fulfilled, (state, action) => {
         state.wishlist = action.payload.products

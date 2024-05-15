@@ -2,20 +2,30 @@ import React from 'react'
 import './Category.scss'
 import { categories } from '../data'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { getProducts } from '../../ecommerce/store'
 
 const Category = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
-  const handleFilterChange = (key, value) => {
-    if (searchParams === '') {
-      if (searchParams.has(key)) {
-        searchParams.delete(key)
-        setSearchParams(searchParams)
-      }
-    } else {
-      navigate(`/shop?${key}=${value}`)
-    }
+  const store = useSelector((state) => state.ecommerce)
+
+  // const handleFilterChange = (key, value) => {
+  //   if (searchParams === '') {
+  //     if (searchParams.has(key)) {
+  //       searchParams.delete(key)
+  //       setSearchParams(searchParams)
+  //     }
+  //   } else {
+  //     navigate(`/shop?${key}=${value}`)
+  //   }
+  // }
+
+  const handleChange = (value) => {
+    navigate('/shop')
+    dispatch(getProducts({ ...store.params, q: value }))
   }
 
   return (
@@ -24,7 +34,8 @@ const Category = () => {
         <div
           key={category.id}
           className='cat__card'
-          onClick={() => handleFilterChange('cat', `${category.title}`)}
+          onClick={() => handleChange(`${category.title}`)}
+          // onClick={() => handleFilterChange('cat', `${category.title}`)}
         >
           <img src={category.url} alt={category.title} />
           <p>{category.title}</p>

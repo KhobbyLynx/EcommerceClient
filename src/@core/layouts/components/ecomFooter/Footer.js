@@ -22,12 +22,12 @@ const Footer = () => {
     <div className='footer'>
       <div className='footer__logo'>
         <Link
-          to='/'
+          to='/home'
           onClick={() =>
             window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
           }
         >
-          <img src={images.logo} alt='lynx logo' />
+          <img src='logo.svg' alt='lynx logo' />
         </Link>
       </div>
       <div className='footer__content'>

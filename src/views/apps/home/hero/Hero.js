@@ -76,7 +76,7 @@ const Hero = () => {
             <h2>{feature.mainText}</h2>
             <h6>{feature.smallText}</h6>
           </div>
-          <Link to='shop'>
+          <Link to='/shop'>
             <button style={{ backgroundImage: `url(${images.buttonImg})` }}>
               Shop Now
             </button>

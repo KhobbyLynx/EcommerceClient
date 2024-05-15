@@ -12,7 +12,7 @@ import classnames from 'classnames'
 // ** Reactstrap Imports
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap'
 
-const ProductsPage = props => {
+const ProductsPage = (props) => {
   // ** Props
   const {
     store,
@@ -26,11 +26,11 @@ const ProductsPage = props => {
     setActiveView,
     deleteCartItem,
     setSidebarOpen,
-    deleteWishlistItem
+    deleteWishlistItem,
   } = props
 
   // ** Handles pagination
-  const handlePageChange = val => {
+  const handlePageChange = (val) => {
     if (val === 'next') {
       dispatch(getProducts({ ...store.params, page: store.params.page + 1 }))
     } else if (val === 'prev') {
@@ -43,7 +43,9 @@ const ProductsPage = props => {
   // ** Render pages
   const renderPageItems = () => {
     const arrLength =
-      store.totalProducts !== 0 && store.products.length !== 0 ? Number(store.totalProducts) / store.products.length : 3
+      store.totalProducts !== 0 && store.products.length !== 0
+        ? Number(store.totalProducts) / store.products.length
+        : 3
 
     return new Array(Math.trunc(arrLength)).fill().map((item, index) => {
       return (
@@ -52,7 +54,7 @@ const ProductsPage = props => {
           active={store.params.page === index + 1}
           onClick={() => handlePageChange(index + 1)}
         >
-          <PaginationLink href='/' onClick={e => e.preventDefault()}>
+          <PaginationLink href='/' onClick={(e) => e.preventDefault()}>
             {index + 1}
           </PaginationLink>
         </PaginationItem>
@@ -62,7 +64,10 @@ const ProductsPage = props => {
 
   // ** handle next page click
   const handleNext = () => {
-    if (store.params.page !== Number(store.totalProducts) / store.products.length) {
+    if (
+      store.params.page !==
+      Number(store.totalProducts) / store.products.length
+    ) {
       handlePageChange('next')
     }
   }
@@ -80,11 +85,15 @@ const ProductsPage = props => {
         />
         <div
           className={classnames('body-content-overlay', {
-            show: sidebarOpen
+            show: sidebarOpen,
           })}
           onClick={() => setSidebarOpen(false)}
         ></div>
-        <ProductsSearchbar dispatch={dispatch} getProducts={getProducts} store={store} />
+        <ProductsSearchbar
+          dispatch={dispatch}
+          getProducts={getProducts}
+          store={store}
+        />
         {store.products.length ? (
           <Fragment>
             <ProductCards
@@ -103,17 +112,28 @@ const ProductsPage = props => {
               <PaginationItem
                 disabled={store.params.page === 1}
                 className='prev-item'
-                onClick={() => (store.params.page !== 1 ? handlePageChange('prev') : null)}
+                onClick={() =>
+                  store.params.page !== 1 ? handlePageChange('prev') : null
+                }
               >
-                <PaginationLink href='/' onClick={e => e.preventDefault()}></PaginationLink>
+                <PaginationLink
+                  href='/'
+                  onClick={(e) => e.preventDefault()}
+                ></PaginationLink>
               </PaginationItem>
               {renderPageItems()}
               <PaginationItem
                 className='next-item'
                 onClick={() => handleNext()}
-                disabled={store.params.page === Number(store.totalProducts) / store.products.length}
+                disabled={
+                  store.params.page ===
+                  Number(store.totalProducts) / store.products.length
+                }
               >
-                <PaginationLink href='/' onClick={e => e.preventDefault()}></PaginationLink>
+                <PaginationLink
+                  href='/'
+                  onClick={(e) => e.preventDefault()}
+                ></PaginationLink>
               </PaginationItem>
             </Pagination>
           </Fragment>

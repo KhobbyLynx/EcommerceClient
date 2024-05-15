@@ -1,27 +1,27 @@
 export const featured = [
   {
     id: 1,
-    mainText: 'Elevate Your Style',
-    smallText: 'with Our Fashionable Collections',
-    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1683975682/lynxmart/img/hero/Hero_sc851h.png',
+    mainText: 'Transform Your Living Space!',
+    smallText: 'Find stylish appliances for modern living.',
+    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1715694102/ecom/pexels-rdne-5591463_tzqmfq.jpg',
   },
   {
     id: 2,
-    mainText: 'Level Up Your Style',
-    smallText: 'with Our Fashionable Collections',
-    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1683975691/lynxmart/img/hero/hero4_emovbj.jpg',
+    mainText: 'Revamp Your Home, Simplify Life!',
+    smallText: 'Effortless solutions for everyday tasks.',
+    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1715694053/ecom/pexels-level23media-3016430_glxn1d.jpg',
   },
   {
     id: 3,
-    mainText: 'Up Your Style',
-    smallText: 'with Our Fashionable Collections',
-    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1683975682/lynxmart/img/hero/shoe_ivjw1y.jpg',
+    mainText: 'Upgrade Your Kitchen Essentials!',
+    smallText: 'Efficient solutions for culinary perfection.',
+    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1715694168/ecom/kam-idris-Ot2iTXgC6fY-unsplash_m3j2qv.jpg',
   },
   {
     id: 4,
-    mainText: 'Turn Up Your Style',
-    smallText: 'with Our Fashionable Collections',
-    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1683975698/lynxmart/img/hero/hero4_bjrs4z.png',
+    mainText: 'Upgrade Your Home Today!',
+    smallText: 'Discover top-quality appliances for every room.',
+    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1715694042/ecom/pexels-houzlook-3423817_lnpiyg.jpg',
   },
 ]
 
@@ -29,7 +29,7 @@ export const categories = [
   {
     id: 1,
     url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1683975746/lynxmart/img/category/features_1_rwxy1u.png',
-    title: 'Clothing',
+    title: 'Washing Machines',
   },
   {
     id: 2,
@@ -44,12 +44,12 @@ export const categories = [
   {
     id: 4,
     url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1683975724/lynxmart/img/category/features_4_bkdknd.png',
-    title: 'Mobile Access.',
+    title: 'Sound Systems',
   },
   {
     id: 5,
     url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1683977004/lynxmart/img/category/Electronics_du6gxe.png',
-    title: 'Electronics',
+    title: 'Televisions',
   },
   {
     id: 6,
@@ -59,12 +59,12 @@ export const categories = [
   {
     id: 7,
     url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1683976929/lynxmart/img/category/Beauty_zq4xri.png',
-    title: 'Beauty',
+    title: 'Air Conditioners',
   },
   {
     id: 8,
     url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1683976985/lynxmart/img/category/Supermarket_rawu2b.png',
-    title: 'Groceries',
+    title: 'Refrigerators',
   },
 ]
 
