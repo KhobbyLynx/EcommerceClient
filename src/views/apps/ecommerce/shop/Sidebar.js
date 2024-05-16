@@ -12,123 +12,47 @@ import { Card, CardBody, Row, Col, Input, Button, Label } from 'reactstrap'
 
 // ** Styles
 import '@styles/react/libs/noui-slider/noui-slider.scss'
+import { useSelector, useDispatch } from 'react-redux'
+import { useEffect } from 'react'
+import { fetchBrands, fetchCategories } from '../store'
 
-const Sidebar = props => {
+const Sidebar = (props) => {
   // ** Props
-  const { sidebarOpen } = props
+  // ** The sidebar takes in products and bar toggle as props
+  const { sidebarOpen, products } = props
 
   // ** Hooks
-  const [isRtl] = useRTL()
+  const dispatch = useDispatch()
 
-  // ** Array of categories
-  const categories = [
-    {
-      id: 'appliances',
-      title: 'Appliances',
-      defaultChecked: true
-    },
-    {
-      id: 'audio',
-      title: 'Audio'
-    },
-    {
-      id: 'camera-camcorders',
-      title: 'Camera & Camcorders'
-    },
-    {
-      id: 'car-electronics',
-      title: 'Car Electronics & Gps'
-    },
-    {
-      id: 'cellphones',
-      title: 'Cell Phones'
-    },
-    {
-      id: 'computers',
-      title: 'Computers & Tablets'
-    },
-    {
-      id: 'health-fitness-beauty',
-      title: 'Health, Fitness & Beauty'
-    },
-    {
-      id: 'office-school',
-      title: 'Office & School Supplies'
-    },
-    {
-      id: 'tv-home-theater',
-      title: 'TV & Home Theater'
-    },
-    {
-      id: 'video-games',
-      title: 'Video Games'
-    }
-  ]
+  // ** UseEffect
+  useEffect(() => {
+    dispatch(fetchCategories())
+    dispatch(fetchBrands())
+  }, [])
 
-  // ** Array of brands
-  const brands = [
-    {
-      title: 'Insignia™',
-      total: 746
-    },
-    {
-      title: 'Samsung',
-      total: 633,
-      checked: true
-    },
-    {
-      title: 'Metra',
-      total: 591
-    },
-    {
-      title: 'HP',
-      total: 530
-    },
-    {
-      title: 'Apple',
-      total: 422,
-      checked: true
-    },
-    {
-      title: 'GE',
-      total: 394
-    },
-    {
-      title: 'Sony',
-      total: 350
-    },
-    {
-      title: 'Incipio',
-      total: 320
-    },
-    {
-      title: 'KitchenAid',
-      total: 318
-    },
-    {
-      title: 'Whirlpool',
-      total: 298
-    }
-  ]
+  // ** ecommerce state from the redux store
+  const store = useSelector((state) => state.ecommerce)
+
+  // ** Categories from the redux store filtered to contained only the featured ones
+  const categories = store.categories.filter((cat) => cat.featured === true)
+
+  // ** Brands from the redux store filtered to contain only the featured ones
+  const brands = store.brands.filter((brand) => brand.featured === true)
 
   // ** Array of ratings
   const ratings = [
     {
       ratings: 4,
-      total: 160
     },
     {
       ratings: 3,
-      total: 176
     },
     {
       ratings: 2,
-      total: 291
     },
     {
       ratings: 1,
-      total: 190
-    }
+    },
   ]
 
   return (
@@ -136,7 +60,7 @@ const Sidebar = props => {
       <div className='sidebar'>
         <div
           className={classnames('sidebar-shop', {
-            show: sidebarOpen
+            show: sidebarOpen,
           })}
         >
           <Row>
@@ -146,12 +70,18 @@ const Sidebar = props => {
           </Row>
           <Card>
             <CardBody>
+              // ** Multi Price Range Products Filter
               <div className='multi-range-price'>
-                <h6 className='filter-title mt-0'>Multi Range</h6>
+                <h6 className='filter-title mt-0'>Multi Price Range</h6>
                 <ul className='list-unstyled price-range'>
                   <li>
                     <div className='form-check'>
-                      <Input type='radio' id='all' name='price-range-radio' defaultChecked />
+                      <Input
+                        type='radio'
+                        id='all'
+                        name='price-range-radio'
+                        defaultChecked
+                      />
                       <Label className='form-check-label' for='all'>
                         All
                       </Label>
@@ -159,57 +89,62 @@ const Sidebar = props => {
                   </li>
                   <li>
                     <div className='form-check'>
-                      <Input type='radio' id='10-dollars-below' name='price-range-radio' />
-                      <Label className='form-check-label' for='10-dollars-below'>{`<=$10`}</Label>
+                      <Input
+                        type='radio'
+                        id='500-cedis-below'
+                        name='price-range-radio'
+                        value='below-500'
+                      />
+                      <Label
+                        className='form-check-label'
+                        for='500-cedis-below'
+                      >{`Below Ghs500`}</Label>
                     </div>
                   </li>
                   <li>
                     <div className='form-check'>
-                      <Input type='radio' id='10-100-dollars' name='price-range-radio' />
-                      <Label className='form-check-label' for='10-100-dollars'>
-                        $10-$100
+                      <Input
+                        type='radio'
+                        id='500-1000-cedis'
+                        name='price-range-radio'
+                      />
+                      <Label className='form-check-label' for='500-1000-cedis'>
+                        Ghs500-Ghs1000
                       </Label>
                     </div>
                   </li>
                   <li>
                     <div className='form-check'>
-                      <Input type='radio' id='100-500-dollars' name='price-range-radio' />
-                      <Label className='form-check-label' for='100-500-dollars'>
-                        $100-$500
+                      <Input
+                        type='radio'
+                        id='1000-5000-cedis'
+                        name='price-range-radio'
+                      />
+                      <Label className='form-check-label' for='1000-5000-cedis'>
+                        Ghs1000-Ghs5000
                       </Label>
                     </div>
                   </li>
                   <li>
                     <div className='form-check'>
-                      <Input type='radio' id='500-dollars-above' name='price-range-radio' />
-                      <Label className='form-check-label' for='500-dollars-above'>{`>=$500`}</Label>
+                      <Input
+                        type='radio'
+                        id='5000-cedis-above'
+                        name='price-range-radio'
+                      />
+                      <Label
+                        className='form-check-label'
+                        for='5000-cedis-above'
+                      >{`Above Ghs5000`}</Label>
                     </div>
                   </li>
                 </ul>
               </div>
-              <div className='price-slider'>
-                <h6 className='filter-title'>Price Range</h6>
-                <div className='price-slider'>
-                  <Nouislider
-                    className='range-slider mt-2'
-                    direction={isRtl ? 'rtl' : 'ltr'}
-                    start={[1500, 3500]}
-                    connect={true}
-                    tooltips={[true, true]}
-                    format={wNumb({
-                      decimals: 0
-                    })}
-                    range={{
-                      min: 51,
-                      max: 5000
-                    }}
-                  />
-                </div>
-              </div>
+              // ** Categories Products Filter
               <div id='product-categories'>
                 <h6 className='filter-title'>Categories</h6>
                 <ul className='list-unstyled categories-list'>
-                  {categories.map(category => {
+                  {categories.map((category) => {
                     return (
                       <li key={category.id}>
                         <div className='form-check'>
@@ -220,7 +155,7 @@ const Sidebar = props => {
                             defaultChecked={category.defaultChecked}
                           />
                           <Label className='form-check-label' for={category.id}>
-                            {category.title}
+                            {category.name}
                           </Label>
                         </div>
                       </li>
@@ -228,16 +163,21 @@ const Sidebar = props => {
                   })}
                 </ul>
               </div>
+              // ** Brands Products Filter
               <div className='brands'>
                 <h6 className='filter-title'>Brands</h6>
                 <ul className='list-unstyled brand-list'>
-                  {brands.map(brand => {
+                  {brands.map((brand) => {
                     return (
-                      <li key={brand.title}>
+                      <li key={brand.name}>
                         <div className='form-check'>
-                          <Input type='checkbox' id={brand.title} defaultChecked={brand.checked} />
-                          <Label className='form-check-label' for={brand.title}>
-                            {brand.title}
+                          <Input
+                            type='checkbox'
+                            id={brand.name}
+                            defaultChecked={brand.checked}
+                          />
+                          <Label className='form-check-label' for={brand.name}>
+                            {brand.name}
                           </Label>
                         </div>
                         <span>{brand.total}</span>
@@ -246,20 +186,24 @@ const Sidebar = props => {
                   })}
                 </ul>
               </div>
+              // ** Ratings Products Filter
               <div id='ratings'>
                 <h6 className='filter-title'>Ratings</h6>
-                {ratings.map(item => {
+                {ratings.map((item) => {
                   return (
                     <div key={item.total} className='ratings-list'>
-                      <a href='/' onClick={e => e.preventDefault()}>
+                      <a href='/' onClick={(e) => e.preventDefault()}>
                         <ul className='unstyled-list list-inline'>
                           {new Array(5).fill().map((listItem, index) => {
                             return (
-                              <li key={index} className='ratings-list-item me-25'>
+                              <li
+                                key={index}
+                                className='ratings-list-item me-25'
+                              >
                                 <Star
                                   className={classnames({
                                     'filled-star': index + 1 <= item.ratings,
-                                    'unfilled-star': index + 1 > item.ratings
+                                    'unfilled-star': index + 1 > item.ratings,
                                   })}
                                 />
                               </li>
@@ -273,6 +217,7 @@ const Sidebar = props => {
                   )
                 })}
               </div>
+              // ** Reset Filter to default state
               <div id='clear-filters'>
                 <Button color='primary' block>
                   Clear All Filters
