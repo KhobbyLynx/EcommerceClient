@@ -1,11 +1,6 @@
-// ** Custom Hooks
-import { useRTL } from '@hooks/useRTL'
-
 // ** Third Party Components
-import wNumb from 'wnumb'
 import classnames from 'classnames'
 import { Star } from 'react-feather'
-import Nouislider from 'nouislider-react'
 
 // ** Reactstrap Imports
 import { Card, CardBody, Row, Col, Input, Button, Label } from 'reactstrap'
@@ -14,12 +9,12 @@ import { Card, CardBody, Row, Col, Input, Button, Label } from 'reactstrap'
 import '@styles/react/libs/noui-slider/noui-slider.scss'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from 'react'
-import { fetchBrands, fetchCategories } from '../store'
+import { fetchBrands, fetchCategories, filterProductsByPrice } from '../store'
 
 const Sidebar = (props) => {
   // ** Props
   // ** The sidebar takes in products and bar toggle as props
-  const { sidebarOpen, products } = props
+  const { sidebarOpen } = props
 
   // ** Hooks
   const dispatch = useDispatch()
@@ -38,6 +33,12 @@ const Sidebar = (props) => {
 
   // ** Brands from the redux store filtered to contain only the featured ones
   const brands = store.brands.filter((brand) => brand.featured === true)
+
+  // ** Handle Price Filter Change
+  const handleRadioChange = (selectedPriceRange) => {
+    console.log('@selectedPriceRange', selectedPriceRange)
+    dispatch(filterProductsByPrice(selectedPriceRange))
+  }
 
   // ** Array of ratings
   const ratings = [
@@ -70,7 +71,7 @@ const Sidebar = (props) => {
           </Row>
           <Card>
             <CardBody>
-              // ** Multi Price Range Products Filter
+              {/* // ** Multi Price Range Products Filter */}
               <div className='multi-range-price'>
                 <h6 className='filter-title mt-0'>Multi Price Range</h6>
                 <ul className='list-unstyled price-range'>
@@ -81,6 +82,8 @@ const Sidebar = (props) => {
                         id='all'
                         name='price-range-radio'
                         defaultChecked
+                        value='All'
+                        onChange={(e) => handleRadioChange(e.target.value)}
                       />
                       <Label className='form-check-label' for='all'>
                         All
@@ -94,6 +97,7 @@ const Sidebar = (props) => {
                         id='500-cedis-below'
                         name='price-range-radio'
                         value='below-500'
+                        onChange={(e) => handleRadioChange(e.target.value)}
                       />
                       <Label
                         className='form-check-label'
@@ -107,6 +111,8 @@ const Sidebar = (props) => {
                         type='radio'
                         id='500-1000-cedis'
                         name='price-range-radio'
+                        value='500-1000'
+                        onChange={(e) => handleRadioChange(e.target.value)}
                       />
                       <Label className='form-check-label' for='500-1000-cedis'>
                         Ghs500-Ghs1000
@@ -119,6 +125,8 @@ const Sidebar = (props) => {
                         type='radio'
                         id='1000-5000-cedis'
                         name='price-range-radio'
+                        value='1000-5000'
+                        onChange={(e) => handleRadioChange(e.target.value)}
                       />
                       <Label className='form-check-label' for='1000-5000-cedis'>
                         Ghs1000-Ghs5000
@@ -131,6 +139,8 @@ const Sidebar = (props) => {
                         type='radio'
                         id='5000-cedis-above'
                         name='price-range-radio'
+                        value='5000'
+                        onChange={(e) => handleRadioChange(e.target.value)}
                       />
                       <Label
                         className='form-check-label'
@@ -140,7 +150,7 @@ const Sidebar = (props) => {
                   </li>
                 </ul>
               </div>
-              // ** Categories Products Filter
+              {/* // ** Categories Products Filter */}
               <div id='product-categories'>
                 <h6 className='filter-title'>Categories</h6>
                 <ul className='list-unstyled categories-list'>
@@ -163,7 +173,7 @@ const Sidebar = (props) => {
                   })}
                 </ul>
               </div>
-              // ** Brands Products Filter
+              {/* // ** Brands Products Filter */}
               <div className='brands'>
                 <h6 className='filter-title'>Brands</h6>
                 <ul className='list-unstyled brand-list'>
@@ -186,7 +196,7 @@ const Sidebar = (props) => {
                   })}
                 </ul>
               </div>
-              // ** Ratings Products Filter
+              {/* // ** Ratings Products Filter */}
               <div id='ratings'>
                 <h6 className='filter-title'>Ratings</h6>
                 {ratings.map((item) => {
@@ -217,7 +227,7 @@ const Sidebar = (props) => {
                   )
                 })}
               </div>
-              // ** Reset Filter to default state
+              {/* // ** Reset Filter to default state */}
               <div id='clear-filters'>
                 <Button color='primary' block>
                   Clear All Filters
