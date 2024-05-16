@@ -30,7 +30,6 @@ const Shop = () => {
   // ** Vars
   const dispatch = useDispatch()
   const store = useSelector((state) => state.ecommerce)
-
   // ** Get products
   useEffect(() => {
     dispatch(
@@ -49,8 +48,10 @@ const Shop = () => {
         title='Shop'
         data={[{ title: 'eCommerce' }, { title: 'Shop' }]}
       />
+      // ** Products on shop page
       <Products
         store={store}
+        products={store.products}
         dispatch={dispatch}
         addToCart={addToCart}
         activeView={activeView}
@@ -63,7 +64,8 @@ const Shop = () => {
         deleteCartItem={deleteCartItem}
         deleteWishlistItem={deleteWishlistItem}
       />
-      <Sidebar sidebarOpen={sidebarOpen} />
+      // ** Shop Page Filtering Sidebar
+      <Sidebar sidebarOpen={sidebarOpen} products={store.products} />
     </Fragment>
   )
 }
