@@ -43,8 +43,8 @@ const ProductsPage = (props) => {
   // ** Render pages
   const renderPageItems = () => {
     const arrLength =
-      store.totalProducts !== 0 && store.products.length !== 0
-        ? Number(store.totalProducts) / store.products.length
+      store.totalFilteredProducts !== 0 && store.products.length !== 0
+        ? Number(store.totalFilteredProducts) / store.products.length
         : 3
 
     return new Array(Math.trunc(arrLength)).fill().map((item, index) => {
@@ -66,7 +66,7 @@ const ProductsPage = (props) => {
   const handleNext = () => {
     if (
       store.params.page !==
-      Number(store.totalProducts) / store.products.length
+      Number(store.totalFilteredProducts) / store.products.length
     ) {
       handlePageChange('next')
     }
@@ -127,7 +127,7 @@ const ProductsPage = (props) => {
                 onClick={() => handleNext()}
                 disabled={
                   store.params.page ===
-                  Number(store.totalProducts) / store.products.length
+                  Number(store.totalFilteredProducts) / store.products.length
                 }
               >
                 <PaginationLink
