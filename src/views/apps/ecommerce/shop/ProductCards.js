@@ -31,7 +31,7 @@ const ProductCards = (props) => {
     dispatch(getProducts(store.params))
   }
 
-  console.log('@Products from Home page', products)
+  // console.log('@Products from Home page', store)
 
   // ** Handle Wishlist item toggle
   const handleWishlistClick = (id, val) => {
