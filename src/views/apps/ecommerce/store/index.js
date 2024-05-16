@@ -37,6 +37,7 @@ export const getProducts = createAsyncThunk(
         const paginatedData = paginateArray(sortedData, perPage, page)
 
         console.log('@Products', paginatedData)
+        console.log('@AllProducts', allData)
 
         dispatch({
           type: 'appEcommerce/getProductsSuccess',
@@ -45,6 +46,7 @@ export const getProducts = createAsyncThunk(
             products: paginatedData,
             allProducts: allData,
             total: filteredData.length,
+            totalFilteredProducts: allData.length,
             unsubscribe,
           },
         })
@@ -158,21 +160,41 @@ export const fetchBrands = createAsyncThunk(
 
 export const filterProductsByPrice = createAsyncThunk(
   'appEcommerce/filterProductsByPrice',
-  async (priceRange, { state }) => {
-    const filteredProducts =
-      state.appEcommerceSlice.initialState.products.filter((product) => {
-        switch (priceRange) {
-          case 'below-500':
-            return product.price < 500
-          case '500-1000':
-            return product.price >= 500 && product.price < 1000
-          case '1000-5000':
-            return product.price >= 1000 && product.price < 5000
-          default:
-            return true
-        }
-      })
-    return filteredProducts
+  async (priceRange, { getState }) => {
+    const state = getState()
+
+    const params = state.ecommerce.params
+    const { sortBy, perPage, page } = params
+    console.log('^Params', sortBy, perPage, page)
+    let sortedData = state.ecommerce.allProducts
+    if (sortBy === 'price-desc') {
+      sortedData = filteredData.sort((a, b) => b.salePrice - a.salePrice)
+    } else if (sortBy === 'price-asc') {
+      sortedData = filteredData.sort((a, b) => a.salePrice - b.salePrice)
+    }
+
+    console.log('#PriceRange', priceRange)
+    console.log('#Products', state.ecommerce.allProducts)
+    console.log('#All Filter', paginateArray(sortedData, perPage, page))
+    const filteredProducts = state.ecommerce.allProducts.filter((product) => {
+      switch (priceRange) {
+        case 'below-500':
+          return product.salePrice < 500
+        case '500-1000':
+          return product.salePrice >= 500 && product.salePrice < 1001
+        case '1000-5000':
+          return product.salePrice >= 1000 && product.salePrice < 5001
+        case '5000':
+          return product.salePrice >= 5000
+        default:
+          return true
+      }
+    })
+    console.log('@ filteredProducts', filteredProducts)
+    return {
+      filteredProducts,
+      totalFilteredProducts: filteredProducts.length,
+    }
   }
 )
 
@@ -185,6 +207,7 @@ export const appEcommerceSlice = createSlice({
     allProducts: [],
     wishlist: [],
     totalProducts: 0,
+    totalFilteredProducts: 0,
     productDetail: {},
     categories: [],
     brands: [],
@@ -198,6 +221,7 @@ export const appEcommerceSlice = createSlice({
         state.products = action.payload.products
         state.allProducts = action.payload.allProducts
         state.totalProducts = action.payload.total
+        state.totalFilteredProducts = action.payload.totalFilteredProducts
 
         if (state.unsubscribeProducts) {
           state.unsubscribeProducts()
@@ -221,7 +245,8 @@ export const appEcommerceSlice = createSlice({
         state.brands = action.payload.brands
       })
       .addCase(filterProductsByPrice.fulfilled, (state, action) => {
-        state.products = action.payload // Update products with filtered results
+        state.products = action.payload.filteredProducts
+        state.totalFilteredProducts = action.payload.totalFilteredProducts
       })
   },
 })
