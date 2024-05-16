@@ -48,7 +48,7 @@ const Shop = () => {
         title='Shop'
         data={[{ title: 'eCommerce' }, { title: 'Shop' }]}
       />
-      // ** Products on shop page
+      {/* // ** Products on shop page */}
       <Products
         store={store}
         products={store.products}
@@ -64,8 +64,8 @@ const Shop = () => {
         deleteCartItem={deleteCartItem}
         deleteWishlistItem={deleteWishlistItem}
       />
-      // ** Shop Page Filtering Sidebar
-      <Sidebar sidebarOpen={sidebarOpen} products={store.products} />
+      {/* // ** Shop Page Filtering Sidebar */}
+      <Sidebar sidebarOpen={sidebarOpen} />
     </Fragment>
   )
 }
