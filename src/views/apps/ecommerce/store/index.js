@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import axios from 'axios'
-import { collection, onSnapshot } from 'firebase/firestore'
+import { collection, getDocs, onSnapshot } from 'firebase/firestore'
 import { db } from '../../../../configs/firebase'
 import { paginateArray } from '../../../../utility/HelperFunctions'
 
@@ -116,6 +116,66 @@ export const deleteCartItem = createAsyncThunk(
   }
 )
 
+// ** Fetch Category
+export const fetchCategories = createAsyncThunk(
+  'appEcommerce/fetchCategories',
+  async () => {
+    const categoriesCollection = collection(db, 'categories')
+    const categoriesSnapshot = await getDocs(categoriesCollection)
+
+    if (!categoriesSnapshot.empty) {
+      const data = categoriesSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }))
+
+      return {
+        categories: data,
+      }
+    }
+  }
+)
+
+// ** Fetch Brands
+export const fetchBrands = createAsyncThunk(
+  'appEcommerce/fetchBrands',
+  async () => {
+    const brandsCollection = collection(db, 'brands')
+    const brandsSnapshot = await getDocs(brandsCollection)
+
+    if (!brandsSnapshot.empty) {
+      const data = brandsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }))
+
+      return {
+        brands: data,
+      }
+    }
+  }
+)
+
+export const filterProductsByPrice = createAsyncThunk(
+  'appEcommerce/filterProductsByPrice',
+  async (priceRange, { state }) => {
+    const filteredProducts =
+      state.appEcommerceSlice.initialState.products.filter((product) => {
+        switch (priceRange) {
+          case 'below-500':
+            return product.price < 500
+          case '500-1000':
+            return product.price >= 500 && product.price < 1000
+          case '1000-5000':
+            return product.price >= 1000 && product.price < 5000
+          default:
+            return true
+        }
+      })
+    return filteredProducts
+  }
+)
+
 export const appEcommerceSlice = createSlice({
   name: 'appEcommerce',
   initialState: {
@@ -126,6 +186,8 @@ export const appEcommerceSlice = createSlice({
     wishlist: [],
     totalProducts: 0,
     productDetail: {},
+    categories: [],
+    brands: [],
     unsubscribeProducts: null,
   },
   reducers: {},
@@ -150,8 +212,16 @@ export const appEcommerceSlice = createSlice({
         state.cart = action.payload.products
       })
       .addCase(getProduct.fulfilled, (state, action) => {
-        console.log('<<<<<<<Products>>>>>>>>>', action.payload)
         state.productDetail = action.payload.product
+      })
+      .addCase(fetchCategories.fulfilled, (state, action) => {
+        state.categories = action.payload.categories
+      })
+      .addCase(fetchBrands.fulfilled, (state, action) => {
+        state.brands = action.payload.brands
+      })
+      .addCase(filterProductsByPrice.fulfilled, (state, action) => {
+        state.products = action.payload // Update products with filtered results
       })
   },
 })
