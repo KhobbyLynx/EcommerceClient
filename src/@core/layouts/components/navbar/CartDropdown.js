@@ -19,11 +19,8 @@ import {
 
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  getCartItems,
-  deleteCartItem,
-  getProduct,
-} from '@src/views/apps/ecommerce/store'
+import { deleteCartItem, getProduct } from '@src/views/apps/ecommerce/store'
+import { getCartItems } from '../../../../views/apps/ecommerce/store'
 
 // ** Styles
 import '@styles/react/libs/input-number/input-number.scss'
@@ -39,6 +36,7 @@ const CartDropdown = () => {
   // ** ComponentDidMount
   useEffect(() => {
     dispatch(getCartItems())
+    console.log('dispatch getcartitems @ cart dropdown')
   }, [])
 
   // ** Function to toggle Dropdown
@@ -64,13 +62,13 @@ const CartDropdown = () => {
             }}
           >
             {store.cart.map((item) => {
-              total += item.price
+              total += item.salePrice
 
               return (
                 <div key={item.id} className='list-item align-items-center'>
                   <img
                     className='d-block rounded me-1'
-                    src={item.image}
+                    src={item.productImgs[0]}
                     alt={item.name}
                     width='62'
                   />
@@ -84,7 +82,7 @@ const CartDropdown = () => {
                       <h6 className='cart-item-title'>
                         <Link
                           className='text-body'
-                          to={`/product/${item.slug}`}
+                          to={`/product-detail/${item.id}`}
                           onClick={() => handleDropdownItemClick(item.id)}
                         >
                           {item.name}
@@ -102,7 +100,7 @@ const CartDropdown = () => {
                         downHandler={<Minus />}
                       />
                     </div>
-                    <h5 className='cart-item-price'>${item.price}</h5>
+                    <h5 className='cart-item-price'>${item.salePrice}</h5>
                   </div>
                 </div>
               )
