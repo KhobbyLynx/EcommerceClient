@@ -5,6 +5,9 @@ import { Navigate } from 'react-router-dom'
 // ** Utils
 import { getUserData, getHomeRouteForLoggedInUser } from '@utils'
 
+// ** Spinner (Splash Screen)
+import Spinner from '@components/spinner/Loading-spinner'
+
 const PublicRoute = ({ children, route }) => {
   if (route) {
     const user = getUserData()
@@ -16,7 +19,7 @@ const PublicRoute = ({ children, route }) => {
     }
   }
 
-  return <Suspense fallback={null}>{children}</Suspense>
+  return <Suspense fallback={<Spinner />}>{children}</Suspense>
 }
 
 export default PublicRoute
