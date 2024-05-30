@@ -160,6 +160,12 @@ const HorizontalLayout = (props) => {
         <div className='horizontal-menu-wrapper'>
           <Navbar
             tag='div'
+            onClick={() => {
+              const anchor = document.querySelector('body')
+              if (anchor) {
+                anchor.scrollIntoView({ behavior: 'smooth' })
+              }
+            }}
             expand='sm'
             light={skin !== 'dark'}
             dark={skin === 'dark' || bgColorCondition}
