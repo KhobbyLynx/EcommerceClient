@@ -21,8 +21,8 @@ import {
 } from 'reactstrap'
 
 // ** Avatar Imports
-import avatar3 from '@src/assets/images/portrait/small/avatar-s-3.jpg'
-import avatar15 from '@src/assets/images/portrait/small/avatar-s-15.jpg'
+import avatar3 from '@src/assets/images/avatars/2.png'
+import avatar15 from '@src/assets/images/avatars/1.png'
 
 const NotificationDropdown = () => {
   // ** Notification Array
