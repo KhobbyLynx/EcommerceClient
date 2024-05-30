@@ -1,5 +1,4 @@
 // ** Third Party Components
-import { useTranslation } from 'react-i18next'
 import ReactCountryFlag from 'react-country-flag'
 
 // ** Reactstrap Imports
@@ -13,13 +12,9 @@ import {
 // ** Icons Imports
 import { IoLanguageOutline } from 'react-icons/io5'
 const IntlDropdown = () => {
-  // ** Hooks
-  const { i18n } = useTranslation()
-
   // ** Function to switch Language
-  const handleLangUpdate = (e, lang) => {
+  const handleLangUpdate = (e) => {
     e.preventDefault()
-    i18n.changeLanguage(lang)
   }
 
   return (
