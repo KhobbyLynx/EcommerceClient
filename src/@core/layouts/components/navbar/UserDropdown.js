@@ -1,5 +1,5 @@
 // ** React Imports
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
 // ** Custom Components
@@ -33,11 +33,13 @@ import {
 } from 'reactstrap'
 
 // ** Default Avatar Image
-import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg'
+import defaultAvatar from '@src/assets/images/avatars/avatar-blank.png'
+import { logoutFirebase } from '../../../../utility/Utils'
 
 const UserDropdown = () => {
   // ** Store Vars
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   // ** State
   const [userData, setUserData] = useState(null)
@@ -118,7 +120,11 @@ const UserDropdown = () => {
         <DropdownItem
           tag={Link}
           to='/home'
-          onClick={() => dispatch(handleLogout())}
+          onClick={async () => {
+            await logoutFirebase()
+            navigate('/login')
+            dispatch(handleLogout())
+          }}
         >
           <Power size={14} className='me-75' />
           <span className='align-middle'>Logout</span>
