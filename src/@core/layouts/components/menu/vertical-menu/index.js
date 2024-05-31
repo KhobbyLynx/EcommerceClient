@@ -5,19 +5,45 @@ import { Fragment, useState, useRef } from 'react'
 import classnames from 'classnames'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 
+// ** Icons
+import { CiLight } from 'react-icons/ci'
+import { MdDarkMode } from 'react-icons/md'
+
+// ** Hooks
+import { useSkin } from '@hooks/useSkin'
+
 // ** Vertical Menu Components
 import VerticalMenuHeader from './VerticalMenuHeader'
 import VerticalNavMenuItems from './VerticalNavMenuItems'
 
 const Sidebar = (props) => {
   // ** Props
-  const { menuCollapsed, menu, skin, menuData } = props
+  const { menuCollapsed, menu, menuData } = props
 
   // ** States
   const [groupOpen, setGroupOpen] = useState([])
   const [groupActive, setGroupActive] = useState([])
   const [currentActiveGroup, setCurrentActiveGroup] = useState([])
   const [activeItem, setActiveItem] = useState(null)
+
+  // ** Custom Hook
+  const { skin, setSkin } = useSkin()
+
+  const ThemeToggler = () => {
+    if (skin === 'dark') {
+      return (
+        <CiLight size={24} className='ficon' onClick={() => setSkin('light')} />
+      )
+    } else {
+      return (
+        <MdDarkMode
+          size={24}
+          className='ficon'
+          onClick={() => setSkin('dark')}
+        />
+      )
+    }
+  }
 
   // ** Menu Hover State
   const [menuHover, setMenuHover] = useState(false)
@@ -91,6 +117,9 @@ const Sidebar = (props) => {
                   setCurrentActiveGroup={setCurrentActiveGroup}
                 />
               </ul>
+              <div className='mobile-theme'>
+                <ThemeToggler />
+              </div>
             </PerfectScrollbar>
           </Fragment>
         )}
