@@ -1,4 +1,4 @@
-@import '../../base/pages/app-ecommerce';
+@import "../../base/pages/app-ecommerce";
 
 .ecommerce-shop-pagination {
   .page-link {
@@ -10,4 +10,12 @@
   .rc-input-number-handler-wrap {
     left: -0.35rem;
   }
+}
+
+// ** Custom CSS
+.mobile-theme {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
 }
