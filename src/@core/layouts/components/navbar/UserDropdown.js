@@ -11,12 +11,12 @@ import { isUserLoggedIn } from '@utils'
 // ** Store & Actions
 import { useDispatch } from 'react-redux'
 import { handleLogout } from '@store/authentication'
+import { clearCartAndWishlist } from '../../../../views/apps/ecommerce/store'
 
 // ** Third Party Components
 import {
   User,
   Mail,
-  CheckSquare,
   Settings,
   HelpCircle,
   Power,
@@ -34,6 +34,8 @@ import {
 
 // ** Default Avatar Image
 import defaultAvatar from '@src/assets/images/avatars/avatar-blank.png'
+
+// ** Utils
 import { logoutFirebase } from '../../../../utility/Utils'
 
 const UserDropdown = () => {
@@ -55,7 +57,10 @@ const UserDropdown = () => {
   const userAvatar = (userData && userData.avatar) || defaultAvatar
 
   return (
-    <UncontrolledDropdown tag='li' className='dropdown-user nav-item'>
+    <UncontrolledDropdown
+      tag='li'
+      className='dropdown-user nav-item dropdown-user-custom'
+    >
       <DropdownToggle
         href='/'
         tag='a'
@@ -86,7 +91,7 @@ const UserDropdown = () => {
               {(userData && userData['username']) || 'John Doe'}
             </p>
             <p className='user-status h6 text-success'>
-              {(userData && userData.role) || 'Admin'}
+              {(userData && userData.role) || 'Client'}
             </p>
           </div>
         </div>
@@ -123,6 +128,7 @@ const UserDropdown = () => {
           onClick={async () => {
             await logoutFirebase()
             navigate('/login')
+            dispatch(clearCartAndWishlist())
             dispatch(handleLogout())
           }}
         >

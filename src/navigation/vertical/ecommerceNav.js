@@ -1,9 +1,9 @@
 // ** Icons Import
-import { Home, ShoppingBag, Shield, Circle, Info } from 'react-feather'
+import { Home, ShoppingBag, ShoppingCart, Circle, Info } from 'react-feather'
 import { CiCircleMore } from 'react-icons/ci'
-import { MdContactSupport } from 'react-icons/md'
 import { SiMicrodotblog } from 'react-icons/si'
 import { MdOutlinePermPhoneMsg } from 'react-icons/md'
+import { BsBagHeartFill } from 'react-icons/bs'
 
 export default [
   {
@@ -54,6 +54,18 @@ export default [
     id: 'contact',
     title: 'Contact',
     navLink: '/contact',
+  },
+  {
+    icon: <ShoppingCart />,
+    id: 'cart',
+    title: 'Cart',
+    navLink: '/cart',
+  },
+  {
+    icon: <BsBagHeartFill />,
+    id: 'wishlist',
+    title: 'Wishlist',
+    navLink: '/wishlist',
   },
   {
     id: 'faq',

@@ -1,12 +1,15 @@
 // Component Dropdown
 // ========================================================================
 
-.dropdown-menu[data-popper-placement]:not([data-popper-placement^='top-']) {
+.dropdown-menu[data-popper-placement]:not([data-popper-placement^="top-"]) {
   top: 0.5rem !important;
-  margin: unset !important;
+
+  // ** User Dropdown custom css
+  inset: auto 0px 0px auto !important;
+  height: fit-content !important;
 }
 
-.dropdown-menu[data-popper-placement^='top-'] {
+.dropdown-menu[data-popper-placement^="top-"] {
   bottom: 0.5rem !important;
   margin: unset !important;
 }
