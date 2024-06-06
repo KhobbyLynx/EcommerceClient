@@ -1,40 +1,19 @@
 // ** React Imports
-import { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 
-// ** Custom Hooks
-import { useSkin } from '@hooks/useSkin'
-import useJwt from '@src/auth/jwt/useJwt'
-
-// ** Third Party Components
-import toast from 'react-hot-toast'
-import { useDispatch } from 'react-redux'
-import { useForm, Controller } from 'react-hook-form'
-import {
-  Facebook,
-  Twitter,
-  Mail,
-  GitHub,
-  HelpCircle,
-  Coffee,
-  X,
-} from 'react-feather'
-
-// ** Actions
-import { handleLogin } from '@store/authentication'
-
-// ** Context
-import { AbilityContext } from '@src/utility/context/Can'
+// ** Icons Imports
+import { FcGoogle } from 'react-icons/fc'
 
 // ** Custom Components
-import Avatar from '@components/avatar'
 import InputPasswordToggle from '@components/input-password-toggle'
 
-// ** Utils
-import { getHomeRouteForLoggedInUser } from '@utils'
+// // ** Modal
+// import SpinnerModal from './SpinnerModal'
 
-// ** Config
-import themeConfig from '../../../configs/themeConfig'
+// ** Hooks
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Reactstrap Imports
 import {
@@ -43,158 +22,189 @@ import {
   Form,
   Input,
   Label,
-  Alert,
   Button,
   CardText,
   CardTitle,
   FormFeedback,
-  UncontrolledTooltip,
+  Card,
+  CardBody,
 } from 'reactstrap'
-
-// ** Illustrations Imports
-import illustrationsLight from '@src/assets/images/pages/login-v2.svg'
-import illustrationsDark from '@src/assets/images/pages/login-v2-dark.svg'
+import themeConfig from '../../../configs/themeConfig'
 
 // ** Styles
 import '@styles/react/pages/page-authentication.scss'
 
-const ToastContent = ({ t, name, role }) => {
-  return (
-    <div className='d-flex'>
-      <div className='me-1'>
-        <Avatar size='sm' color='success' icon={<Coffee size={12} />} />
-      </div>
-      <div className='d-flex flex-column'>
-        <div className='d-flex justify-content-between'>
-          <h6>{name}</h6>
-          <X
-            size={12}
-            className='cursor-pointer'
-            onClick={() => toast.dismiss(t.id)}
-          />
-        </div>
-        <span>
-          You have successfully logged in as an {role} user to{' '}
-          {themeConfig.app.appName}. Now you can start to explore. Enjoy!
-        </span>
-      </div>
-    </div>
-  )
-}
+// ** Auth
+import { handleGoogleAuth, handleLogin } from '../../../redux/authentication'
+import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth'
+import {
+  ToastContentLogin,
+  logoutFirebase,
+  splitEmail,
+} from '../../../utility/Utils'
+import { useDispatch } from 'react-redux'
+import { collection, doc, getDoc } from 'firebase/firestore'
+import { auth, db } from '../../../configs/firebase'
+import { Controller, useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 
-const defaultValues = {
-  password: 'admin',
-  loginEmail: 'admin@demo.com',
-}
+// ** Login Schema
+const loginSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email('Enter a valid email address')
+    .required('Email is required'),
+  password: yup.string().required('Password is required'),
+})
 
-const Login = () => {
+const LoginBasic = () => {
+  // ** States
+  const [centeredModal, setCenteredModal] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
+
   // ** Hooks
-  const { skin } = useSkin()
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const ability = useContext(AbilityContext)
+
   const {
     control,
-    setError,
     handleSubmit,
     formState: { errors },
-  } = useForm({ defaultValues })
+  } = useForm({
+    resolver: yupResolver(loginSchema),
+  })
 
-  const source = skin === 'dark' ? illustrationsDark : illustrationsLight
+  // ** Login Function
+  const handleLoginFunc = async (user) => {
+    try {
+      const { email: authEmail, uid: userId, photoURL } = user
+      const { accessToken, refreshToken } = user.stsTokenManager
+      const { username } = splitEmail(authEmail)
 
-  const onSubmit = (data) => {
-    if (Object.values(data).every((field) => field.length > 0)) {
-      useJwt
-        .login({ email: data.loginEmail, password: data.password })
-        .then((res) => {
-          const data = {
-            ...res.data.userData,
-            accessToken: res.data.accessToken,
-            refreshToken: res.data.refreshToken,
-          }
-          dispatch(handleLogin(data))
-          ability.update(res.data.userData.ability)
-          navigate(getHomeRouteForLoggedInUser(data.role))
-          toast((t) => (
-            <ToastContent
-              t={t}
-              role={data.role || 'admin'}
-              name={data.fullName || data.username || 'John Doe'}
-            />
-          ))
-        })
-        .catch((err) =>
-          setError('loginEmail', {
-            type: 'manual',
-            message: err.response.data.error,
-          })
-        )
-    } else {
-      for (const key in data) {
-        if (data[key].length === 0) {
-          setError(key, {
-            type: 'manual',
-          })
+      // ** users collections ref
+      const userCollectionRef = collection(db, 'profiles')
+
+      // ** single user ref
+      const userRef = doc(userCollectionRef, userId)
+
+      // ** get single user data
+      const userFromFirebaseDocs = await getDoc(userRef)
+
+      // user role
+      let userRole
+
+      // ** role conditionals
+      if (userFromFirebaseDocs.exists()) {
+        const userData = userFromFirebaseDocs.data()
+        console.log('User Data from Firbase profiles', userData)
+        userRole = userData.role
+
+        if (userRole !== 'client' && userRole !== 'admin') {
+          setErrorMsg('Account is not valid')
+          logoutFirebase()
+          return
         }
+      }
+
+      const loginData = {
+        email: authEmail,
+        id: userId,
+        accessToken,
+        refreshToken,
+        role: 'client',
+        avatar: photoURL,
+        username,
+      }
+
+      dispatch(handleLogin(loginData))
+      navigate('/home')
+      toast((t) => (
+        <ToastContentLogin
+          t={t}
+          role={loginData.role}
+          name={loginData.username}
+        />
+      ))
+    } catch (error) {
+      setErrorMsg('Error Logging in')
+      console.log('LogIn error', error)
+    }
+  }
+
+  const onSubmit = async (data) => {
+    // setCenteredModal(true)
+    const { email, password } = data
+    try {
+      const userCredentials = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      )
+      const user = userCredentials.user
+      handleLoginFunc(user)
+      // setCenteredModal(false)
+    } catch (error) {
+      // setCenteredModal(false)
+      console.log('Error', error)
+      if (error.message.includes('invalid-login-credentials')) {
+        setErrorMsg('Invalid User Credentials')
+      } else {
+        setErrorMsg(error.message)
       }
     }
   }
 
+  // ** useEfects
+  useEffect(() => {
+    // ** onAuthStateChange
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log('User is signed in:', user)
+      } else {
+        console.log('User is signed out')
+      }
+    })
+
+    // ** Timer
+    const timer = setTimeout(() => {
+      setCenteredModal(false)
+      setErrorMsg('')
+    }, 3500)
+
+    // ** Cleaner Func.
+    return () => {
+      clearTimeout(timer)
+      unsubscribe()
+    }
+  }, [auth, errorMsg])
+
+  const handleCreateAccountWithGoogle = async () => {
+    await dispatch(handleGoogleAuth())
+    navigate('/home')
+  }
+
   return (
-    <div className='auth-wrapper auth-cover'>
-      <Row className='auth-inner m-0'>
-        <Link className='brand-logo' to='/' onClick={(e) => e.preventDefault()}>
-          <img
-            src={themeConfig.app.appLogoImage}
-            alt=''
-            style={{ maxWidth: '36px', maxHeight: '32px' }}
-          />
-          <h2 className='brand-text text-primary ms-1'>
-            {themeConfig.app.appName}
-          </h2>
-        </Link>
-        <Col className='d-none d-lg-flex align-items-center p-5' lg='8' sm='12'>
-          <div className='w-100 d-lg-flex align-items-center justify-content-center px-5'>
-            <img className='img-fluid' src={source} alt='Login Cover' />
-          </div>
-        </Col>
-        <Col
-          className='d-flex align-items-center auth-bg px-2 p-lg-5'
-          lg='4'
-          sm='12'
-        >
-          <Col className='px-xl-2 mx-auto' sm='8' md='6' lg='12'>
-            <CardTitle tag='h2' className='fw-bold mb-1'>
+    // <SpinnerModal centeredModal={centeredModal} />
+    <div className='auth-wrapper auth-basic px-2'>
+      <div className='auth-inner my-2'>
+        <Card className='mb-0'>
+          <CardBody>
+            <Link className='brand-logo' to='/'>
+              <img
+                src={themeConfig.app.appLogoImage}
+                alt=''
+                style={{ maxWidth: '36px', maxHeight: '32px' }}
+              />
+              <h2 className='brand-text text-primary ms-1'>
+                {themeConfig.app.appName}
+              </h2>
+            </Link>
+            <CardTitle tag='h4' className='mb-1'>
               Welcome to {themeConfig.app.appName}! 👋
             </CardTitle>
             <CardText className='mb-2'>
-              Please sign-in to your account and start the adventure
+              Please sign-in to your account and start shoping
             </CardText>
-            <Alert color='primary'>
-              <div className='alert-body font-small-2'>
-                <p>
-                  <small className='me-50'>
-                    <span className='fw-bold'>Admin:</span> admin@demo.com |
-                    admin
-                  </small>
-                </p>
-                <p>
-                  <small className='me-50'>
-                    <span className='fw-bold'>Client:</span> client@demo.com |
-                    client
-                  </small>
-                </p>
-              </div>
-              <HelpCircle
-                id='login-tip'
-                className='position-absolute'
-                size={18}
-                style={{ top: '10px', right: '10px' }}
-              />
-              <UncontrolledTooltip target='login-tip' placement='left'>
-                This is just for ACL demo purpose.
-              </UncontrolledTooltip>
-            </Alert>
             <Form
               className='auth-login-form mt-2'
               onSubmit={handleSubmit(onSubmit)}
@@ -204,21 +214,23 @@ const Login = () => {
                   Email
                 </Label>
                 <Controller
-                  id='loginEmail'
-                  name='loginEmail'
+                  id='email'
+                  name='email'
                   control={control}
                   render={({ field }) => (
                     <Input
                       autoFocus
                       type='email'
                       placeholder='john@example.com'
-                      invalid={errors.loginEmail && true}
+                      invalid={errors.email && true}
                       {...field}
                     />
                   )}
                 />
-                {errors.loginEmail && (
-                  <FormFeedback>{errors.loginEmail.message}</FormFeedback>
+                {errors.email && (
+                  <FormFeedback>
+                    <div>{errors.email.message}</div>
+                  </FormFeedback>
                 )}
               </div>
               <div className='mb-1'>
@@ -242,6 +254,9 @@ const Login = () => {
                     />
                   )}
                 />
+                {errors.password && (
+                  <span className='text-danger'>{errors.password.message}</span>
+                )}
               </div>
               <div className='form-check mb-1'>
                 <Input type='checkbox' id='remember-me' />
@@ -254,7 +269,7 @@ const Login = () => {
               </Button>
             </Form>
             <p className='text-center mt-2'>
-              <span className='me-25'>New on our platform?</span>
+              <span className='me-25'>New here ?</span>
               <Link to='/register'>
                 <span>Create an account</span>
               </Link>
@@ -263,24 +278,20 @@ const Login = () => {
               <div className='divider-text'>or</div>
             </div>
             <div className='auth-footer-btn d-flex justify-content-center'>
-              <Button color='facebook'>
-                <Facebook size={14} />
-              </Button>
-              <Button color='twitter'>
-                <Twitter size={14} />
-              </Button>
-              <Button color='google'>
-                <Mail size={14} />
-              </Button>
-              <Button className='me-0' color='github'>
-                <GitHub size={14} />
+              <Button
+                color='google'
+                className='d-flex align-items-center justify-content-center'
+                onClick={() => handleCreateAccountWithGoogle()}
+              >
+                <h6 className='m-0 pe-1 text-white'>Google</h6>
+                <FcGoogle size={14} />
               </Button>
             </div>
-          </Col>
-        </Col>
-      </Row>
+          </CardBody>
+        </Card>
+      </div>
     </div>
   )
 }
 
-export default Login
+export default LoginBasic
