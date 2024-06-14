@@ -1,5 +1,6 @@
 // ** React Imports
 import { Fragment, useEffect, memo } from 'react'
+import { useLocation } from 'react-router-dom'
 
 // ** Third Party Components
 import classnames from 'classnames'
@@ -21,6 +22,8 @@ import 'animate.css/animate.css'
 const LayoutWrapper = (props) => {
   // ** Props
   const { children, routeMeta } = props
+
+  const { pathname } = useLocation()
 
   // ** Store Vars
   const dispatch = useDispatch()
@@ -77,10 +80,11 @@ const LayoutWrapper = (props) => {
 
   return (
     <div
-      className={classnames('app-content content overflow-hidden p-0 pb-0', {
+      className={classnames('app-content content overflow-hidden ', {
         [routeMeta ? routeMeta.className : '']:
           routeMeta && routeMeta.className,
         'show-overlay': navbarStore.query.length,
+        'p-0': pathname === '/home',
       })}
     >
       <div className='content-overlay'></div>
