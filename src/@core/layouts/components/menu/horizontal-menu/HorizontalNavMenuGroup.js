@@ -20,7 +20,7 @@ const applyHeight = {
   enabled: true,
   name: 'applyHeight',
   phase: 'beforeWrite',
-  fn: data => {
+  fn: (data) => {
     const pageHeight = window.innerHeight,
       popperEl = data.state.elements.popper,
       ddTop = popperEl.getBoundingClientRect().top,
@@ -31,7 +31,7 @@ const applyHeight = {
       maxHeight = pageHeight - ddTop - 25
       stylesObj = {
         maxHeight,
-        overflowY: 'auto'
+        overflowY: 'auto',
       }
     }
     const ddRef = popperEl.getBoundingClientRect()
@@ -40,10 +40,10 @@ const applyHeight = {
       popperEl.closest('.dropdown').classList.add('openLeft')
     }
     data.state.styles.popper = { ...data.state.styles.popper, ...stylesObj }
-  }
+  },
 }
 
-const HorizontalNavMenuGroup = props => {
+const HorizontalNavMenuGroup = (props) => {
   // ** Props
   const { item, submenu, isChild } = props
 
@@ -63,19 +63,23 @@ const HorizontalNavMenuGroup = props => {
   // ** Hooks
   const { t } = useTranslation()
   const currentURL = useLocation().pathname
-  const { update, styles, attributes } = usePopper(referenceElement, popperElement, {
-    placement: isChild ? popperPlacementSubMenu : popperPlacement,
-    modifiers: [
-      applyHeight,
-      {
-        enabled: true,
-        name: 'offset',
-        options: {
-          offset: isChild ? [-8, 15] : [popperOffsetHorizontal, 5]
-        }
-      }
-    ]
-  })
+  const { update, styles, attributes } = usePopper(
+    referenceElement,
+    popperElement,
+    {
+      placement: isChild ? popperPlacementSubMenu : popperPlacement,
+      modifiers: [
+        applyHeight,
+        {
+          enabled: true,
+          name: 'offset',
+          options: {
+            offset: isChild ? [-8, 15] : [popperOffsetHorizontal, 5],
+          },
+        },
+      ],
+    }
+  )
 
   const handleMouseEnter = () => {
     setMenuOpen(true)
@@ -91,15 +95,15 @@ const HorizontalNavMenuGroup = props => {
         show: menuOpen,
         'nav-item': submenu === false,
         'dropdown-submenu': submenu === true,
-        'sidebar-group-active active': hasActiveChild(item, currentURL)
+        'sidebar-group-active active': hasActiveChild(item, currentURL),
       })}
     >
       <Link
         to='/'
-        onClick={e => e.preventDefault()}
+        onClick={(e) => e.preventDefault()}
         className={classnames('dropdown-toggle d-flex align-items-center', {
           'dropdown-item': submenu === true,
-          'nav-link': submenu === false
+          'nav-link': submenu === false,
         })}
       >
         {item.icon}
@@ -109,7 +113,9 @@ const HorizontalNavMenuGroup = props => {
         ref={setPopperElement}
         style={{ ...styles.popper }}
         {...attributes.popper}
-        className={classnames('dropdown-menu', { 'first-level': submenu === false })}
+        className={classnames('dropdown-menu', {
+          'first-level': submenu === false,
+        })}
       >
         <HorizontalNavMenuItems
           isChild={true}
