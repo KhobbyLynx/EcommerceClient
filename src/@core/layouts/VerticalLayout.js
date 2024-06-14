@@ -39,6 +39,7 @@ import { useNavbarColor } from '@hooks/useNavbarColor'
 // ** Styles
 import '@styles/base/core/menu/menu-types/vertical-menu.scss'
 import '@styles/base/core/menu/menu-types/vertical-overlay-menu.scss'
+import Hero from '../../views/apps/home/hero/Hero'
 
 const VerticalLayout = (props) => {
   // ** Props
@@ -185,7 +186,7 @@ const VerticalLayout = (props) => {
           )}
         </div>
       </Navbar>
-      {children}
+      {/* {children} */}
 
       {/* Vertical Nav Menu Overlay */}
       <div
