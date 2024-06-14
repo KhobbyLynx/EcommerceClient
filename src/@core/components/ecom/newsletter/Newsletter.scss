@@ -5,7 +5,7 @@
     align-items: center;
     background-repeat: repeat;
     background-position: left;
-    background-color: white;
+    background-color: var(--cl-bs-6);
     padding: 20px 60px;
     height: 200px;
 
@@ -44,7 +44,6 @@
         }
 
         input {
-            height: 3.125rem;
             padding: 0 1.25em;
             font-size: 14px;
             width: 100%;
