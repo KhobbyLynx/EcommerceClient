@@ -2,7 +2,7 @@
 import { Fragment } from 'react'
 
 // ** Custom Components
-import NavbarSearch from './NavbarSearch'
+// import NavbarSearch from './NavbarSearch'
 import NavbarUser from './NavbarUser'
 import NavbarBookmarks from './NavbarBookmarks'
 
