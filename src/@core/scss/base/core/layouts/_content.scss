@@ -164,7 +164,7 @@ html {
   //for navbar hidden
   .navbar-hidden {
     .app-content {
-      padding: #{$content-padding} #{$content-padding} 0 #{$content-padding} !important;
+      // padding: #{$content-padding} #{$content-padding} 0 #{$content-padding} !important;
     }
     &.footer-static {
       .app-content {
@@ -239,7 +239,7 @@ html {
   // for sticky navbar
   .navbar-sticky {
     .app-content {
-      padding: calc(#{$content-padding} + #{$navbar-height}) #{$content-padding} 0 #{$content-padding};
+      // padding: calc(#{$content-padding} + #{$navbar-height}) #{$content-padding} 0 #{$content-padding};
     }
     &.footer-static {
       .app-content {
@@ -424,8 +424,8 @@ html {
 
 @include media-breakpoint-down(md) {
   html body .app-content {
-    padding: calc(#{$content-padding} - 0.8rem + #{$navbar-height} + #{$floating-nav-margin})
-      calc(#{$content-padding} - 0.8rem) 0 calc(#{$content-padding} - 0.8rem) !important; // - 0.8rem to reduce padding in small screen
+    // padding: calc(#{$content-padding} - 0.8rem + #{$navbar-height} + #{$floating-nav-margin})
+    //   calc(#{$content-padding} - 0.8rem) 0 calc(#{$content-padding} - 0.8rem) !important; // - 0.8rem to reduce padding in small screen
   }
 
   // For static navbar
