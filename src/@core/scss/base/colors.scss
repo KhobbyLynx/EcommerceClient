@@ -12,3 +12,79 @@
 // ------------------------------
 @import "core/colors/palette";
 @import "core/colors/palette-gradient.scss";
+
+:root {
+    /* Main Colors */
+    --primary-color: #d65e05;
+    --secondary-color: #06d0b9a2;
+    --secondary-text-color: #cecece;
+    --primary-bg: #242526;
+    --secondary-bg: #fff;
+    --primary-text-color: #555;
+    --newletter-bg: #088178;
+    --pro-border: #cce7d0;
+    --h4-color: #f5f5f5;
+    --h3-color: #06d0b8;
+    --border-radius: 8px;
+    --speed: 500ms;
+    /* RGB BW */
+    --cl-red: #f00;
+    --cl-green: #0f0;
+    --cl-blue: #00f;
+    --cl-black: #000;
+    --cl-white: #fff;
+    /* Black shadow layer */
+    --cl-bs-6: rgba(0, 0, 0, 0.6);
+    --cl-bs-8: rgba(0, 0, 0, 0.8);
+    --cl-bs-03: rgba(0, 0, 0, 0.03);
+    /* Shadows */
+    --cl-lg: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+    --cl-rg: radial-gradient(#e66465, #9198e5);
+    /* Other colors */
+    --cl-link: #0d6efd;
+    --cl-link-hover: #8f6900;
+    --cl-btn: #d63384;
+    --cl-btn-hover: #8f6900;
+    --cl-span: #ffbd27;
+    --star-icon: rgb(243, 181, 25);
+    /* Orange */
+    --cl-orange-100: #fed6c3;
+    --cl-orange-200: #fdac86;
+    --cl-orange-300: #fd905e;
+    --cl-orange-400: #fd8249;
+    --cl-orange-500: #fb5607;
+    --cl-orange-600: #f24e02;
+    --cl-orange-700: #ca4102;
+    --cl-orange-800: #a23402;
+    --cl-orange-900: #792701;
+    /* Gray */
+    --cl-gray-100: #ffffff;
+    --cl-gray-200: #f5f5f5;
+    --cl-gray-300: #d6d6d6;
+    --cl-gray-400: #c2c2c2;
+    --cl-gray-500: #a3a3a3;
+    --cl-gray-600: #7a7a7a;
+    --cl-gray-700: #5c5c5c;
+    --cl-gray-800: #292929;
+    --cl-gray-900: #000000;
+    /* Green */
+    --cl-green-100: #e2f3eb;
+    --cl-green-200: #b7e1cd;
+    --cl-green-300: #8ccfb0;
+    --cl-green-400: #91d671;
+    --cl-green-500: #6cc841;
+    --cl-green-600: #5aae32;
+    --cl-green-700: #007f5f;
+    --cl-green-800: #00523d;
+    --cl-green-900: #00291f;
+    /* Red */
+    --cl-red-100: #ffc2cb;
+    --cl-red-200: #ff8597;
+    --cl-red-300: #ff4763;
+    --cl-red-400: #ff3352;
+    --cl-red-500: #f0052c;
+    --cl-red-600: #f50025;
+    --cl-red-700: #cc001f;
+    --cl-red-800: #7a0012;
+    --cl-red-900: #3d0009;
+}
