@@ -146,7 +146,7 @@
           top: 50%;
           margin-top: -7px;
           right: 1rem;
-          // content: '\e844' !important;
+          content: "\e844" !important;
           background-image: url(str-replace(str-replace($chevron-right, "currentColor", $body-color), "#", "%23"));
         }
         .dropdown-item {
@@ -275,7 +275,7 @@
     }
     &:not(.blank-page) {
       .app-content {
-        // padding-top: 9.75rem;
+        padding-top: 9.75rem;
         padding: calc(#{$content-padding} + #{$navbar-height}* 2 + #{$floating-nav-margin}) #{$content-padding} 0 #{$content-padding}; // * 2  as we have 2 navbar (menu + navbar)  in horizontal layout.
       }
     }
@@ -287,9 +287,9 @@
         rgba($white, 0) 100%
       );
       background-repeat: repeat-x;
-      // .navbar-horizontal.floating-nav {
-      //   margin: $floating-nav-margin $content-padding 0;
-      // }
+      .navbar-horizontal.floating-nav {
+        margin: $floating-nav-margin $content-padding 0;
+      }
     }
 
     // App content area wrapper height
@@ -346,7 +346,7 @@
   // navbar sticky
   &.navbar-sticky {
     .app-content {
-      padding: calc(#{$content-padding} + #{$navbar-height}* 2) #{$content-padding} 0 #{$content-padding};
+      // padding: calc(#{$content-padding} + #{$navbar-height}* 2) #{$content-padding} 0 #{$content-padding};
     }
     .header-navbar {
       background-color: $body-bg;
@@ -414,7 +414,7 @@
   // navbar static
   &.navbar-static {
     .app-content {
-      padding: calc(#{$content-padding} + #{$horizontal-menu-height}) #{$content-padding} 0 #{$content-padding};
+      // padding: calc(#{$content-padding} + #{$horizontal-menu-height}) #{$content-padding} 0 #{$content-padding};
     }
     .content {
       min-height: calc(100% - calc(#{$horizontal-menu-height} + calc(#{$footer-height} + 0.2rem)));
