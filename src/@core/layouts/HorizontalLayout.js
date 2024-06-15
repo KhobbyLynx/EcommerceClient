@@ -36,7 +36,6 @@ import { useNavbarColor } from '@hooks/useNavbarColor'
 import '@styles/base/core/menu/menu-types/horizontal-menu.scss'
 import Footer from './components/ecomFooter/Footer'
 import Newsletter from '../components/ecom/newsletter/Newsletter'
-import Hero from '../../views/apps/home/hero/Hero'
 
 const HorizontalLayout = (props) => {
   // ** Props
@@ -157,7 +156,6 @@ const HorizontalLayout = (props) => {
           )}
         </div>
       </Navbar>
-
       {!isHidden ? (
         <div className='horizontal-menu-wrapper'>
           <Navbar
@@ -190,9 +188,7 @@ const HorizontalLayout = (props) => {
         </div>
       ) : null}
 
-      <div className='content-wrapper' style={{ padding: '0' }}>
-        {children}
-      </div>
+      {children}
 
       {pathname === '/cart' ? null : <Newsletter />}
       {pathname !== '/cart' && (
