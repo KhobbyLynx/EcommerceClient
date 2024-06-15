@@ -39,13 +39,15 @@ import { useNavbarColor } from '@hooks/useNavbarColor'
 // ** Styles
 import '@styles/base/core/menu/menu-types/vertical-menu.scss'
 import '@styles/base/core/menu/menu-types/vertical-overlay-menu.scss'
-import Hero from '../../views/apps/home/hero/Hero'
+import Newsletter from '../components/ecom/newsletter/Newsletter'
+import Footer from './components/ecomFooter/Footer'
 
 const VerticalLayout = (props) => {
   // ** Props
   const { menu, navbar, footer, children, menuData } = props
 
   // ** Hooks
+  const { pathname } = useLocation()
   const [isRtl, setIsRtl] = useRTL()
   const { skin, setSkin } = useSkin()
   const { navbarType, setNavbarType } = useNavbarType()
@@ -186,7 +188,8 @@ const VerticalLayout = (props) => {
           )}
         </div>
       </Navbar>
-      {/* {children} */}
+
+      {children}
 
       {/* Vertical Nav Menu Overlay */}
       <div
@@ -196,6 +199,18 @@ const VerticalLayout = (props) => {
         onClick={() => setMenuVisibility(false)}
       ></div>
       {/* Vertical Nav Menu Overlay */}
+
+      {pathname === '/cart' ? null : <Newsletter />}
+      {pathname !== '/cart' && (
+        <div
+          className='w-100'
+          style={{
+            backgroundColor: skin === 'dark' ? '#161D31' : '#f1f1f1',
+          }}
+        >
+          <Footer />
+        </div>
+      )}
 
       <footer
         className={classnames(
