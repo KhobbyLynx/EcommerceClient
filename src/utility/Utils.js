@@ -1,5 +1,47 @@
 import { DefaultRoute } from '../router/routes'
 
+// ** UUID
+import { v4 as uuidv4 } from 'uuid'
+
+// ** Icon
+import { Coffee, LogIn, LogOut, X, MessageCircle } from 'react-feather'
+import { BiCart, BiHeart } from 'react-icons/bi'
+
+// ** Custom Components
+import Avatar from '@components/avatar'
+import toast from 'react-hot-toast'
+import { signOut } from 'firebase/auth'
+import { auth } from '../configs/firebase'
+
+// ** Firebase Logout Func
+export const logoutFirebase = async () => {
+  try {
+    await signOut(auth)
+    console.log('Firebase SignOut Successful')
+  } catch (error) {
+    console.log('Error Logging Out', error)
+  }
+}
+
+// ** Generate Random ID
+export const generateRandomId = () => {
+  const uuid = uuidv4()
+  return uuid.slice(0, 8).toUpperCase()
+}
+
+// ** Get User ID
+export const getUserId = () => {
+  const user = auth.currentUser
+
+  if (user) {
+    // User is signed in, return the user ID
+    return user.uid
+  } else {
+    // No user is signed in
+    return null
+  }
+}
+
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0
 
@@ -66,8 +108,7 @@ export const getUserData = () => JSON.parse(localStorage.getItem('userData'))
  * @param {String} userRole Role of user
  */
 export const getHomeRouteForLoggedInUser = (userRole) => {
-  if (userRole === 'admin') return DefaultRoute
-  if (userRole === 'client') return '/access-control'
+  if (userRole === 'client') return DefaultRoute
   return '/login'
 }
 
@@ -83,3 +124,124 @@ export const selectThemeColors = (theme) => ({
     neutral30: '#ededed', // for input hover border-color
   },
 })
+
+// ** getUsername
+export function splitEmail(email) {
+  const atIndex = email.indexOf('@') // Find the index of the @ symbol
+  if (atIndex === -1) {
+    // If no @ symbol is found, return null
+    return null
+  }
+  const username = email.slice(0, atIndex)
+  const domain = email.slice(atIndex + 1)
+  return { username, domain }
+}
+
+export const ToastContentRegister = ({ t, name, role }) => {
+  return (
+    <div className='d-flex'>
+      <div className='me-1'>
+        <Avatar size='sm' color='success' icon={<Coffee size={12} />} />
+      </div>
+      <div className='d-flex flex-column'>
+        <div className='d-flex justify-content-between'>
+          <h6>
+            <strong>{name}</strong>
+          </h6>
+          <X
+            size={12}
+            className='cursor-pointer'
+            onClick={() => toast.dismiss(t.id)}
+          />
+        </div>
+        <p>
+          Your <strong className='text-success'>{role}</strong> account have
+          been successfully created. Explore and Shop with fun. Enjoy!
+        </p>
+      </div>
+    </div>
+  )
+}
+export const ToastContentLogin = ({ t, name }) => {
+  return (
+    <div className='d-flex'>
+      <div className='me-1'>
+        <Avatar size='sm' color='success' icon={<LogIn size={12} />} />
+      </div>
+      <div className='d-flex flex-column'>
+        <div className='d-flex justify-content-between'>
+          <h6>
+            <strong>{name}</strong>
+          </h6>
+          <X
+            size={12}
+            className='cursor-pointer'
+            onClick={() => toast.dismiss(t.id)}
+          />
+        </div>
+        <p>Account Logged In successfully. Explore and Shop with fun!</p>
+      </div>
+    </div>
+  )
+}
+
+export const ToastContentLogout = ({ t, name, role }) => {
+  return (
+    <div className='d-flex'>
+      <div className='me-1'>
+        <Avatar size='sm' color='success' icon={<LogOut size={12} />} />
+      </div>
+      <div className='d-flex flex-column'>
+        <div className='d-flex justify-content-between'>
+          <h6>
+            <strong>{name}</strong>
+          </h6>
+          <X
+            size={12}
+            className='cursor-pointer'
+            onClick={() => toast.dismiss(t.id)}
+          />
+        </div>
+        <p>
+          Your <strong className='text-success'>{role}</strong> account have
+          been Logged out.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+export const GeneralToastContent = ({ t, title, msg }) => {
+  return (
+    <div className='d-flex'>
+      <div className='me-1'>
+        <Avatar
+          size='sm'
+          color='success'
+          icon={
+            title === 'Cart' ? (
+              <BiCart size={12} />
+            ) : title === 'Wishlist' ? (
+              <BiHeart size={12} />
+            ) : (
+              <MessageCircle size={12} />
+            )
+          }
+        />
+      </div>
+      <div className='d-flex flex-column'>
+        <div className='d-flex justify-content-between'>
+          <h6>
+            <strong>{title}</strong>
+          </h6>
+          <X
+            size={12}
+            className='cursor-pointer'
+            onClick={() => toast.dismiss(t.id)}
+          />
+        </div>
+        <p>{msg}</p>
+      </div>
+    </div>
+  )
+}
