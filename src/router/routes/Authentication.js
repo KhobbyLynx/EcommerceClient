@@ -1,48 +1,23 @@
 // ** React Imports
 import { lazy } from 'react'
 
-const Login = lazy(() => import('../../views/pages/authentication/LoginBasic'))
-
-const Register = lazy(() =>
-  import('../../views/pages/authentication/RegisterBasic')
-)
+const Register = lazy(() => import('../../views/pages/authentication/Register'))
 
 const ForgotPassword = lazy(() =>
-  import('../../views/pages/authentication/ForgotPasswordBasic')
+  import('../../views/pages/authentication/ForgotPassword')
 )
 
-const ResetPasswordBasic = lazy(() =>
-  import('../../views/pages/authentication/ResetPasswordBasic')
-)
-const ResetPasswordCover = lazy(() =>
-  import('../../views/pages/authentication/ResetPasswordCover')
+const ResetPassword = lazy(() =>
+  import('../../views/pages/authentication/ResetPassword')
 )
 
-const VerifyEmailBasic = lazy(() =>
-  import('../../views/pages/authentication/VerifyEmailBasic')
-)
-const VerifyEmailCover = lazy(() =>
-  import('../../views/pages/authentication/VerifyEmailCover')
+const VerifyEmail = lazy(() =>
+  import('../../views/pages/authentication/VerifyEmail')
 )
 
-const TwoStepsBasic = lazy(() =>
-  import('../../views/pages/authentication/TwoStepsBasic')
-)
-const TwoStepsCover = lazy(() =>
-  import('../../views/pages/authentication/TwoStepsCover')
-)
+const TwoSteps = lazy(() => import('../../views/pages/authentication/TwoSteps'))
 
 const AuthenticationRoutes = [
-  {
-    path: '/login',
-    element: <Login />,
-    meta: {
-      layout: 'blank',
-      publicRoute: true,
-      restricted: true,
-    },
-  },
-
   {
     path: '/register',
     element: <Register />,
@@ -66,7 +41,7 @@ const AuthenticationRoutes = [
 
   {
     path: '/reset-password',
-    element: <ResetPasswordBasic />,
+    element: <ResetPassword />,
     meta: {
       layout: 'blank',
     },
@@ -74,14 +49,14 @@ const AuthenticationRoutes = [
 
   {
     path: '/verify-email',
-    element: <VerifyEmailBasic />,
+    element: <VerifyEmail />,
     meta: {
       layout: 'blank',
     },
   },
   {
     path: '/two-steps',
-    element: <TwoStepsBasic />,
+    element: <TwoSteps />,
     meta: {
       layout: 'blank',
     },
