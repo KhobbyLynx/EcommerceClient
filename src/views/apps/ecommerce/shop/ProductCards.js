@@ -1,12 +1,18 @@
 // ** React Imports
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 // ** Third Party Components
 import classnames from 'classnames'
+import toast from 'react-hot-toast'
+
+// ** Icons
 import { Star, ShoppingCart, Heart } from 'react-feather'
 
 // ** Reactstrap Imports
 import { Card, CardBody, CardText, Button, Badge } from 'reactstrap'
+
+// ** Redux Imports
+import { GeneralToastContent, getUserData } from '../../../../utility/Utils'
 
 const ProductCards = (props) => {
   // ** Props
@@ -22,9 +28,27 @@ const ProductCards = (props) => {
     deleteWishlistItem,
   } = props
 
+  // ** Hooks
+  const navigate = useNavigate()
+
+  // ** Check if user is logged in
+  const user = getUserData()
+
   // ** Handle Move/Add to cart
   const handleCartBtn = (id, val) => {
-    if (val === false) {
+    if (!user) {
+      toast((t) => (
+        <GeneralToastContent
+          t={t}
+          icon='Cart'
+          title='Cart'
+          msg='Log In or Sign up an account before adding product to Cart'
+        />
+      ))
+      navigate('/login')
+      return
+    }
+    if (val === false || val === undefined) {
       dispatch(addToCart(id))
     }
     dispatch(getCartItems())
@@ -35,6 +59,17 @@ const ProductCards = (props) => {
 
   // ** Handle Wishlist item toggle
   const handleWishlistClick = (id, val) => {
+    if (!user) {
+      toast((t) => (
+        <GeneralToastContent
+          t={t}
+          title='Wishlist'
+          msg='Log In or Sign up an account before adding product to Wishlist'
+        />
+      ))
+      navigate('/login')
+      return
+    }
     if (val) {
       dispatch(deleteWishlistItem(id))
     } else {
@@ -47,10 +82,25 @@ const ProductCards = (props) => {
   const renderProducts = () => {
     if (products.length) {
       return products.map((item) => {
-        const CartBtnTag = item.isInCart ? Link : 'button'
+        // ** Check if item is in cart & wishlist
+        console.log('Product Id', item.id)
+        const inCart = store.cart?.some((pro) => pro.id === item.id)
 
+        const inWishlist = store.wishlist?.some((pro) => pro.id === item.id)
+
+        console.log('CHeck @', inWishlist)
+        const CartBtnTag = inCart ? Link : 'button'
         return (
-          <Card className='ecommerce-card' key={item.name}>
+          <Card
+            className='ecommerce-card'
+            key={item.id}
+            onClick={() => {
+              const anchor = document.querySelector('body')
+              if (anchor) {
+                anchor.scrollIntoView({ behavior: 'smooth' })
+              }
+            }}
+          >
             <div className='item-img text-center mx-auto'>
               <Link to={`/product-detail/${item.id}`}>
                 <img
@@ -113,11 +163,14 @@ const ProductCards = (props) => {
               <Button
                 className='btn-wishlist'
                 color='light'
-                onClick={() => handleWishlistClick(item.id, item.isInWishlist)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleWishlistClick(item.id, inWishlist)
+                }}
               >
                 <Heart
                   className={classnames('me-50', {
-                    'text-danger': item.isInWishlist,
+                    'text-danger': inWishlist,
                   })}
                   size={14}
                 />
@@ -127,9 +180,12 @@ const ProductCards = (props) => {
                 color='primary'
                 tag={CartBtnTag}
                 className='btn-cart move-cart'
-                onClick={() => handleCartBtn(item.id, item.isInCart)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleCartBtn(item.id, inCart)
+                }}
                 /*eslint-disable */
-                {...(item.isInCart
+                {...(inCart
                   ? {
                       to: '/cart',
                     }
@@ -137,7 +193,7 @@ const ProductCards = (props) => {
                 /*eslint-enable */
               >
                 <ShoppingCart className='me-50' size={14} />
-                <span>{item.isInCart ? 'View In Cart' : 'Add To Cart'}</span>
+                <span>{inCart ? 'View In Cart' : 'Add To Cart'}</span>
               </Button>
             </div>
           </Card>
