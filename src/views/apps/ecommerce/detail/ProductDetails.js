@@ -1,10 +1,20 @@
 // ** React Imports
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 // ** Third Party Components
 import classnames from 'classnames'
-import { Star, ShoppingCart, DollarSign, Heart, Share2, Facebook, Twitter, Youtube, Instagram } from 'react-feather'
+import {
+  Star,
+  ShoppingCart,
+  DollarSign,
+  Heart,
+  Share2,
+  Facebook,
+  Twitter,
+  Youtube,
+  Instagram,
+} from 'react-feather'
 
 // ** Reactstrap Imports
 import {
@@ -15,40 +25,60 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
-  UncontrolledButtonDropdown
+  UncontrolledButtonDropdown,
 } from 'reactstrap'
+import { useSelector } from 'react-redux/es'
 
-const Product = props => {
+const Product = (props) => {
   // ** Props
-  const { data, deleteWishlistItem, dispatch, addToWishlist, getProduct, productId, addToCart } = props
+  const {
+    data,
+    deleteWishlistItem,
+    dispatch,
+    addToWishlist,
+    getProduct,
+    productId,
+    addToCart,
+  } = props
 
   // ** State
   const [selectedColor, setSelectedColor] = useState('primary')
 
-  // ** Renders color options
-  const renderColorOptions = () => {
-    return data.colorOptions.map((color, index) => {
-      const isLastColor = data.colorOptions.length - 1 === index
+  // ** Hooks
+  const store = useSelector((state) => state.ecommerce)
 
-      return (
-        <li
-          key={color}
-          className={classnames('d-inline-block', {
-            'me-25': !isLastColor,
-            selected: selectedColor === color
-          })}
-          onClick={() => setSelectedColor(color)}
-        >
-          <div className={`color-option b-${color}`}>
-            <div className={`filloption bg-${color}`}></div>
-          </div>
-        </li>
-      )
-    })
-  }
+  useEffect(() => {
+    dispatch(getProduct(productId))
+  }, [dispatch, productId])
+
+  // ** Check if item is in cart & wishlist
+  const inCart = store.cart?.some((pro) => pro.id === data.id)
+  const inWishlist = store.wishlist?.some((pro) => pro.id === data.id)
+
+  // ** Renders color options
+  // const renderColorOptions = () => {
+  //   return data.colorOptions.map((color, index) => {
+  //     const isLastColor = data.colorOptions.length - 1 === index
+
+  //     return (
+  //       <li
+  //         key={color}
+  //         className={classnames('d-inline-block', {
+  //           'me-25': !isLastColor,
+  //           selected: selectedColor === color,
+  //         })}
+  //         onClick={() => setSelectedColor(color)}
+  //       >
+  //         <div className={`color-option b-${color}`}>
+  //           <div className={`filloption bg-${color}`}></div>
+  //         </div>
+  //       </li>
+  //     )
+  //   })
+  // }
 
   // ** Handle Wishlist item toggle
-  const handleWishlist = val => {
+  const handleWishlist = (val) => {
     if (val) {
       dispatch(deleteWishlistItem(productId))
     } else {
@@ -59,27 +89,39 @@ const Product = props => {
 
   // ** Handle Move/Add to cart
   const handleCartBtn = (id, val) => {
-    if (val === false) {
+    if (val === false || val === 'undefined') {
       dispatch(addToCart(id))
     }
     dispatch(getProduct(productId))
   }
 
   // ** Condition btn tag
-  const CartBtnTag = data.isInCart ? Link : 'button'
+  const CartBtnTag = inCart ? Link : 'button'
 
   return (
     <Row className='my-2'>
-      <Col className='d-flex align-items-center justify-content-center mb-2 mb-md-0' md='5' xs='12'>
+      <Col
+        className='d-flex align-items-center justify-content-center mb-2 mb-md-0'
+        md='5'
+        xs='12'
+      >
         <div className='d-flex align-items-center justify-content-center'>
-          <img className='img-fluid product-img' src={data.image} alt={data.name} />
+          <img
+            className='img-fluid product-img'
+            src={data.productImgs[0]}
+            alt={data.name}
+          />
         </div>
       </Col>
       <Col md='7' xs='12'>
         <h4>{data.name}</h4>
         <CardText tag='span' className='item-company'>
           By
-          <a className='company-name' href='/' onClick={e => e.preventDefault()}>
+          <a
+            className='company-name'
+            href='/'
+            onClick={(e) => e.preventDefault()}
+          >
             {data.brand}
           </a>
         </CardText>
@@ -92,7 +134,7 @@ const Product = props => {
                   <Star
                     className={classnames({
                       'filled-star': index + 1 <= data.rating,
-                      'unfilled-star': index + 1 > data.rating
+                      'unfilled-star': index + 1 > data.rating,
                     })}
                   />
                 </li>
@@ -103,7 +145,7 @@ const Product = props => {
         <CardText>
           Available -<span className='text-success ms-25'>In stock</span>
         </CardText>
-        <CardText>{data.description}</CardText>
+        <CardText>{data.desc}</CardText>
         <ul className='product-features list-unstyled'>
           {data.hasFreeShipping ? (
             <li>
@@ -119,7 +161,7 @@ const Product = props => {
         <hr />
         <div className='product-color-options'>
           <h6>Colors</h6>
-          <ul className='list-unstyled mb-0'>{renderColorOptions()}</ul>
+          {/* <ul className='list-unstyled mb-0'>{renderColorOptions()}</ul> */}
         </div>
         <hr />
         <div className='d-flex flex-column flex-sm-row pt-1'>
@@ -127,47 +169,68 @@ const Product = props => {
             tag={CartBtnTag}
             className='btn-cart me-0 me-sm-1 mb-1 mb-sm-0'
             color='primary'
-            onClick={() => handleCartBtn(data.id, data.isInCart)}
+            onClick={() => handleCartBtn(data.id, inCart)}
             /*eslint-disable */
-            {...(data.isInCart
+            {...(inCart
               ? {
-                  to: '/apps/ecommerce/checkout'
+                  to: '/checkout',
                 }
               : {})}
             /*eslint-enable */
           >
             <ShoppingCart className='me-50' size={14} />
-            {data.isInCart ? 'View in cart' : 'Move to cart'}
+            {inCart ? 'View in cart' : 'Move to cart'}
           </Button>
           <Button
             className='btn-wishlist me-0 me-sm-1 mb-1 mb-sm-0'
             color='secondary'
             outline
-            onClick={() => handleWishlist(data.isInWishlist)}
+            onClick={() => handleWishlist(inWishlist)}
           >
             <Heart
               size={14}
               className={classnames('me-50', {
-                'text-danger': data.isInWishlist
+                'text-danger': inWishlist,
               })}
             />
             <span>Wishlist</span>
           </Button>
           <UncontrolledButtonDropdown className='dropdown-icon-wrapper btn-share'>
-            <DropdownToggle className='btn-icon hide-arrow' color='secondary' caret outline>
+            <DropdownToggle
+              className='btn-icon hide-arrow'
+              color='secondary'
+              caret
+              outline
+            >
               <Share2 size={14} />
             </DropdownToggle>
             <DropdownMenu end>
-              <DropdownItem tag='a' href='/' onClick={e => e.preventDefault()}>
+              <DropdownItem
+                tag='a'
+                href='/'
+                onClick={(e) => e.preventDefault()}
+              >
                 <Facebook size={14} />
               </DropdownItem>
-              <DropdownItem tag='a' href='/' onClick={e => e.preventDefault()}>
+              <DropdownItem
+                tag='a'
+                href='/'
+                onClick={(e) => e.preventDefault()}
+              >
                 <Twitter size={14} />
               </DropdownItem>
-              <DropdownItem tag='a' href='/' onClick={e => e.preventDefault()}>
+              <DropdownItem
+                tag='a'
+                href='/'
+                onClick={(e) => e.preventDefault()}
+              >
                 <Youtube size={14} />
               </DropdownItem>
-              <DropdownItem tag='a' href='/' onClick={e => e.preventDefault()}>
+              <DropdownItem
+                tag='a'
+                href='/'
+                onClick={(e) => e.preventDefault()}
+              >
                 <Instagram size={14} />
               </DropdownItem>
             </DropdownMenu>
