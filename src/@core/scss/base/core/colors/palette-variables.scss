@@ -18,6 +18,9 @@ $dark-color: (
 $light-color: (
   "base": $light
 );
+$second-color: (
+  "base": #ea5455
+);
 
 $primary-color: (
   "lighten-4": lighten($primary, 20%),
@@ -100,5 +103,6 @@ $colors: (
   "success": $success-color,
   "info": $info-color,
   "warning": $warning-color,
-  "danger": $danger-color
+  "danger": $danger-color,
+  "second": $second-color
 );
