@@ -20,6 +20,7 @@ import { getRoutes } from './routes'
 const Error = lazy(() => import('../views/pages/misc/Error'))
 const Login = lazy(() => import('../views/pages/authentication/Login'))
 const NotAuthorized = lazy(() => import('../views/pages/misc/NotAuthorized'))
+const Maintenance = lazy(() => import('../views/pages/misc/Maintenance'))
 
 const Router = () => {
   // ** Hooks
@@ -55,6 +56,23 @@ const Router = () => {
       path: '*',
       element: <BlankLayout />,
       children: [{ path: '*', element: <Error /> }],
+    },
+
+    // ** Pages Under Maintainence
+    {
+      path: '/blog',
+      element: <BlankLayout />,
+      children: [{ path: '/blog', element: <Maintenance /> }],
+    },
+    {
+      path: '/faq',
+      element: <BlankLayout />,
+      children: [{ path: '/faq', element: <Maintenance /> }],
+    },
+    {
+      path: '/more',
+      element: <BlankLayout />,
+      children: [{ path: '/more', element: <Maintenance /> }],
     },
     ...allRoutes,
   ])
