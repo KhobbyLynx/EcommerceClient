@@ -123,70 +123,74 @@ const HorizontalLayout = (props) => {
       )}
       {...(isHidden ? { 'data-col': '1-column' } : {})}
     >
-      <Navbar
-        expand='lg'
-        container={false}
-        className={classnames(
-          'header-navbar navbar-fixed align-items-center navbar-shadow navbar-brand-center',
-          {
-            'navbar-scrolled': navbarScrolled,
-          }
-        )}
-      >
-        {!navbar && (
-          <div className='navbar-header d-xl-block d-none'>
-            <ul className='nav navbar-nav'>
-              <NavItem>
-                <Link to='/' className='navbar-brand'>
-                  <span className='brand-logo'>
-                    <img src={themeConfig.app.appLogoImage} alt='logo' />
-                  </span>
-                  <h2 className='brand-text mb-0'>{themeConfig.app.appName}</h2>
-                </Link>
-              </NavItem>
-            </ul>
-          </div>
-        )}
-
-        <div className='navbar-container d-flex content'>
-          {navbar ? (
-            navbar({ skin, setSkin })
-          ) : (
-            <NavbarComponent skin={skin} setSkin={setSkin} />
+      <div className='pb-5'>
+        <Navbar
+          expand='lg'
+          container={false}
+          className={classnames(
+            'header-navbar navbar-fixed align-items-center navbar-shadow navbar-brand-center',
+            {
+              'navbar-scrolled': navbarScrolled,
+            }
           )}
-        </div>
-      </Navbar>
-      {!isHidden ? (
-        <div className='horizontal-menu-wrapper'>
-          <Navbar
-            tag='div'
-            onClick={() => {
-              const anchor = document.querySelector('body')
-              if (anchor) {
-                anchor.scrollIntoView({ behavior: 'smooth' })
-              }
-            }}
-            expand='sm'
-            light={skin !== 'dark'}
-            dark={skin === 'dark' || bgColorCondition}
-            className={classnames(
-              `header-navbar navbar-horizontal navbar-shadow menu-border`,
-              {
-                [navbarClasses[navbarType]]: navbarType !== 'static',
-                'floating-nav':
-                  (!navbarClasses[navbarType] && navbarType !== 'static') ||
-                  navbarType === 'floating',
-              }
-            )}
-          >
-            {menu ? (
-              menu({ menuData, routerProps, currentActiveItem })
+        >
+          {!navbar && (
+            <div className='navbar-header d-xl-block d-none'>
+              <ul className='nav navbar-nav'>
+                <NavItem>
+                  <Link to='/' className='navbar-brand'>
+                    <span className='brand-logo'>
+                      <img src={themeConfig.app.appLogoImage} alt='logo' />
+                    </span>
+                    <h2 className='brand-text mb-0'>
+                      {themeConfig.app.appName}
+                    </h2>
+                  </Link>
+                </NavItem>
+              </ul>
+            </div>
+          )}
+
+          <div className='navbar-container d-flex content'>
+            {navbar ? (
+              navbar({ skin, setSkin })
             ) : (
-              <MenuComponent menuData={menuData} />
+              <NavbarComponent skin={skin} setSkin={setSkin} />
             )}
-          </Navbar>
-        </div>
-      ) : null}
+          </div>
+        </Navbar>
+        {!isHidden ? (
+          <div className='horizontal-menu-wrapper'>
+            <Navbar
+              tag='div'
+              onClick={() => {
+                const anchor = document.querySelector('body')
+                if (anchor) {
+                  anchor.scrollIntoView({ behavior: 'smooth' })
+                }
+              }}
+              expand='sm'
+              light={skin !== 'dark'}
+              dark={skin === 'dark' || bgColorCondition}
+              className={classnames(
+                `header-navbar navbar-horizontal navbar-shadow menu-border`,
+                {
+                  [navbarClasses[navbarType]]: navbarType !== 'static',
+                  'floating-nav':
+                    (!navbarClasses[navbarType] && navbarType !== 'static') ||
+                    navbarType === 'floating',
+                }
+              )}
+            >
+              {menu ? (
+                menu({ menuData, routerProps, currentActiveItem })
+              ) : (
+                <MenuComponent menuData={menuData} />
+              )}
+            </Navbar>
+          </div>
+        ) : null}
+      </div>
 
       {children}
 
