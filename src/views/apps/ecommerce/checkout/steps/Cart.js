@@ -56,6 +56,11 @@ const Cart = (props) => {
 
   // ** Funciton Function to toggle wishlist item
   const handleWishlistClick = (id, val) => {
+    const user = getUserData()
+    if (!user) {
+      navigate('/login')
+      return
+    }
     if (val) {
       dispatch(deleteWishlistItem(id))
     } else {
@@ -67,19 +72,26 @@ const Cart = (props) => {
   // ** Render cart items
   const renderCart = () => {
     return products.map((item) => {
+      const hasImages =
+        Array.isArray(item.productImgs) && item.productImgs.length > 0
+
       return (
         <Card key={item.name} className='ecommerce-card'>
           <div className='item-img'>
-            <Link to={`/apps/ecommerce/product-detail/${item.slug}`}>
-              <img className='img-fluid' src={item.image} alt={item.name} />
-            </Link>
+            {hasImages && (
+              <Link to={`/product-detail/${item.id}`}>
+                <img
+                  className='img-fluid'
+                  src={item.productImgs[0]}
+                  alt={item.name}
+                />
+              </Link>
+            )}
           </div>
           <CardBody>
             <div className='item-name'>
               <h6 className='mb-0'>
-                <Link to={`/apps/ecommerce/product-detail/${item.slug}`}>
-                  {item.name}
-                </Link>
+                <Link to={`/product-detail/${item.id}`}>{item.name}</Link>
               </h6>
               <span className='item-company'>
                 By
@@ -130,7 +142,7 @@ const Cart = (props) => {
           <div className='item-options text-center'>
             <div className='item-wrapper'>
               <div className='item-cost'>
-                <h4 className='item-price'>${item.price}</h4>
+                <h4 className='item-price'>${item.salePrice}</h4>
                 {item.hasFreeShipping ? (
                   <CardText className='shipping'>
                     <Badge color='light-success' pill>
@@ -143,7 +155,10 @@ const Cart = (props) => {
             <Button
               className='mt-1 remove-wishlist'
               color='light'
-              onClick={() => dispatch(deleteCartItem(item.id))}
+              onClick={() => {
+                dispatch(deleteCartItem(item.id))
+                console.log('Remove cart item Triggered')
+              }}
             >
               <X size={14} className='me-25' />
               <span>Remove</span>
@@ -151,7 +166,10 @@ const Cart = (props) => {
             <Button
               className='btn-cart'
               color='primary'
-              onClick={() => handleWishlistClick(item.id, item.isInWishlist)}
+              onClick={(e) => {
+                e.stopPropagation()
+                handleWishlistClick(item.id, item.isInWishlist)
+              }}
             >
               <Heart
                 size={14}
