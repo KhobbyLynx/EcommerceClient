@@ -1,5 +1,3 @@
-import useJwt from '@src/@core/auth/jwt/useJwt'
-
 /**
  * Return if user is logged in
  * This is completely up to you and how you want to store the token in your frontend application
@@ -7,7 +5,7 @@ import useJwt from '@src/@core/auth/jwt/useJwt'
  */
 // eslint-disable-next-line arrow-body-style
 export const isUserLoggedIn = () => {
-  return localStorage.getItem('userData') && localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName)
+  return localStorage.getItem('userData')
 }
 
 export const getUserData = () => JSON.parse(localStorage.getItem('userData'))
@@ -20,8 +18,7 @@ export const getUserData = () => JSON.parse(localStorage.getItem('userData'))
  * NOTE: If you have different pages to navigate based on user ability then this function can be useful. However, you need to update it.
  * @param {String} userRole Role of user
  */
-export const getHomeRouteForLoggedInUser = userRole => {
-  if (userRole === 'admin') return '/'
-  if (userRole === 'client') return { name: 'access-control' }
-  return { name: 'auth-login' }
+export const getHomeRouteForLoggedInUser = (userRole) => {
+  if (userRole === 'client') return '/home'
+  return { name: '/' }
 }
