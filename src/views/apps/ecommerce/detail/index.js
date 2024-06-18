@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 // ** Product detail components
 import ItemFeatures from './ItemFeatures'
 import ProductDetails from './ProductDetails'
-import RelatedProducts from './RelatedProducts'
+// import RelatedProducts from './RelatedProducts'
 
 // ** Custom Components
 import BreadCrumbs from '@components/breadcrumbs'
@@ -26,21 +26,35 @@ import '@styles/base/pages/app-ecommerce-details.scss'
 
 const Details = () => {
   // ** Vars
-  const params = useParams().product
-  const productId = params.substring(params.lastIndexOf('-') + 1)
+  const { product: productId } = useParams()
+  // const productId = params.substring(params.lastIndexOf('-') + 1)
+
+  console.log('--Product ID Params', productId)
   // ** Store Vars
   const dispatch = useDispatch()
   const store = useSelector((state) => state.ecommerce)
-  console.log('@@@@@@Params and Product ID', params, '#', productId, '#', store)
+  console.log('-Single Product', store.productDetail)
 
   // ** ComponentDidMount : Get product
   useEffect(() => {
     dispatch(getProduct(productId))
-  }, [])
+  }, [dispatch, productId])
 
   return (
     <Fragment>
-      <BreadCrumbs title='Product Details' data={[{ title: 'Details' }]} />
+      <BreadCrumbs
+        title='Product Details'
+        data={[
+          { title: 'Shop' },
+          {
+            title: `${
+              store.productDetail.name === undefined
+                ? ''
+                : store.productDetail.name
+            }`,
+          },
+        ]}
+      />
       <div className='app-ecommerce-details'>
         {Object.keys(store.productDetail).length ? (
           <Card>
@@ -56,9 +70,9 @@ const Details = () => {
               />
             </CardBody>
             <ItemFeatures />
-            <CardBody>
+            {/* <CardBody>
               <RelatedProducts />
-            </CardBody>
+            </CardBody> */}
           </Card>
         ) : null}
       </div>
