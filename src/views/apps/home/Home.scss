@@ -1,5 +1,5 @@
 .home {
-    padding: 20px 40px 0;
+    // padding: 20px 40px 0;
 
     @media screen and (max-width: "999px") {
         padding: 0;
@@ -47,13 +47,14 @@
             }
         }
     }
+
     .banner__explore {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
-        background-image: url("https://res.cloudinary.com/khobbylynx/image/upload/v1683975713/lynxmart/img/banner/b2_axkion.jpg");
+        background-image: url("https://res.cloudinary.com/khobbylynx/image/upload/v1718462988/pumps_generators/banners/pumpsbanner1_eqb1qs.jpg");
         background-position: center;
         background-size: cover;
         width: 100%;
@@ -65,7 +66,7 @@
         h4 {
             font-size: 30px;
             font-weight: 500;
-            color: #fff;
+            color: var(--cl-black);
             @media screen and (max-width: "499px") {
                 font-size: 26px;
             }
@@ -73,7 +74,7 @@
         p {
             font-size: 20px;
             font-weight: 400;
-            color: #fff;
+            color: var(--cl-black);
             span {
                 color: #f00;
             }
@@ -114,7 +115,7 @@
             flex-direction: column;
             align-items: flex-start;
             justify-content: center;
-            background-image: url("https://res.cloudinary.com/khobbylynx/image/upload/v1683975705/lynxmart/img/banner/b17_gqisnz.jpg");
+            background-image: url("https://res.cloudinary.com/khobbylynx/image/upload/v1718329631/ecom/earplugs_qknmsl.jpg");
             background-position: center;
             background-size: cover;
             flex-basis: 49.5%;
@@ -178,7 +179,7 @@
             }
 
             &:last-child {
-                background-image: url("https://res.cloudinary.com/khobbylynx/image/upload/v1682616419/samples/ecommerce/analog-classic.jpg");
+                background-image: url("https://res.cloudinary.com/khobbylynx/image/upload/v1718329105/ecom/laptop_d0abde.jpg");
             }
             &:hover button {
                 background-color: #088178;
@@ -191,7 +192,6 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        padding-bottom: 50px;
 
         @media screen and (max-width: "999px") {
             background-color: #f1f1f1;
@@ -205,7 +205,7 @@
             flex-direction: column;
             align-items: flex-start;
             justify-content: center;
-            background-image: url("https://res.cloudinary.com/khobbylynx/image/upload/v1682616429/samples/ecommerce/leather-bag-gray.jpg");
+            background-image: url("https://res.cloudinary.com/khobbylynx/image/upload/v1718364133/ecom/loud_zsliuz.jpg");
             background-position: center;
             background-size: cover;
             min-width: 200px;
@@ -238,10 +238,10 @@
             }
 
             &:nth-child(2) {
-                background-image: url("https://res.cloudinary.com/khobbylynx/image/upload/v1682616448/cld-sample-5.jpg");
+                background-image: url("https://res.cloudinary.com/khobbylynx/image/upload/v1718329977/ecom/phone_hcmc51.jpg");
             }
             &:last-child {
-                background-image: url("https://res.cloudinary.com/khobbylynx/image/upload/v1683975712/lynxmart/img/banner/laps2_ucpx4w.jpg");
+                background-image: url("https://res.cloudinary.com/khobbylynx/image/upload/v1718433673/ecom/ae-feature--nbsp-541464741_w8nawm.webp");
             }
         }
 
