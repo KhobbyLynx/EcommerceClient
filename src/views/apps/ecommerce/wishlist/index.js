@@ -14,7 +14,12 @@ import { Card, CardBody, CardText, Button, Alert } from 'reactstrap'
 
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux'
-import { getWishlistItems, deleteWishlistItem, addToCart, getCartItems } from '../store'
+import {
+  getWishlistItems,
+  deleteWishlistItem,
+  addToCart,
+  getCartItems,
+} from '../store'
 
 // ** Styles
 import '@styles/base/pages/app-ecommerce.scss'
@@ -22,16 +27,16 @@ import '@styles/base/pages/app-ecommerce.scss'
 const Wishlist = () => {
   // ** Store Vars
   const dispatch = useDispatch()
-  const store = useSelector(state => state.ecommerce)
+  const store = useSelector((state) => state.ecommerce)
 
   //** ComponentDidMount : get wishlist items
   useEffect(() => {
     dispatch(getWishlistItems())
-  }, [])
+  }, [dispatch])
 
   // ** Handle Move/Add to cart
   const handleCartBtn = (id, val) => {
-    if (val === false) {
+    if (val === false || val === undefined) {
       dispatch(addToCart(id))
     }
     dispatch(getWishlistItems())
@@ -40,13 +45,20 @@ const Wishlist = () => {
 
   // ** Renders wishlist products
   const renderWishlist = () => {
-    return store.wishlist.map(item => {
+    return store.wishlist.map((item) => {
+      // ** Check if item is in cart
+      const inCart = store.cart?.some((pro) => pro.id === item.id)
+
       const CartBtnTag = item.isInCart ? Link : 'button'
       return (
         <Card className='ecommerce-card' key={item.name}>
           <div className='item-img text-center mx-auto'>
-            <Link to={`/apps/ecommerce/product-detail/${item.slug}`}>
-              <img className='img-fluid' src={item.image} alt={item.name} />
+            <Link to={`/product-detail/${item.id}`}>
+              <img
+                className='img-fluid'
+                src={item.productImgs[0]}
+                alt={item.name}
+              />
             </Link>
           </div>
           <CardBody>
@@ -59,7 +71,7 @@ const Wishlist = () => {
                         <Star
                           className={classnames({
                             'filled-star': index + 1 <= item.rating,
-                            'unfilled-star': index + 1 > item.rating
+                            'unfilled-star': index + 1 > item.rating,
                           })}
                         />
                       </li>
@@ -68,11 +80,11 @@ const Wishlist = () => {
                 </ul>
               </div>
               <div className='item-cost'>
-                <h6 className='item-price'>$ {item.price}</h6>
+                <h6 className='item-price'>$ {item.salePrice}</h6>
               </div>
             </div>
             <div className='item-name'>
-              <Link to={`/apps/ecommerce/product-detail/${item.slug}`}>{item.name}</Link>
+              <Link to={`/product-detail/${item.id}`}>{item.name}</Link>
             </div>
             <CardText className='item-description'>{item.description}</CardText>
           </CardBody>
@@ -91,17 +103,17 @@ const Wishlist = () => {
               color='primary'
               tag={CartBtnTag}
               className='btn-cart move-cart'
-              onClick={() => handleCartBtn(item.id, item.isInCart)}
+              onClick={() => handleCartBtn(item.id, inCart)}
               /*eslint-disable */
-              {...(item.isInCart
+              {...(inCart
                 ? {
-                    to: '/apps/ecommerce/checkout'
+                    to: '/cart',
                   }
                 : {})}
               /*eslint-enable */
             >
               <ShoppingCart className='me-50' size={14} />
-              <span>{item.isInCart ? 'View In Cart' : 'Add To Cart'}</span>
+              <span>{inCart ? 'View In Cart' : 'Add To Cart'}</span>
             </Button>
           </div>
         </Card>
@@ -111,9 +123,14 @@ const Wishlist = () => {
 
   return (
     <Fragment>
-      <BreadCrumbs title='Wishlist' data={[{ title: 'eCommerce' }, { title: 'Wishlist' }]} />
+      <BreadCrumbs
+        title='Wishlist'
+        data={[{ title: 'eCommerce' }, { title: 'Wishlist' }]}
+      />
       {store.wishlist.length ? (
-        <section className='grid-view wishlist-items'>{renderWishlist()}</section>
+        <section className='grid-view wishlist-items'>
+          {renderWishlist()}
+        </section>
       ) : (
         <Alert color='info'>
           <div className='alert-body'>
