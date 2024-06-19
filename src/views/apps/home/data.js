@@ -3,53 +3,50 @@ export const featured = [
     id: 1,
     mainText: 'Transform Your Living Space!',
     smallText: 'Find stylish appliances for modern living.',
-    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1715694102/ecom/pexels-rdne-5591463_tzqmfq.jpg',
+    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1715694168/ecom/kam-idris-Ot2iTXgC6fY-unsplash_m3j2qv.jpg',
   },
   {
     id: 2,
     mainText: 'Revamp Your Home, Simplify Life!',
     smallText: 'Effortless solutions for everyday tasks.',
-    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1715694053/ecom/pexels-level23media-3016430_glxn1d.jpg',
+    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1718461922/pumps_generators/banners/pumpsbanner_morsff.jpg',
   },
   {
     id: 3,
     mainText: 'Upgrade Your Kitchen Essentials!',
     smallText: 'Efficient solutions for culinary perfection.',
-    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1715694168/ecom/kam-idris-Ot2iTXgC6fY-unsplash_m3j2qv.jpg',
+    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1718437068/ecom/Water-dispenser_qkmz7w.png',
   },
   {
     id: 4,
     mainText: 'Upgrade Your Home Today!',
     smallText: 'Discover top-quality appliances for every room.',
-    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1715694042/ecom/pexels-houzlook-3423817_lnpiyg.jpg',
+    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1718325897/ecom/pexels-utpaladhikary-14973439_qtpkta.jpg',
+  },
+  {
+    id: 5,
+    mainText: 'Upgrade Your Home Today!',
+    smallText: 'Discover top-quality appliances for every room.',
+    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1718325921/ecom/pexels-pixabay-414061_psdseo.jpg',
   },
 ]
 
 export const categories = [
   {
     id: 1,
-    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1683975746/lynxmart/img/category/features_1_rwxy1u.png',
+    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1718467302/lynxmart/img/category/aircon_yu3kjm.png',
     title: 'Washing Machines',
   },
+
   {
-    id: 2,
-    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1683975724/lynxmart/img/category/features_2_qvcnfn.png',
-    title: 'Phones',
+    id: 8,
+    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1718467301/lynxmart/img/category/pumps_xlkw1o.png',
+    title: 'Pumps',
   },
   {
     id: 3,
-    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1683975724/lynxmart/img/category/features_3_r49tjb.png',
-    title: 'Computing',
-  },
-  {
-    id: 4,
-    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1683975724/lynxmart/img/category/features_4_bkdknd.png',
-    title: 'Sound Systems',
-  },
-  {
-    id: 5,
-    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1683977004/lynxmart/img/category/Electronics_du6gxe.png',
-    title: 'Televisions',
+    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1718467302/lynxmart/img/category/generators_a4tvdl.png',
+    title: 'Generators',
   },
   {
     id: 6,
@@ -57,14 +54,25 @@ export const categories = [
     title: 'Home Appliances',
   },
   {
-    id: 7,
-    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1683976929/lynxmart/img/category/Beauty_zq4xri.png',
-    title: 'Air Conditioners',
+    id: 5,
+    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1683977004/lynxmart/img/category/Electronics_du6gxe.png',
+    title: 'Televisions',
   },
   {
-    id: 8,
-    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1683976985/lynxmart/img/category/Supermarket_rawu2b.png',
-    title: 'Refrigerators',
+    id: 7,
+    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1718467301/lynxmart/img/category/airconditioner_jtam1m.png',
+    title: 'Air Conditioners',
+  },
+
+  {
+    id: 4,
+    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1718467302/lynxmart/img/category/audio_xpsim1.png',
+    title: 'Audio',
+  },
+  {
+    id: 2,
+    url: 'https://res.cloudinary.com/khobbylynx/image/upload/v1718467302/lynxmart/img/category/phone_t09qjq.png',
+    title: 'Phones',
   },
 ]
 
@@ -116,61 +124,43 @@ export const brands = [
     id: 1,
     name: 'samsung',
     brandImg:
-      'https://res.cloudinary.com/khobbylynx/image/upload/v1683780601/justclick/brands/merch201_d2fzj5.png',
+      'https://res.cloudinary.com/khobbylynx/image/upload/v1718436664/ecom/samsungCircle_nms9az.png',
   },
   {
     id: 2,
     name: 'tcl',
     brandImg:
-      'https://res.cloudinary.com/khobbylynx/image/upload/v1683780601/justclick/brands/merch204_ntcidd.png',
+      'https://res.cloudinary.com/khobbylynx/image/upload/v1718435653/ecom/tcl_rjitye.png',
   },
   {
     id: 3,
-    name: 'hp',
+    name: 'Nasco',
     brandImg:
-      'https://res.cloudinary.com/khobbylynx/image/upload/v1683780601/justclick/brands/merch208_qhearl.png',
+      'https://res.cloudinary.com/khobbylynx/image/upload/v1718435650/ecom/nasco_jz8rwo.png',
   },
   {
     id: 4,
-    name: 'redmi',
+    name: 'Midea',
     brandImg:
-      'https://res.cloudinary.com/khobbylynx/image/upload/v1683780601/justclick/brands/merch211_zbdm70.png',
+      'https://res.cloudinary.com/khobbylynx/image/upload/v1718435650/ecom/midealogo_b3ahtp.png',
   },
   {
     id: 5,
-    name: 'lynx',
+    name: 'Electrolux',
     brandImg:
-      'https://res.cloudinary.com/khobbylynx/image/upload/v1683780601/justclick/brands/merch207_jvsp85.png',
+      'https://res.cloudinary.com/khobbylynx/image/upload/v1718435654/ecom/midea_b2wz1j.png',
   },
   {
     id: 6,
-    name: 'levi',
+    name: 'ABB',
     brandImg:
-      'https://res.cloudinary.com/khobbylynx/image/upload/v1683780601/justclick/brands/merch203_qczyyh.png',
+      'https://res.cloudinary.com/khobbylynx/image/upload/v1718435650/ecom/abb_isabqv.png',
   },
   {
     id: 7,
-    name: 'adidas',
+    name: 'Apple',
     brandImg:
-      'https://res.cloudinary.com/khobbylynx/image/upload/v1683780601/justclick/brands/merch209_ucjmpr.png',
-  },
-  {
-    id: 8,
-    name: 'pepsodent',
-    brandImg:
-      'https://res.cloudinary.com/khobbylynx/image/upload/v1683780602/justclick/brands/merch210_kobabp.png',
-  },
-  {
-    id: 9,
-    name: 'guniess',
-    brandImg:
-      'https://res.cloudinary.com/khobbylynx/image/upload/v1683780601/justclick/brands/merch212_seqgf6.png',
-  },
-  {
-    id: 10,
-    name: 'all',
-    brandImg:
-      'https://res.cloudinary.com/khobbylynx/image/upload/v1683780601/justclick/brands/merch206_1_nhy02z.png',
+      'https://res.cloudinary.com/khobbylynx/image/upload/v1718435649/ecom/apple-logo_mmn6dl.png',
   },
 ]
 
