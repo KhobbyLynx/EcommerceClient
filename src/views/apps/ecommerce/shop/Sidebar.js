@@ -8,13 +8,22 @@ import { Card, CardBody, Row, Col, Input, Button, Label } from 'reactstrap'
 // ** Styles
 import '@styles/react/libs/noui-slider/noui-slider.scss'
 import { useSelector, useDispatch } from 'react-redux'
-import { useEffect } from 'react'
-import { fetchBrands, fetchCategories, filterProductsByPrice } from '../store'
+import { useEffect, useState } from 'react'
+import {
+  fetchBrands,
+  fetchCategories,
+  filterProductsByBrands,
+  filterProductsByCategory,
+  filterProductsByPrice,
+} from '../store'
 
 const Sidebar = (props) => {
   // ** Props
   // ** The sidebar takes in products and bar toggle as props
   const { sidebarOpen } = props
+
+  // ** States
+  const [selectedBrands, setSelectedBrands] = useState([])
 
   // ** Hooks
   const dispatch = useDispatch()
@@ -40,6 +49,24 @@ const Sidebar = (props) => {
     dispatch(filterProductsByPrice(selectedPriceRange))
   }
 
+  // ** Handle Category Filter Change
+  const handleCategoryChange = (category) => {
+    dispatch(filterProductsByCategory(category))
+  }
+
+  // ** Handle Brands Filter Change
+  const handleBrandChange = (brand) => {
+    // Check if the brand is already selected
+    if (selectedBrands.includes(brand)) {
+      // If already selected, remove it from the list
+      setSelectedBrands(selectedBrands.filter((brand) => brand !== brand))
+    } else {
+      // If not selected, add it to the list
+      setSelectedBrands([...selectedBrands, brand])
+    }
+
+    dispatch(filterProductsByBrands(selectedBrands))
+  }
   // ** Array of ratings
   const ratings = [
     {
@@ -161,6 +188,7 @@ const Sidebar = (props) => {
                           <Input
                             type='radio'
                             id={category.id}
+                            onChange={() => handleCategoryChange(category.name)}
                             name='category-radio'
                             defaultChecked={category.defaultChecked}
                           />
@@ -185,6 +213,7 @@ const Sidebar = (props) => {
                             type='checkbox'
                             id={brand.name}
                             defaultChecked={brand.checked}
+                            onChange={() => handleBrandChange(brand.name)}
                           />
                           <Label className='form-check-label' for={brand.name}>
                             {brand.name}
