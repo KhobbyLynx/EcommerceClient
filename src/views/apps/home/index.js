@@ -17,11 +17,11 @@ import {
   addToWishlist,
   deleteCartItem,
   deleteWishlistItem,
+  getWishlistItems,
 } from '../ecommerce/store'
 
 // ** Styles
 import '@styles/react/apps/app-ecommerce.scss'
-import SingleProductCard from '../ecommerce/shop/SingleProductCard'
 
 const Home = () => {
   // ** States
@@ -40,6 +40,8 @@ const Home = () => {
         page: 1,
       })
     )
+    dispatch(getCartItems())
+    dispatch(getWishlistItems())
   }, [dispatch])
 
   const productsSetOne = store.allProducts.filter(
@@ -68,13 +70,17 @@ const Home = () => {
 
   return (
     <div className='home'>
-      <Hero />
-      <Category />
+      <div className='m-auto'>
+        <Hero />
+      </div>
+      <div className='ps-lg-2 pe-lg-2'>
+        <Category />
+      </div>
       {/* <BookSlider /> */}
       <section className='products__section'>
         <div className='products__heading'>
-          <h1>Latest Trends and Styles | Fashion</h1>
-          <p>Summer Collections - New Modern Design</p>
+          <h1>Smart Solutions, Smart Life | Electronics</h1>
+          <p>Gadgets That Impress - New Modern Design</p>
         </div>
         <div className='product-grid '>
           <div className='ecommerce-application'>
@@ -93,19 +99,20 @@ const Home = () => {
           </div>
         </div>
       </section>
+
       <section className='banner__explore'>
-        <h4>Evolution Of Fashion</h4>
+        <h4>Water Flow, Made Simple</h4>
         <p>
-          Up to <span>70% off</span> ‒ All t-Shirts & Accessories
+          Up to <span>70% off</span> ‒ All Water Pumps
         </p>
-        <button onClick={() => handleFilterChange('q', 't-Shirt&accessories')}>
+        <button onClick={() => handleFilterChange('q', 'pumps')}>
           Explore More
         </button>
       </section>
       <section className='products__section'>
         <div className='products__heading'>
-          <h1>Best Sellers | Collections</h1>
-          <p>There’s Something Here for Everyone - No Matter Your Style</p>
+          <h1>Sole Seller | Powerful Pumps, Reliable Performance</h1>
+          <p>Quality You Can Trust - Dependable Water Solutions</p>
         </div>
         <div className='product-grid'>
           <div className='ecommerce-application'>
@@ -124,36 +131,40 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <Brands />
-      <section className='big__banner'>
-        <div className='banner__box'>
-          <h4>crazy deals</h4>
-          <h2>buy 1 get 1 free</h2>
-          <span>The best classic dress is on sale at LynxMart</span>
-          <button className='white'>Learn More</button>
-        </div>
-        <div className='banner__box'>
-          <h4>spring/summer</h4>
-          <h2>upcoming season</h2>
-          <span>The best classic Rollex is on sale at LynxMart</span>
-          <button className='white'>Collections</button>
-        </div>
-      </section>
 
-      <section className='small__banner'>
-        <div className='banner__box'>
-          <h2>SEASONAL SALE</h2>
-          <h3>Winter Collection -50% OFF</h3>
-        </div>
-        <div className='banner__box'>
-          <h2>NEW FOOTWEAR COLLECTION</h2>
-          <h3>Spring/Summer 2023</h3>
-        </div>
-        <div className='banner__box'>
-          <h2>Tech</h2>
-          <h3>New Tech Releases</h3>
-        </div>
-      </section>
+      <div className='ps-lg-2 pe-lg-2'>
+        <section className='big__banner'>
+          <div className='banner__box'>
+            <h4>crazy deals</h4>
+            <h2>Up to 70% discount</h2>
+            <span>Your One-Stop Shop for Tech and Water Solutions</span>
+            <Link to='/shop'>
+              <button>Order Now!</button>
+            </Link>
+          </div>
+          <div className='banner__box'>
+            <h4>Future-Ready Tech</h4>
+            <h2>upcoming season</h2>
+            <span>Solutions That Power Your World</span>
+            <button className='white'>Explore</button>
+          </div>
+        </section>
+
+        <section className='small__banner'>
+          <div className='banner__box'>
+            <h2>SEASONAL SALE</h2>
+            <h3>Winter Collection -50% OFF</h3>
+          </div>
+          <div className='banner__box'>
+            <h2>NEW FOOTWEAR COLLECTION</h2>
+            <h3>Spring/Summer 2023</h3>
+          </div>
+          <div className='banner__box'>
+            <h2>Tech</h2>
+            <h3>New Tech Releases</h3>
+          </div>
+        </section>
+      </div>
     </div>
   )
 }
