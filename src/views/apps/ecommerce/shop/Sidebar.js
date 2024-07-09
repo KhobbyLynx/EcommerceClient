@@ -15,6 +15,7 @@ import {
   filterProductsByBrands,
   filterProductsByCategory,
   filterProductsByPrice,
+  resetFilter,
 } from '../store'
 
 const Sidebar = (props) => {
@@ -258,7 +259,11 @@ const Sidebar = (props) => {
               </div>
               {/* // ** Reset Filter to default state */}
               <div id='clear-filters'>
-                <Button color='primary' block>
+                <Button
+                  color='primary'
+                  block
+                  onClick={() => dispatch(resetFilter())}
+                >
                   Clear All Filters
                 </Button>
               </div>
