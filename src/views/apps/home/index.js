@@ -42,7 +42,7 @@ const Home = () => {
     )
     dispatch(getCartItems())
     dispatch(getWishlistItems())
-  }, [dispatch])
+  }, [])
 
   const productsSetOne = store.allProducts.filter(
     (pro) => pro.featuredHomeTwo === true
