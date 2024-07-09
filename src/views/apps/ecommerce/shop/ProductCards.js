@@ -55,8 +55,6 @@ const ProductCards = (props) => {
     dispatch(getProducts(store.params))
   }
 
-  // console.log('@Products from Home page', store)
-
   // ** Handle Wishlist item toggle
   const handleWishlistClick = (id, val) => {
     if (!user) {
@@ -83,12 +81,10 @@ const ProductCards = (props) => {
     if (products.length) {
       return products.map((item) => {
         // ** Check if item is in cart & wishlist
-        console.log('Product Id', item.id)
         const inCart = store.cart?.some((pro) => pro.id === item.id)
 
         const inWishlist = store.wishlist?.some((pro) => pro.id === item.id)
 
-        console.log('CHeck @', inWishlist)
         const CartBtnTag = inCart ? Link : 'button'
         return (
           <Card
