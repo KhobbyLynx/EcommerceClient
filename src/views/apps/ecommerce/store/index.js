@@ -83,7 +83,6 @@ export const getProduct = createAsyncThunk(
     if (productSnap.exists()) {
       return productSnap.data()
     } else {
-      // productSnap.data() will be undefined in this case
       console.log('No such document!')
     }
   }
@@ -565,6 +564,8 @@ export const appEcommerceSlice = createSlice({
     totalProducts: 0,
     totalFilteredProducts: 0,
     productDetail: {},
+    selectedCategory: '',
+    selectedBrands: [],
     categories: [],
     brands: [],
     unsubscribeProducts: null,
@@ -584,11 +585,43 @@ export const appEcommerceSlice = createSlice({
           : product
       )
     },
+    resetFilter: (state) => {
+      state.products = state.allProducts
+      state.totalProducts = state.products.length
+      state.selectedCategory = ''
+      state.selectedBrands = []
+    },
     clearCartAndWishlist: (state) => {
       state.cart = []
       state.cartArray = []
       state.wishlist = []
       state.wishlistArray = []
+    },
+    selectCategory: (state, action) => {
+      state.selectedCategory = action.payload
+    },
+    filterByCategory: (state, action) => {
+      const category = action.payload
+      state.products = state.allProducts.filter(
+        (product) => product.category === category
+      )
+      state.totalProducts = state.products.length
+
+      console.log('Products', state.products)
+      console.log('Filters Category', action.payload)
+    },
+    removeCategory: (state, action) => {
+      return state.selectedCategory.filter(
+        (category) => category !== action.payload
+      )
+    },
+    addBrand: (state, action) => {
+      if (!state.selectedBrands.includes(action.payload)) {
+        state.selectedBrands.push(action.payload)
+      }
+    },
+    removeBrand: (state, action) => {
+      return state.selectedBrands.filter((brand) => brand !== action.payload)
     },
   },
   extraReducers: (builder) => {
@@ -650,5 +683,13 @@ export const appEcommerceSlice = createSlice({
   },
 })
 
-export const { clearCartAndWishlist } = appEcommerceSlice.actions
+export const {
+  clearCartAndWishlist,
+  filterByCategory,
+  resetFilter,
+  selectCategory,
+  removeCategory,
+  addBrand,
+  removeBrand,
+} = appEcommerceSlice.actions
 export default appEcommerceSlice.reducer
