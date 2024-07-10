@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 // ** Reactstrap Imports
 import { Button, Form, Input, Row, Col } from 'reactstrap'
 
@@ -37,7 +39,12 @@ const Maintenance = () => {
             Sorry for the inconvenience but we're performing some maintenance at
             the moment
           </p>
-          <Form
+          <Link to='/home'>
+            <Button className='mb-1 btn-sm-block' color='primary'>
+              Back To Home
+            </Button>
+          </Link>
+          {/* <Form
             tag={Row}
             onSubmit={(e) => e.preventDefault()}
             className='row-cols-md-auto justify-content-center align-items-center m-0 mb-2 gx-3'
@@ -50,7 +57,7 @@ const Maintenance = () => {
                 Notify
               </Button>
             </Col>
-          </Form>
+          </Form> */}
           <img
             className='img-fluid'
             src={source}
