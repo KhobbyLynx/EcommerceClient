@@ -1,4 +1,5 @@
 // ** React Imports
+import { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 // ** Third Party Components
@@ -12,6 +13,9 @@ import { Star, ShoppingCart, Heart } from 'react-feather'
 import { Card, CardBody, CardText, Button, Badge } from 'reactstrap'
 
 // ** Redux Imports
+import { fetchBrands } from '../store'
+
+// ** Utils
 import { GeneralToastContent, getUserData } from '../../../../utility/Utils'
 
 const ProductCards = (props) => {
@@ -30,6 +34,11 @@ const ProductCards = (props) => {
 
   // ** Hooks
   const navigate = useNavigate()
+
+  // ** UseEffect
+  useEffect(() => {
+    dispatch(fetchBrands())
+  }, [])
 
   // ** Check if user is logged in
   const user = getUserData()
@@ -80,31 +89,63 @@ const ProductCards = (props) => {
   const renderProducts = () => {
     if (products.length) {
       return products.map((item) => {
+        // ** Get brand image
+        const brandDetails = store?.brands?.find(
+          (brand) => brand.name === item.brand
+        )
         // ** Check if item is in cart & wishlist
+        console.log('Item in the Product Card', item)
         const inCart = store.cart?.some((pro) => pro.id === item.id)
 
         const inWishlist = store.wishlist?.some((pro) => pro.id === item.id)
 
         const CartBtnTag = inCart ? Link : 'button'
+
+        // ** Quantity check
+        const isOutOfStock = item.quantity <= 0
         return (
           <Card
-            className='ecommerce-card'
+            className={`ecommerce-card   ${isOutOfStock ? 'outofStock' : ''}`}
             key={item.id}
             onClick={() => {
               const anchor = document.querySelector('body')
               if (anchor) {
                 anchor.scrollIntoView({ behavior: 'smooth' })
               }
+              navigate(`/product-detail/${item.id}`)
             }}
           >
-            <div className='item-img text-center mx-auto'>
-              <Link to={`/product-detail/${item.id}`}>
+            <div className='item-img text-center mx-auto soldout-container'>
+              <div className='pro-image'>
                 <img
                   className='img-fluid card-img-top'
                   src={item.productImgs[0]}
                   alt={item.name}
                 />
-              </Link>
+                {isOutOfStock && (
+                  <img
+                    src='https://res.cloudinary.com/khobbylynx/image/upload/v1723336382/soldout_e6jcfk.png'
+                    alt='Out of Stock'
+                    className='soldout-image'
+                  />
+                )}
+                <div className='item-brand'>
+                  {brandDetails?.logo ? (
+                    <img
+                      src={brandDetails?.logo}
+                      alt=''
+                      className='item-brandImg'
+                    />
+                  ) : (
+                    <h6 className='item-brandName'>{item.brand}</h6>
+                  )}
+                </div>
+                {item.discounted && (
+                  <div className='item-discount'>
+                    <h6 className='item-discountText'>-{item.discount}%</h6>
+                  </div>
+                )}
+              </div>
             </div>
             <CardBody>
               <div className='item-wrapper'>

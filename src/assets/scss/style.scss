@@ -34,3 +34,77 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 // main navbar and header navbar shadow(generic navbar)
 // ** Menu Item Hover Animation
 // Profile Dropdown (Common)
+
+// ** Product Card Styke
+.product-container {
+	position: relative;
+}
+
+.pro-image {
+	position: relative;
+}
+
+.item-brand {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+
+.item-brandImg {
+	width: 48px;
+	margin: 20px;
+}
+
+.item-brandName {
+	padding: 10px;
+	color: #000 !important;
+}
+
+.item-discount {
+	position: absolute;
+	top: 0;
+	right: 0;
+	background-color: #f3721680;
+	margin: 10px;
+	padding: 4px 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.item-discountText {
+	color: #444 !important;
+	margin: 0 !important;
+}
+
+.soldout-image {
+	width: 226px;
+	height: auto;
+
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -60%);
+
+	object-fit: contain;
+	opacity: 1;
+	z-index: 99;
+}
+
+.outofStock {
+	position: relative;
+	text-align: center;
+	pointer-events: none;
+}
+
+.outofStock::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #00000099;
+	z-index: 9;
+	pointer-events: none;
+}

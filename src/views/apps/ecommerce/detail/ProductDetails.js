@@ -28,6 +28,7 @@ import {
   UncontrolledButtonDropdown,
 } from 'reactstrap'
 import { useSelector } from 'react-redux/es'
+import { fetchBrands } from '../store'
 
 const Product = (props) => {
   // ** Props
@@ -42,40 +43,20 @@ const Product = (props) => {
   } = props
 
   // ** State
-  const [selectedColor, setSelectedColor] = useState('primary')
 
   // ** Hooks
   const store = useSelector((state) => state.ecommerce)
 
   useEffect(() => {
     dispatch(getProduct(productId))
+    dispatch(fetchBrands())
   }, [dispatch, productId])
 
+  // ** Brand
+  const brandDetails = store?.brands?.find((brand) => brand.name === data.brand)
   // ** Check if item is in cart & wishlist
   const inCart = store.cart?.some((pro) => pro.id === data.id)
   const inWishlist = store.wishlist?.some((pro) => pro.id === data.id)
-
-  // ** Renders color options
-  // const renderColorOptions = () => {
-  //   return data.colorOptions.map((color, index) => {
-  //     const isLastColor = data.colorOptions.length - 1 === index
-
-  //     return (
-  //       <li
-  //         key={color}
-  //         className={classnames('d-inline-block', {
-  //           'me-25': !isLastColor,
-  //           selected: selectedColor === color,
-  //         })}
-  //         onClick={() => setSelectedColor(color)}
-  //       >
-  //         <div className={`color-option b-${color}`}>
-  //           <div className={`filloption bg-${color}`}></div>
-  //         </div>
-  //       </li>
-  //     )
-  //   })
-  // }
 
   // ** Handle Wishlist item toggle
   const handleWishlist = (val) => {
@@ -105,12 +86,15 @@ const Product = (props) => {
         md='5'
         xs='12'
       >
-        <div className='d-flex align-items-center justify-content-center'>
+        <div className='d-flex align-items-center justify-content-center position-relative'>
           <img
             className='img-fluid product-img'
             src={data.productImgs[0]}
             alt={data.name}
           />
+          <div className='item-brand'>
+            <img src={brandDetails?.logo} alt='' className='item-brandImg ' />
+          </div>
         </div>
       </Col>
       <Col md='7' xs='12'>
@@ -126,7 +110,7 @@ const Product = (props) => {
           </a>
         </CardText>
         <div className='ecommerce-details-price d-flex flex-wrap mt-1'>
-          <h4 className='item-price me-1'>${data.price}</h4>
+          <h4 className='item-price me-1'>${data.salePrice}</h4>
           <ul className='unstyled-list list-inline'>
             {new Array(5).fill().map((listItem, index) => {
               return (
@@ -153,15 +137,10 @@ const Product = (props) => {
               <span>Free Shipping</span>
             </li>
           ) : null}
-          <li>
-            <DollarSign size={19} />
-            <span>EMI options available</span>
-          </li>
         </ul>
         <hr />
-        <div className='product-color-options'>
-          <h6>Colors</h6>
-          {/* <ul className='list-unstyled mb-0'>{renderColorOptions()}</ul> */}
+        <div className='product-details'>
+          <h6>Details</h6>
         </div>
         <hr />
         <div className='d-flex flex-column flex-sm-row pt-1'>
