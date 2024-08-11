@@ -43,7 +43,7 @@
     "redux": "^4.2.1",
     "rollup-plugin-node-polyfills": "^0.2.1",
     "sass": "^1.69.5",
-    "swiper": "^8.4.7",
+    "swiper": "^11.1.9",
     "uuid": "^9.0.1",
     "yup": "^0.32.11"
   },

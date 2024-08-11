@@ -1,4 +1,5 @@
 // ** React Imports
+import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 
 // ** Third Party Components
@@ -34,17 +35,26 @@ const Cart = (props) => {
     getCartItems,
   } = props
 
+  // ** States
+  const [coupon, setCoupon] = useState('')
+  const [validCoupon, setValidCoupon] = useState('')
+
+  const handleInputChange = (e) => {
+    setCoupon(e.target.value.toUpperCase().trim())
+  }
+
   // ** Hooks
   const navigate = useNavigate()
 
   // ** Function to convert Date
-  const formatDate = (
-    value,
-    formatting = { month: 'short', day: 'numeric', year: 'numeric' }
-  ) => {
-    if (!value) return value
-    return new Intl.DateTimeFormat('en-US', formatting).format(new Date(value))
-  }
+  // const formatDate = (
+  //   value,
+  //   formatting = { month: 'short', day: 'numeric', year: 'numeric' }
+  // ) => {
+  //   if (!value) return value
+  //   return new Intl.DateTimeFormat('en-US', formatting).format(new Date(value))
+  // }
+  // ** Functions
   const handleCheckout = () => {
     const user = getUserData()
     if (!user) {
@@ -54,7 +64,6 @@ const Cart = (props) => {
     }
   }
 
-  // ** Funciton Function to toggle wishlist item
   const handleWishlistClick = (id, val) => {
     const user = getUserData()
     if (!user) {
@@ -69,9 +78,26 @@ const Cart = (props) => {
     dispatch(getCartItems())
   }
 
+  const handleApplyCoupon = (coupon) => {
+    if (coupon === '') return
+    setValidCoupon(coupon)
+    setCoupon('')
+    console.log('@Coupon', coupon)
+  }
+
   // ** Render cart items
   const renderCart = () => {
     return products.map((item) => {
+      // ** Available Offers
+      let availableOffers = 0
+
+      if (item.quantity <= 3) {
+        availableOffers = item.quantity
+      } else {
+        availableOffers = Math.ceil(item.quantity / 4)
+      }
+
+      // ** Image check
       const hasImages =
         Array.isArray(item.productImgs) && item.productImgs.length > 0
 
@@ -128,16 +154,18 @@ const Cart = (props) => {
                 max={10}
                 upHandler={<Plus />}
                 className='cart-input'
-                defaultValue={item.qty}
+                defaultValue={item.quantity}
                 downHandler={<Minus />}
               />
             </div>
-            <div className='delivery-date text-muted'>
+            {/* <div className='delivery-date text-muted'>
               Delivery by, {formatDate(item.shippingDate)}
-            </div>
-            <span className='text-success'>
-              {item.discountPercentage}% off {item.offers} offers Available
-            </span>
+            </div> */}
+            {item.discounted && item.discount > 0 && (
+              <span className='text-success'>
+                {item.discount}% off {availableOffers} offers Available
+              </span>
+            )}
           </CardBody>
           <div className='item-options text-center'>
             <div className='item-wrapper'>
@@ -157,7 +185,6 @@ const Cart = (props) => {
               color='light'
               onClick={() => {
                 dispatch(deleteCartItem(item.id))
-                console.log('Remove cart item Triggered')
               }}
             >
               <X size={14} className='me-25' />
@@ -194,42 +221,59 @@ const Cart = (props) => {
         <Card>
           <CardBody>
             <label className='section-label mb-1'>Options</label>
-            <InputGroup className='input-group-merge coupons'>
-              <Input placeholder='Coupons' />
-              <InputGroupText className='text-primary ms-0'>
-                Apply
-              </InputGroupText>
-            </InputGroup>
+            {!validCoupon && (
+              <InputGroup className='input-group-merge coupons'>
+                <Input
+                  type='text'
+                  placeholder='Coupons'
+                  value={coupon}
+                  onChange={handleInputChange}
+                />
+                <InputGroupText
+                  className='text-primary ms-0 cursor-pointer'
+                  onClick={() => handleApplyCoupon(coupon)}
+                >
+                  Apply
+                </InputGroupText>
+              </InputGroup>
+            )}
+            {validCoupon && (
+              <div className='d-flex align-item-center justify-content-center'>
+                <CardText className='text-dark me-auto'>{validCoupon}</CardText>
+                <X
+                  size={20}
+                  className='ms-25 text-danger cursor-pointer'
+                  onClick={() => setValidCoupon('')}
+                />
+              </div>
+            )}
             <hr />
             <div className='price-details'>
               <h6 className='price-title'>Price Details</h6>
               <ul className='list-unstyled'>
                 <li className='price-detail'>
-                  <div className='detail-title'>Total MRP</div>
+                  <div className='detail-title'>Product Cost</div>
                   <div className='detail-amt'>$598</div>
                 </li>
-                <li className='price-detail'>
-                  <div className='detail-title'>Bag Discount</div>
-                  <div className='detail-amt discount-amt text-success'>
-                    -25$
-                  </div>
-                </li>
-                <li className='price-detail'>
-                  <div className='detail-title'>Estimated Tax</div>
-                  <div className='detail-amt'>$1.3</div>
-                </li>
-                <li className='price-detail'>
-                  <div className='detail-title'>EMI Eligibility</div>
-                  <a
-                    href='/'
-                    className='detail-amt text-primary'
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Details
-                  </a>
-                </li>
+                {validCoupon && (
+                  <li className='price-detail'>
+                    <div className='detail-title'>Coupon Discount</div>
+                    <div className='detail-amt discount-amt text-success'>
+                      -132$
+                    </div>
+                  </li>
+                )}
+                {
+                  <li className='price-detail'>
+                    <div className='detail-title'>Discount</div>
+                    <div className='detail-amt discount-amt text-success'>
+                      -25$
+                    </div>
+                  </li>
+                }
                 <li className='price-detail'>
                   <div className='detail-title'>Delivery Charges</div>
+                  {false && <div className='detail-amt'>$10.3</div>}
                   <div className='detail-amt discount-amt text-success'>
                     Free
                   </div>

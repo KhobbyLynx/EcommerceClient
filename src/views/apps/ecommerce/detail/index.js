@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 // ** Product detail components
 import ItemFeatures from './ItemFeatures'
 import ProductDetails from './ProductDetails'
-// import RelatedProducts from './RelatedProducts'
+import RelatedProducts from './RelatedProducts'
 
 // ** Custom Components
 import BreadCrumbs from '@components/breadcrumbs'
@@ -70,9 +70,9 @@ const Details = () => {
               />
             </CardBody>
             <ItemFeatures />
-            {/* <CardBody>
-              <RelatedProducts />
-            </CardBody> */}
+            <CardBody>
+              <RelatedProducts dispatch={dispatch} store={store} />
+            </CardBody>
           </Card>
         ) : null}
       </div>

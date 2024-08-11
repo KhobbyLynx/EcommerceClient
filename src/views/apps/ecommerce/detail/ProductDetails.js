@@ -1,5 +1,5 @@
 // ** React Imports
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 // ** Third Party Components
@@ -29,6 +29,7 @@ import {
 } from 'reactstrap'
 import { useSelector } from 'react-redux/es'
 import { fetchBrands } from '../store'
+import SwiperGallery from './Swiper'
 
 const Product = (props) => {
   // ** Props
@@ -52,8 +53,6 @@ const Product = (props) => {
     dispatch(fetchBrands())
   }, [dispatch, productId])
 
-  // ** Brand
-  const brandDetails = store?.brands?.find((brand) => brand.name === data.brand)
   // ** Check if item is in cart & wishlist
   const inCart = store.cart?.some((pro) => pro.id === data.id)
   const inWishlist = store.wishlist?.some((pro) => pro.id === data.id)
@@ -86,16 +85,7 @@ const Product = (props) => {
         md='5'
         xs='12'
       >
-        <div className='d-flex align-items-center justify-content-center position-relative'>
-          <img
-            className='img-fluid product-img'
-            src={data.productImgs[0]}
-            alt={data.name}
-          />
-          <div className='item-brand'>
-            <img src={brandDetails?.logo} alt='' className='item-brandImg ' />
-          </div>
-        </div>
+        <SwiperGallery productImgs={data.productImgs} />
       </Col>
       <Col md='7' xs='12'>
         <h4>{data.name}</h4>
@@ -141,6 +131,11 @@ const Product = (props) => {
         <hr />
         <div className='product-details'>
           <h6>Details</h6>
+          <ul>
+            <li>Good</li>
+            <li>Better</li>
+            <li>Best</li>
+          </ul>
         </div>
         <hr />
         <div className='d-flex flex-column flex-sm-row pt-1'>
@@ -152,7 +147,7 @@ const Product = (props) => {
             /*eslint-disable */
             {...(inCart
               ? {
-                  to: '/checkout',
+                  to: '/cart',
                 }
               : {})}
             /*eslint-enable */
