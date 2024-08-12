@@ -15,7 +15,12 @@ import { ShoppingCart, Home, CreditCard } from 'react-feather'
 
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux'
-import { getCartItems, deleteCartItem, deleteWishlistItem, addToWishlist } from '../store'
+import {
+  getCartItems,
+  deleteCartItem,
+  deleteWishlistItem,
+  addToWishlist,
+} from '../store'
 
 // ** Styles
 import '@styles/base/pages/app-ecommerce.scss'
@@ -27,7 +32,7 @@ const Checkout = () => {
 
   // ** Store Vars
   const dispatch = useDispatch()
-  const store = useSelector(state => state.ecommerce)
+  const store = useSelector((state) => state.ecommerce)
 
   // ** Get Cart Items on mount
   useEffect(() => {
@@ -45,39 +50,43 @@ const Checkout = () => {
           stepper={stepper}
           dispatch={dispatch}
           products={store.cart}
+          store={store}
           getCartItems={getCartItems}
           addToWishlist={addToWishlist}
           deleteCartItem={deleteCartItem}
           deleteWishlistItem={deleteWishlistItem}
         />
-      )
+      ),
     },
     {
       id: 'Address',
       title: 'Address',
       subtitle: 'Enter Your Address',
       icon: <Home size={18} />,
-      content: <Address stepper={stepper} />
+      content: <Address stepper={stepper} />,
     },
     {
       id: 'payment',
       title: 'Payment',
       subtitle: 'Select Payment Method',
       icon: <CreditCard size={18} />,
-      content: <Payment stepper={stepper} />
-    }
+      content: <Payment stepper={stepper} />,
+    },
   ]
 
   return (
     <Fragment>
-      <BreadCrumbs title='Checkout' data={[{ title: 'eCommerce' }, { title: 'Checkout' }]} />
+      <BreadCrumbs
+        title='Checkout'
+        data={[{ title: 'eCommerce' }, { title: 'Checkout' }]}
+      />
       <Wizard
         ref={ref}
         steps={steps}
         className='checkout-tab-steps'
-        instance={el => setStepper(el)}
+        instance={(el) => setStepper(el)}
         options={{
-          linear: false
+          linear: false,
         }}
       />
     </Fragment>

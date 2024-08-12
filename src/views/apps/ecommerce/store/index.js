@@ -162,6 +162,10 @@ export const getCartItems = createAsyncThunk(
               unsubscribe,
             },
           })
+          dispatch(appEcommerceSlice.actions.cartCalculations())
+          dispatch(appEcommerceSlice.actions.discountCalculation())
+          dispatch(getCoupons())
+          dispatch(appEcommerceSlice.actions.deliveryChargesCalculation())
         } else {
           console.log('Cart document does not exist')
         }
@@ -174,47 +178,35 @@ export const getCartItems = createAsyncThunk(
   }
 )
 
+// ** GET COUPONS
+export const getCoupons = createAsyncThunk(
+  'appEcommerce/getCoupons',
+  async () => {
+    const couponRef = collection(db, 'coupons')
+
+    try {
+      let coupons = []
+      const querySnapshot = await getDocs(couponRef)
+      coupons = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }))
+
+      console.log('Coupons', coupons)
+
+      return coupons
+    } catch (error) {
+      console.log('Error fetching coupons', error)
+      throw error
+    }
+  }
+)
+
 // ** ACTION TO UPDATE PRODUCT IN REDUX
 export const updateProductInCart = (productId) => ({
   type: 'appEcommerce/updateProductInCart',
   payload: productId,
 })
-
-// ** ADD TO CART
-export const addToCart = createAsyncThunk(
-  'appEcommerce/addToCart',
-  async (productId, { dispatch, getState }) => {
-    // ** Get Login user id
-    const userId = getState().auth.userData.id
-
-    if (!userId) {
-      console.log('No user is signed in addToCart')
-      return
-    }
-
-    // ** Cart Ref
-    const cartRef = doc(db, 'cart', userId)
-
-    const cartItem = {
-      id: generateRandomId(),
-      productId,
-      qty: 1,
-      addedAt: new Date(),
-    }
-
-    console.log('Add To Cart Logs', productId, cartItem)
-    try {
-      await updateDoc(cartRef, {
-        cartItems: arrayUnion(cartItem),
-      })
-
-      // ** Dispatch action to update the product in the Redux state
-      dispatch(updateProductInCart(productId))
-    } catch (error) {
-      console.log('Error adding Item to the cart', error)
-    }
-  }
-)
 
 // ** DELETE ITEM FROM CART
 export const deleteCartItem = createAsyncThunk(
@@ -240,8 +232,54 @@ export const deleteCartItem = createAsyncThunk(
       })
 
       dispatch(getCartItems())
+      dispatch(appEcommerceSlice.actions.cartCalculations())
     } catch (error) {
       console.log('Error Updating the cart Item', error)
+    }
+  }
+)
+
+// ** ADD TO CART
+export const addToCart = createAsyncThunk(
+  'appEcommerce/addToCart',
+  async (productId, { dispatch, getState }) => {
+    // ** Check if item is already in cart
+    const existingItem = getState().ecommerce.cart.find(
+      (item) => item.id === productId
+    )
+    if (existingItem) {
+      return
+    }
+
+    // ** Get Login user id
+    const userId = getState().auth.userData.id
+    console.log('User ID @@@@@', userId)
+
+    if (!userId) {
+      console.log('No user is signed in addToCart')
+      return
+    }
+
+    // ** Cart Ref
+    const cartRef = doc(db, 'cart', userId)
+
+    const cartItem = {
+      id: generateRandomId(),
+      productId,
+      qty: 1,
+      addedAt: new Date(),
+    }
+
+    try {
+      await updateDoc(cartRef, {
+        cartItems: arrayUnion(cartItem),
+      })
+
+      // ** Dispatch action to update the product in the Redux state
+      dispatch(updateProductInCart(productId))
+      dispatch(appEcommerceSlice.actions.cartCalculations())
+    } catch (error) {
+      console.log('Error adding Item to the cart', error)
     }
   }
 )
@@ -249,7 +287,7 @@ export const deleteCartItem = createAsyncThunk(
 // ** UPDATE CART ITEM
 export const updateCartItems = createAsyncThunk(
   'appEcommerce/updateCartItems',
-  async (props, { getState }) => {
+  async (props, { dispatch, getState }) => {
     const { newQty, productId } = props
 
     // ** Get Login user id
@@ -261,23 +299,17 @@ export const updateCartItems = createAsyncThunk(
     // ** Cart Ref
     const cartRef = doc(db, 'cart', userId)
 
-    const cartItem = cartArray.find((item) => item.productId === productId)
-
-    const updatedCartItem = {
-      ...cartItem,
-      qty: newQty,
-      addedAt: new Date(),
-    }
     try {
-      // ** Remove old Item from the cart
+      // ** Update the quantity directly in the Firestore document
       await updateDoc(cartRef, {
-        cartItems: arrayRemove(cartItem),
+        cartItems: cartArray.map((item) =>
+          item.productId === productId ? { ...item, qty: newQty } : item
+        ),
       })
 
-      // ** Add Updated Item to the cart
-      await updateDoc(cartRef, {
-        cartItems: arrayUnion(updatedCartItem),
-      })
+      // ** Fetch the updated cart items
+      dispatch(getCartItems())
+      dispatch(appEcommerceSlice.actions.cartCalculations())
     } catch (error) {
       console.log('Error Updating the cart Item', error)
     }
@@ -407,6 +439,15 @@ export const updateProductInWishlist = (productId) => ({
 export const addToWishlist = createAsyncThunk(
   'appEcommerce/addToWishlist',
   async (productId, { dispatch, getState }) => {
+    // ** Check if item is already in wishlist
+    const existingItem = getState().ecommerce.wishlist.find(
+      (item) => item.id === productId
+    )
+    if (existingItem) {
+      dispatch(deleteWishlistItem(productId))
+      return
+    }
+
     // ** Get Login user id
     const userId = getState().auth.userData.id
 
@@ -550,6 +591,67 @@ export const filterProductsByCategory = createAsyncThunk(
   }
 )
 
+// ** Helper Functions
+const calculateTotalAmount = (cartItems) => {
+  let totalAmount = 0
+
+  console.log('@Home', cartItems)
+  cartItems.forEach((item) => {
+    totalAmount += item.salePrice * item.qty
+  })
+  return totalAmount
+}
+
+const calculateDiscount = (cartItems) => {
+  let totalDiscount = 0
+
+  // Get all discounted products
+  const discountedProducts = cartItems.filter((item) => item.discounted !== '')
+
+  console.log(
+    'Discounted Products:',
+    discountedProducts.map((item) => ({ ...item }))
+  )
+
+  // Calculate total discount
+  discountedProducts.forEach((item) => {
+    if (item.discounted === 'fixed') {
+      totalDiscount += item.discount * item.qty
+    } else if (item.discounted === 'percent') {
+      totalDiscount += (item.discount / 100) * item.salePrice * item.qty
+    }
+  })
+
+  console.log('Total Discount:', totalDiscount)
+  return totalDiscount
+}
+
+const calculateDeliveryCharges = (cartItems) => {
+  let totalAmountPaid = 0
+  let totalAmountsaved = 0
+  const hasFreeDelivery = cartItems.filter(
+    (item) => item.hasFreeShipping === false
+  )
+  hasFreeDelivery.forEach((item) => {
+    totalAmountPaid += item.salePrice * item.qty
+  })
+
+  const noFreeDelivery = cartItems.filter(
+    (item) => item.hasFreeShipping === true
+  )
+  noFreeDelivery.forEach((item) => {
+    totalAmountsaved += item.salePrice * item.qty
+  })
+
+  const deliveryCharges = totalAmountPaid * 0.015 // 15%
+  const deliverySaved = totalAmountsaved * 0.015 // 15%
+
+  return {
+    deliveryCharges,
+    deliverySaved,
+  }
+}
+
 // ** ECOMMERCE SLICE
 export const appEcommerceSlice = createSlice({
   name: 'appEcommerce',
@@ -571,6 +673,18 @@ export const appEcommerceSlice = createSlice({
     unsubscribeProducts: null,
     unsubscribeCart: null,
     unsubscribeWishlist: null,
+
+    // ** Checkout
+    overallTotal: 0,
+    totalAmount: 0,
+    discount: 0,
+    deliveryCharges: 0,
+    savedOnDelivery: 0,
+    address: [],
+
+    // ** Coupons
+    coupons: [],
+    couponDiscount: 0,
   },
   reducers: {
     updateProductInCart: (state, action) => {
@@ -622,6 +736,40 @@ export const appEcommerceSlice = createSlice({
     },
     removeBrand: (state, action) => {
       return state.selectedBrands.filter((brand) => brand !== action.payload)
+    },
+    cartCalculations: (state) => {
+      state.totalAmount = calculateTotalAmount(state.cart)
+      state.overallTotal =
+        state.totalAmount +
+        state.deliveryCharges -
+        state.discount -
+        state.couponDiscount
+    },
+    updateCouponDiscount: (state, action) => {
+      state.couponDiscount = action.payload
+      state.overallTotal =
+        state.totalAmount +
+        state.deliveryCharges -
+        state.discount -
+        state.couponDiscount
+    },
+    discountCalculation: (state) => {
+      state.discount = calculateDiscount(state.cart)
+      state.overallTotal =
+        state.totalAmount +
+        state.deliveryCharges -
+        state.discount -
+        state.couponDiscount
+    },
+    deliveryChargesCalculation: (state) => {
+      const deliveryChargesData = calculateDeliveryCharges(state.cart)
+      state.deliveryCharges = deliveryChargesData.deliveryCharges
+      state.savedOnDelivery = deliveryChargesData.deliverySaved
+      state.overallTotal =
+        state.totalAmount +
+        state.deliveryCharges -
+        state.discount -
+        state.couponDiscount
     },
   },
   extraReducers: (builder) => {
@@ -680,6 +828,9 @@ export const appEcommerceSlice = createSlice({
         state.products = action.payload.filteredProducts
         state.totalFilteredProducts = action.payload.totalFilteredProducts
       })
+      .addCase(getCoupons.fulfilled, (state, action) => {
+        state.coupons = action.payload
+      })
   },
 })
 
@@ -691,5 +842,9 @@ export const {
   removeCategory,
   addBrand,
   removeBrand,
+  cartCalculations,
+  updateCouponDiscount,
+  discountCalculation,
+  deliveryChargesCalculation,
 } = appEcommerceSlice.actions
 export default appEcommerceSlice.reducer

@@ -20,7 +20,10 @@ import {
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteCartItem, getProduct } from '@src/views/apps/ecommerce/store'
-import { getCartItems } from '../../../../views/apps/ecommerce/store'
+import {
+  getCartItems,
+  updateCartItems,
+} from '../../../../views/apps/ecommerce/store'
 
 // ** Styles
 import '@styles/react/libs/input-number/input-number.scss'
@@ -36,7 +39,6 @@ const CartDropdown = () => {
   // ** ComponentDidMount
   useEffect(() => {
     dispatch(getCartItems())
-    console.log('dispatch getcartitems @ cart dropdown')
   }, [])
 
   // ** Function to toggle Dropdown
@@ -63,6 +65,11 @@ const CartDropdown = () => {
           >
             {store.cart.map((item) => {
               total += item.salePrice
+
+              // ** Handle Quantity Change
+              const handleQuantityChange = (value) => {
+                dispatch(updateCartItems({ newQty: value, productId: item.id }))
+              }
 
               return (
                 <div key={item.id} className='list-item align-items-center'>
@@ -93,11 +100,12 @@ const CartDropdown = () => {
                     <div className='cart-item-qty'>
                       <InputNumber
                         min={1}
-                        max={10}
+                        max={item.quantity}
                         upHandler={<Plus />}
                         className='cart-input'
                         defaultValue={item.qty}
                         downHandler={<Minus />}
+                        onChange={handleQuantityChange}
                       />
                     </div>
                     <h5 className='cart-item-price'>${item.salePrice}</h5>

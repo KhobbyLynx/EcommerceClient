@@ -1,9 +1,9 @@
 // ** React Imports
 import { Fragment, useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 
 // ** Shop Components
-import Sidebar from './Sidebar'
-import Products from './Products'
+import Products from '../shop/Products'
 
 // ** Custom Components
 import Breadcrumbs from '@components/breadcrumbs'
@@ -17,16 +17,14 @@ import {
   addToWishlist,
   deleteCartItem,
   deleteWishlistItem,
-} from '../store'
+} from '../shop/store'
 
 // ** Styles
 import '@styles/react/apps/app-ecommerce.scss'
-import { useParams } from 'react-router-dom'
 
 const Shop = () => {
   // ** States
   const [activeView, setActiveView] = useState('grid')
-  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   // ** Vars
   const dispatch = useDispatch()
@@ -43,17 +41,17 @@ const Shop = () => {
     )
   }, [dispatch])
 
-  const params = useParams()
+  // ** Custom Products
+  const { id } = useParams()
 
-  console.log('Params from Custom Page', params)
-
+  console.log('Params from Custom Page', id)
   return (
     <Fragment>
       <Breadcrumbs
         title='Shop'
         data={[{ title: 'eCommerce' }, { title: 'Shop' }]}
       />
-      {/* // ** Products on shop page */}
+
       <Products
         store={store}
         products={store.products}
@@ -61,16 +59,12 @@ const Shop = () => {
         addToCart={addToCart}
         activeView={activeView}
         getProducts={getProducts}
-        sidebarOpen={sidebarOpen}
         getCartItems={getCartItems}
         setActiveView={setActiveView}
         addToWishlist={addToWishlist}
-        setSidebarOpen={setSidebarOpen}
         deleteCartItem={deleteCartItem}
         deleteWishlistItem={deleteWishlistItem}
       />
-      {/* // ** Shop Page Filtering Sidebar */}
-      <Sidebar sidebarOpen={sidebarOpen} />
     </Fragment>
   )
 }

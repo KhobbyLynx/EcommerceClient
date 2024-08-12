@@ -5,6 +5,7 @@ const Home = lazy(() => import('../../views/apps/home'))
 const About = lazy(() => import('../../views/pages/about/About'))
 const Contact = lazy(() => import('../../views/pages/contact/Contact'))
 
+const customShop = lazy(() => import('../../views/apps/ecommerce/customShop'))
 const EcommerceShop = lazy(() => import('../../views/apps/ecommerce/shop'))
 const EcommerceDetail = lazy(() => import('../../views/apps/ecommerce/detail'))
 const EcommerceWishlist = lazy(() =>
@@ -64,6 +65,22 @@ const AppRoutes = [
   {
     element: <EcommerceShop />,
     path: '/shop',
+    meta: {
+      className: 'ecommerce-application',
+      publicRoute: true,
+    },
+  },
+  {
+    element: <customShop />,
+    path: '/generators',
+    meta: {
+      className: 'ecommerce-application',
+      publicRoute: true,
+    },
+  },
+  {
+    element: <customShop />,
+    path: '/pumps',
     meta: {
       className: 'ecommerce-application',
       publicRoute: true,

@@ -22,6 +22,7 @@ import {
 // ** Styles
 import '@styles/react/libs/input-number/input-number.scss'
 import { getUserData } from '../../../../../utility/Utils'
+import { updateCouponDiscount, updateCartItems } from '../../store'
 
 const Cart = (props) => {
   // ** Props
@@ -33,11 +34,17 @@ const Cart = (props) => {
     addToWishlist,
     deleteWishlistItem,
     getCartItems,
+    store,
   } = props
 
   // ** States
   const [coupon, setCoupon] = useState('')
   const [validCoupon, setValidCoupon] = useState('')
+  const [couponErrMsg, setCouponErrMsg] = useState('')
+
+  setTimeout(() => {
+    setCouponErrMsg('')
+  }, 6000)
 
   const handleInputChange = (e) => {
     setCoupon(e.target.value.toUpperCase().trim())
@@ -78,11 +85,51 @@ const Cart = (props) => {
     dispatch(getCartItems())
   }
 
+  // ** Apply Coupon
   const handleApplyCoupon = (coupon) => {
     if (coupon === '') return
+
+    const selectedCoupon = store.coupons.find((c) => c.code === coupon)
+
+    // ** Invalid
+    if (!selectedCoupon) {
+      setCouponErrMsg('Invalid Coupon')
+      setCoupon('')
+      return
+    }
+
+    // ** Expired
+    const currentDate = new Date()
+    const expiryDate = selectedCoupon.expiryDate.toDate()
+    if (expiryDate <= currentDate) {
+      setCouponErrMsg('Coupon has expired')
+      setCoupon('')
+      return
+    }
+
+    // ** Valid
     setValidCoupon(coupon)
     setCoupon('')
-    console.log('@Coupon', coupon)
+    if (selectedCoupon.type === 'fixed') {
+      dispatch(updateCouponDiscount(selectedCoupon.discount))
+    } else {
+      const calcutedDiscount =
+        (selectedCoupon.discount / 100) * store.totalAmount
+      dispatch(updateCouponDiscount(calcutedDiscount))
+    }
+  }
+
+  // ** Handle Enter Key
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault() // Prevent the default behavior of the Enter key
+      handleApplyCoupon(coupon) // Call the function to apply the coupon
+    }
+  }
+
+  const handleCancelCoupon = () => {
+    setValidCoupon('')
+    dispatch(updateCouponDiscount(0))
   }
 
   // ** Render cart items
@@ -90,6 +137,21 @@ const Cart = (props) => {
     return products.map((item) => {
       // ** Available Offers
       let availableOffers = 0
+
+      // ** Handle Quantity Change
+      console.log(
+        '44444444',
+        store.overallTotal,
+        typeof store.discount,
+        store.deliveryCharges,
+        store.savedOnDelivery,
+        typeof store.totalAmount,
+        store.couponDiscount
+      )
+
+      const handleQuantityChange = (value) => {
+        dispatch(updateCartItems({ newQty: value, productId: item.id }))
+      }
 
       if (item.quantity <= 3) {
         availableOffers = item.quantity
@@ -151,11 +213,12 @@ const Cart = (props) => {
               <span className='quantity-title me-50'>Qty</span>
               <InputNumber
                 min={1}
-                max={10}
+                max={item.quantity}
                 upHandler={<Plus />}
                 className='cart-input'
-                defaultValue={item.quantity}
+                defaultValue={item.qty}
                 downHandler={<Minus />}
+                onChange={handleQuantityChange}
               />
             </div>
             {/* <div className='delivery-date text-muted'>
@@ -163,7 +226,10 @@ const Cart = (props) => {
             </div> */}
             {item.discounted && item.discount > 0 && (
               <span className='text-success'>
-                {item.discount}% off {availableOffers} offers Available
+                {item.discounted === 'percent'
+                  ? `${item.discount}%`
+                  : `-$${item.discount}`}{' '}
+                off {availableOffers} offers Available
               </span>
             )}
           </CardBody>
@@ -222,28 +288,36 @@ const Cart = (props) => {
           <CardBody>
             <label className='section-label mb-1'>Options</label>
             {!validCoupon && (
-              <InputGroup className='input-group-merge coupons'>
-                <Input
-                  type='text'
-                  placeholder='Coupons'
-                  value={coupon}
-                  onChange={handleInputChange}
-                />
-                <InputGroupText
-                  className='text-primary ms-0 cursor-pointer'
-                  onClick={() => handleApplyCoupon(coupon)}
-                >
-                  Apply
-                </InputGroupText>
-              </InputGroup>
+              <>
+                <InputGroup className='input-group-merge coupons'>
+                  <Input
+                    type='text'
+                    placeholder='Coupons'
+                    value={coupon}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                  />
+                  <InputGroupText
+                    className='text-primary ms-0 cursor-pointer'
+                    onClick={() => handleApplyCoupon(coupon)}
+                  >
+                    Apply
+                  </InputGroupText>
+                </InputGroup>
+                <span className='text-danger'>
+                  {couponErrMsg && couponErrMsg}
+                </span>
+              </>
             )}
             {validCoupon && (
               <div className='d-flex align-item-center justify-content-center'>
-                <CardText className='text-dark me-auto'>{validCoupon}</CardText>
+                <CardText className='text-dark me-auto'>
+                  Coupon: {validCoupon}
+                </CardText>
                 <X
                   size={20}
                   className='ms-25 text-danger cursor-pointer'
-                  onClick={() => setValidCoupon('')}
+                  onClick={handleCancelCoupon}
                 />
               </div>
             )}
@@ -253,13 +327,23 @@ const Cart = (props) => {
               <ul className='list-unstyled'>
                 <li className='price-detail'>
                   <div className='detail-title'>Product Cost</div>
-                  <div className='detail-amt'>$598</div>
+                  <div className='detail-amt'>
+                    $
+                    {store.totalAmount.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </div>
                 </li>
                 {validCoupon && (
                   <li className='price-detail'>
                     <div className='detail-title'>Coupon Discount</div>
                     <div className='detail-amt discount-amt text-success'>
-                      -132$
+                      $
+                      {store.couponDiscount.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
                     </div>
                   </li>
                 )}
@@ -267,23 +351,54 @@ const Cart = (props) => {
                   <li className='price-detail'>
                     <div className='detail-title'>Discount</div>
                     <div className='detail-amt discount-amt text-success'>
-                      -25$
+                      $
+                      {store.discount.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
                     </div>
                   </li>
                 }
                 <li className='price-detail'>
                   <div className='detail-title'>Delivery Charges</div>
-                  {false && <div className='detail-amt'>$10.3</div>}
-                  <div className='detail-amt discount-amt text-success'>
-                    Free
-                  </div>
+                  {store.deliveryCharges > 0 ? (
+                    <div className='detail-amt text-success'>
+                      $
+                      {store.deliveryCharges.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </div>
+                  ) : (
+                    <div className='detail-amt discount-amt text-success'>
+                      Free
+                    </div>
+                  )}
                 </li>
+                {store.savedOnDelivery > 0 && (
+                  <li className='price-detail'>
+                    <div className='detail-title'>Free Delivery</div>
+                    <div className='detail-amt text-success'>
+                      - $
+                      {store.savedOnDelivery.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </div>
+                  </li>
+                )}
               </ul>
               <hr />
               <ul className='list-unstyled'>
                 <li className='price-detail'>
                   <div className='detail-title detail-total'>Total</div>
-                  <div className='detail-amt fw-bolder'>$574</div>
+                  <div className='detail-amt fw-bolder'>
+                    $
+                    {store.overallTotal.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </div>
                 </li>
               </ul>
               <Button
