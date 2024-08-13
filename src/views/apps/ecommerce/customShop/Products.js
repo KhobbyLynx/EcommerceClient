@@ -6,9 +6,6 @@ import ProductCards from './ProductCards'
 import ProductsHeader from './ProductsHeader'
 import ProductsSearchbar from './ProductsSearchbar'
 
-// ** Third Party Components
-import classnames from 'classnames'
-
 // ** Reactstrap Imports
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap'
 
@@ -16,10 +13,10 @@ const ProductsPage = (props) => {
   // ** Props
   const {
     store,
+    products,
     dispatch,
     addToCart,
     activeView,
-    sidebarOpen,
     getProducts,
     getCartItems,
     addToWishlist,
@@ -73,7 +70,7 @@ const ProductsPage = (props) => {
   }
 
   return (
-    <div className='content-detached content-right'>
+    <div className=''>
       <div className='content-body'>
         <ProductsHeader
           store={store}
@@ -83,25 +80,19 @@ const ProductsPage = (props) => {
           setActiveView={setActiveView}
           setSidebarOpen={setSidebarOpen}
         />
-        <div
-          className={classnames('body-content-overlay', {
-            show: sidebarOpen,
-          })}
-          onClick={() => setSidebarOpen(false)}
-        ></div>
         <ProductsSearchbar
           dispatch={dispatch}
           getProducts={getProducts}
           store={store}
         />
-        {store.products.length ? (
+        {products.length ? (
           <Fragment>
             <ProductCards
               store={store}
               dispatch={dispatch}
               addToCart={addToCart}
               activeView={activeView}
-              products={store.products}
+              products={products}
               getProducts={getProducts}
               getCartItems={getCartItems}
               addToWishlist={addToWishlist}
