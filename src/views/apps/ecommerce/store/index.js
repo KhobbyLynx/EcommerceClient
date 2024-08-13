@@ -680,7 +680,7 @@ export const appEcommerceSlice = createSlice({
     discount: 0,
     deliveryCharges: 0,
     savedOnDelivery: 0,
-    address: [],
+    selectedAddress: {},
 
     // ** Coupons
     coupons: [],
@@ -771,6 +771,9 @@ export const appEcommerceSlice = createSlice({
         state.discount -
         state.couponDiscount
     },
+    selectDeliveryAddress: (state, action) => {
+      state.selectedAddress = action.payload
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -846,5 +849,6 @@ export const {
   updateCouponDiscount,
   discountCalculation,
   deliveryChargesCalculation,
+  selectDeliveryAddress,
 } = appEcommerceSlice.actions
 export default appEcommerceSlice.reducer
