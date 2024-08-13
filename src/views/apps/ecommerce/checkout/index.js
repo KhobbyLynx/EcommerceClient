@@ -9,9 +9,11 @@ import BreadCrumbs from '@components/breadcrumbs'
 import Cart from './steps/Cart'
 import Address from './steps/Address'
 import Payment from './steps/Payment'
+import Delivery from './steps/Delivery'
 
 // ** Third Party Components
 import { ShoppingCart, Home, CreditCard } from 'react-feather'
+import { TbTruckDelivery } from 'react-icons/tb'
 
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux'
@@ -66,11 +68,18 @@ const Checkout = () => {
       content: <Address stepper={stepper} />,
     },
     {
+      id: 'delivery',
+      title: 'Delivery',
+      subtitle: 'Delivery Details',
+      icon: <TbTruckDelivery size={18} />,
+      content: <Delivery stepper={stepper} store={store} />,
+    },
+    {
       id: 'payment',
       title: 'Payment',
       subtitle: 'Select Payment Method',
       icon: <CreditCard size={18} />,
-      content: <Payment stepper={stepper} />,
+      content: <Payment stepper={stepper} store={store} />,
     },
   ]
 

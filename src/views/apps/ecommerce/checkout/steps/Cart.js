@@ -1,6 +1,6 @@
 // ** React Imports
 import { useState } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 // ** Third Party Components
 import classnames from 'classnames'
@@ -208,7 +208,7 @@ const Cart = (props) => {
                 </ul>
               </div>
             </div>
-            <span className='text-success mb-1'>In Stock</span>
+            <span className=' mb-1'>In Stock</span>
             <div className='item-quantity'>
               <span className='quantity-title me-50'>Qty</span>
               <InputNumber
@@ -225,7 +225,7 @@ const Cart = (props) => {
               Delivery by, {formatDate(item.shippingDate)}
             </div> */}
             {item.discounted && item.discount > 0 && (
-              <span className='text-success'>
+              <span className=''>
                 {item.discounted === 'percent'
                   ? `${item.discount}%`
                   : `-$${item.discount}`}{' '}
@@ -338,7 +338,7 @@ const Cart = (props) => {
                 {validCoupon && (
                   <li className='price-detail'>
                     <div className='detail-title'>Coupon Discount</div>
-                    <div className='detail-amt discount-amt text-success'>
+                    <div className='detail-amt discount-amt '>
                       $
                       {store.couponDiscount.toLocaleString(undefined, {
                         minimumFractionDigits: 2,
@@ -347,10 +347,10 @@ const Cart = (props) => {
                     </div>
                   </li>
                 )}
-                {
+                {store.discount > 0 && (
                   <li className='price-detail'>
                     <div className='detail-title'>Discount</div>
-                    <div className='detail-amt discount-amt text-success'>
+                    <div className='detail-amt discount-amt '>
                       $
                       {store.discount.toLocaleString(undefined, {
                         minimumFractionDigits: 2,
@@ -358,11 +358,11 @@ const Cart = (props) => {
                       })}
                     </div>
                   </li>
-                }
+                )}
                 <li className='price-detail'>
                   <div className='detail-title'>Delivery Charges</div>
                   {store.deliveryCharges > 0 ? (
-                    <div className='detail-amt text-success'>
+                    <div className='detail-amt '>
                       $
                       {store.deliveryCharges.toLocaleString(undefined, {
                         minimumFractionDigits: 2,
@@ -378,7 +378,7 @@ const Cart = (props) => {
                 {store.savedOnDelivery > 0 && (
                   <li className='price-detail'>
                     <div className='detail-title'>Free Delivery</div>
-                    <div className='detail-amt text-success'>
+                    <div className='detail-amt '>
                       - $
                       {store.savedOnDelivery.toLocaleString(undefined, {
                         minimumFractionDigits: 2,
@@ -392,7 +392,7 @@ const Cart = (props) => {
               <ul className='list-unstyled'>
                 <li className='price-detail'>
                   <div className='detail-title detail-total'>Total</div>
-                  <div className='detail-amt fw-bolder'>
+                  <div className='detail-amt fw-bolder text-success'>
                     $
                     {store.overallTotal.toLocaleString(undefined, {
                       minimumFractionDigits: 2,

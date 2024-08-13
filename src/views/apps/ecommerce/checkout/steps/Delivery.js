@@ -1,5 +1,3 @@
-import { images } from '/src/constants'
-
 // ** Reactstrap Imports
 import {
   Row,
@@ -13,10 +11,11 @@ import {
   CardTitle,
   CardBody,
   CardText,
+  Badge,
 } from 'reactstrap'
+import { ghanaRegions } from '../../../../../utility/Utils'
 
-const Payment = ({ store }) => {
-  console.log('STORE', store)
+const Payment = ({ stepper, store }) => {
   return (
     <Form
       className='list-view product-checkout'
@@ -27,59 +26,70 @@ const Payment = ({ store }) => {
       <div className='payment-type'>
         <Card>
           <CardHeader className='flex-column align-items-start'>
-            <CardTitle tag='h4'>Payment options</CardTitle>
+            <CardTitle tag='h4'>Delivery options</CardTitle>
             <CardText className='text-muted mt-25'>
-              Be sure to click on correct payment option
+              Be sure about delivery option
             </CardText>
           </CardHeader>
           <CardBody>
             <ul className='other-payment-options list-unstyled'>
               <li className='py-50'>
                 <div className='form-check'>
-                  <Input type='radio' name='paymentMethod' id='mobile-money' />
-                  <Label className='form-label' for='mobile-money'>
-                    Mobile Money
-                  </Label>
-                </div>
-              </li>
-              <li className='py-50'>
-                <div className='form-check'>
-                  <Input type='radio' name='paymentMethod' id='credit-card' />
-                  <Label className='form-label' for='credit-card'>
-                    Credit / Debit Card
-                  </Label>
-                </div>
-              </li>
-              <li className='py-50'>
-                <div className='form-check'>
                   <Input
                     type='radio'
-                    name='paymentMethod'
-                    id='payment-net-banking'
+                    name='deliveryMethod'
+                    id='door-delivery'
                   />
-                  <Label className='form-label' for='payment-net-banking'>
-                    Bank Transfer
+                  <Label className='form-label' for='door-delivery'>
+                    Door Delivery
                   </Label>
                 </div>
               </li>
               <li className='py-50'>
                 <div className='form-check'>
-                  <Input type='radio' name='paymentMethod' id='payment-cod' />
-                  <Label className='form-label' for='payment-cod'>
-                    Cash On Delivery
+                  <Input type='radio' name='deliveryMethod' id='pick-up' />
+                  <Label className='form-label' for='pick-up'>
+                    Pickup at Nearest Store
                   </Label>
                 </div>
               </li>
             </ul>
-            <hr className='my-2' />
-            <div className='mb-25'>
-              <img src={images.pay} alt='' />
-            </div>
+            <Button
+              block
+              color='primary'
+              onClick={() => stepper.next()}
+              classnames='btn-next place-order'
+            >
+              Proceed
+            </Button>
           </CardBody>
         </Card>
       </div>
       {!!store && (
         <div className='amount-payable checkout-options'>
+          {Object.keys(store.selectedAddress).length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle tag='h4'>
+                  {store.selectedAddress.receiverName}
+                </CardTitle>
+                <Badge color='light-primary' className='ms-1  fs-6'>
+                  Delivery Address
+                </Badge>
+              </CardHeader>
+              <CardBody>
+                <CardText className='mb-0'>
+                  {store.selectedAddress.address}
+                </CardText>
+                <CardText>{store.selectedAddress.city}</CardText>
+                <CardText>{store.selectedAddress.digitalAddress}</CardText>
+                <CardText>
+                  {ghanaRegions[store.selectedAddress.region]}
+                </CardText>
+                <CardText>{store.selectedAddress.number}</CardText>
+              </CardBody>
+            </Card>
+          )}
           <Card>
             <CardHeader>
               <CardTitle tag='h4'>Price Details</CardTitle>
@@ -165,9 +175,6 @@ const Payment = ({ store }) => {
                     </div>
                   </li>
                 </ul>
-                <Button block color='primary' classnames='btn-next place-order'>
-                  Confirm Order
-                </Button>
               </div>
             </CardBody>
           </Card>
