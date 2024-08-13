@@ -76,6 +76,7 @@ const LoginBasic = () => {
 
   // ** Login Function
   const handleLoginFunc = async (user) => {
+    logoutFirebase()
     try {
       const { email: authEmail, uid: userId, photoURL } = user
       const { accessToken, refreshToken } = user.stsTokenManager
