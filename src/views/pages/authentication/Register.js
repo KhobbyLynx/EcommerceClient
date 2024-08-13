@@ -30,7 +30,10 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Controller, useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
 import { useState } from 'react'
-import { handleGoogleAuth } from '../../../redux/authentication'
+import {
+  handleGoogleAuth,
+  handleRegisterUser,
+} from '../../../redux/authentication'
 
 const defaultValues = {
   email: '',
