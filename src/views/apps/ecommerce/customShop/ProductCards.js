@@ -94,7 +94,6 @@ const ProductCards = (props) => {
           (brand) => brand.name === item.brand
         )
         // ** Check if item is in cart & wishlist
-        console.log('Item in the Product Card', item)
         const inCart = store.cart?.some((pro) => pro.id === item.id)
 
         const inWishlist = store.wishlist?.some((pro) => pro.id === item.id)
