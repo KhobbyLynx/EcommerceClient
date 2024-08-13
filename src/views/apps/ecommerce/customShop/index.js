@@ -1,9 +1,8 @@
 // ** React Imports
 import { Fragment, useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
 
 // ** Shop Components
-import Products from '../shop/Products'
+import Products from './Products'
 
 // ** Custom Components
 import Breadcrumbs from '@components/breadcrumbs'
@@ -17,7 +16,7 @@ import {
   addToWishlist,
   deleteCartItem,
   deleteWishlistItem,
-} from '../shop/store'
+} from '../store'
 
 // ** Styles
 import '@styles/react/apps/app-ecommerce.scss'
@@ -41,20 +40,26 @@ const Shop = () => {
     )
   }, [dispatch])
 
-  // ** Custom Products
-  const { id } = useParams()
+  const pathname = window.location.pathname
+  const lastSegment = pathname.substring(pathname.lastIndexOf('/') + 1)
 
-  console.log('Params from Custom Page', id)
+  // ** Filter Products
+  const filteredProducts = store.allProducts.filter(
+    (product) => product.category.toLowerCase() === lastSegment
+  )
+
+  console.log('store.allProducts', store.allProducts)
+  console.log('filteredProducts', filteredProducts)
   return (
     <Fragment>
       <Breadcrumbs
         title='Shop'
-        data={[{ title: 'eCommerce' }, { title: 'Shop' }]}
+        data={[{ title: 'eCommerce' }, { title: `${lastSegment}` }]}
       />
 
       <Products
         store={store}
-        products={store.products}
+        products={filteredProducts}
         dispatch={dispatch}
         addToCart={addToCart}
         activeView={activeView}
