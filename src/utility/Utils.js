@@ -23,6 +23,26 @@ export const logoutFirebase = async () => {
   }
 }
 
+// ** Ghana Regions
+export const ghanaRegions = {
+  253: 'Ahafo',
+  242: 'Ashanti',
+  251: 'Bono',
+  252: 'Bono East',
+  244: 'Central',
+  245: 'Eastern',
+  241: 'Greater Accra',
+  254: 'North East',
+  246: 'Northern',
+  257: 'Oti',
+  255: 'Savannah',
+  248: 'Upper East',
+  258: 'Upper West',
+  247: 'Volta',
+  250: 'Western',
+  256: 'Western North',
+}
+
 // ** Generate Random ID
 export const generateRandomId = () => {
   const uuid = uuidv4()
