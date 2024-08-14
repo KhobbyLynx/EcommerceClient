@@ -22,7 +22,7 @@ const Wizard = forwardRef((props, ref) => {
     className,
     headerClassName,
     contentClassName,
-    contentWrapperClassName
+    contentWrapperClassName,
   } = props
 
   // ** State
@@ -49,19 +49,25 @@ const Wizard = forwardRef((props, ref) => {
     return steps.map((step, index) => {
       return (
         <Fragment key={step.id}>
-          {index !== 0 && index !== steps.length ? <div className='line'>{separator}</div> : null}
+          {index !== 0 && index !== steps.length ? (
+            <div className='line'>{separator}</div>
+          ) : null}
           <div
             className={classnames('step', {
               crossed: activeIndex > index,
-              active: index === activeIndex
+              active: index === activeIndex,
             })}
             data-target={`#${step.id}`}
           >
             <button type='button' className='step-trigger'>
-              <span className='bs-stepper-box'>{step.icon ? step.icon : index + 1}</span>
+              <span className='bs-stepper-box'>
+                {step.icon ? step.icon : index + 1}
+              </span>
               <span className='bs-stepper-label'>
                 <span className='bs-stepper-title'>{step.title}</span>
-                {step.subtitle ? <span className='bs-stepper-subtitle'>{step.subtitle}</span> : null}
+                {step.subtitle ? (
+                  <span className='bs-stepper-subtitle'>{step.subtitle}</span>
+                ) : null}
               </span>
             </button>
           </div>
@@ -77,7 +83,7 @@ const Wizard = forwardRef((props, ref) => {
         <div
           className={classnames('content', {
             [contentClassName]: contentClassName,
-            'active dstepper-block': activeIndex === index
+            'active dstepper-block': activeIndex === index,
           })}
           id={step.id}
           key={step.id}
@@ -95,11 +101,21 @@ const Wizard = forwardRef((props, ref) => {
         [className]: className,
         vertical: type === 'vertical',
         'vertical wizard-modern': type === 'modern-vertical',
-        'wizard-modern': type === 'modern-horizontal'
+        'wizard-modern': type === 'modern-horizontal',
       })}
     >
-      <div className={classnames('bs-stepper-header', { [headerClassName]: headerClassName })}>{renderHeader()}</div>
-      <div className={classnames('bs-stepper-content', { [contentWrapperClassName]: contentWrapperClassName })}>
+      <div
+        className={classnames('bs-stepper-header pointer-events', {
+          [headerClassName]: headerClassName,
+        })}
+      >
+        {renderHeader()}
+      </div>
+      <div
+        className={classnames('bs-stepper-content', {
+          [contentWrapperClassName]: contentWrapperClassName,
+        })}
+      >
         {renderContent()}
       </div>
     </div>
@@ -112,7 +128,7 @@ export default Wizard
 Wizard.defaultProps = {
   options: {},
   type: 'horizontal',
-  separator: <ChevronRight size={17} />
+  separator: <ChevronRight size={17} />,
 }
 
 // ** PropTypes
@@ -131,7 +147,7 @@ Wizard.propTypes = {
       title: PropTypes.string.isRequired,
       subtitle: PropTypes.string,
       icon: PropTypes.any,
-      content: PropTypes.any.isRequired
+      content: PropTypes.any.isRequired,
     })
-  ).isRequired
+  ).isRequired,
 }
