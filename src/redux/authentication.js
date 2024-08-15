@@ -145,9 +145,7 @@ export const handleGoogleAuth = createAsyncThunk(
         ))
 
         return localUserData
-      }
-
-      if (urlPath === 'login') {
+      } else if (urlPath === 'login') {
         // ** users collections ref
         const userCollectionRef = collection(db, 'profiles')
 
@@ -181,6 +179,8 @@ export const handleGoogleAuth = createAsyncThunk(
         ))
 
         return localUserData
+      } else {
+        return
       }
     } catch (error) {
       const errorCode = error.code
@@ -216,6 +216,9 @@ export const authSlice = createSlice({
     updateAddresses: (state, action) => {
       state.userData.address = action.payload
     },
+    updateUserName: (state, action) => {
+      state.userData.fullname = action.payload
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -230,6 +233,7 @@ export const authSlice = createSlice({
   },
 })
 
-export const { handleLogin, handleLogout, updateAddresses } = authSlice.actions
+export const { handleLogin, handleLogout, updateAddresses, updateUserName } =
+  authSlice.actions
 
 export default authSlice.reducer
