@@ -3,7 +3,7 @@ import './Category.scss'
 import { categories } from '../data'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { selectCategory, filterByCategory } from '../../ecommerce/store'
+import { selectCategory, filterByCategory } from '../../../ecommerce/store'
 
 const Category = () => {
   const navigate = useNavigate()

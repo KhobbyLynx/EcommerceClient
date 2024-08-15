@@ -5,8 +5,8 @@ import './Home.scss'
 import Category from './category/Category'
 // import BookSlider from '../../components/bookSlider/BookSlider'
 
-import ProductCards from '../ecommerce/shop/ProductCards'
-import Brands from './brands/Brands'
+import ProductCards from '../../ecommerce/shop/ProductCards'
+// import Brands from './brands/Brands'
 
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux'
@@ -18,7 +18,7 @@ import {
   deleteCartItem,
   deleteWishlistItem,
   getWishlistItems,
-} from '../ecommerce/store'
+} from '../../ecommerce/store'
 
 // ** Styles
 import '@styles/react/apps/app-ecommerce.scss'
