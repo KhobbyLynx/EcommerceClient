@@ -3,7 +3,7 @@ import './About.scss'
 
 import PageBanner from '../../../@core/components/ecom/pageBanner/PageBanner'
 import FeatureCard from '../../../@core/components/ecom/feature/FeatureCard'
-import { aboutBanner, features } from '../../apps/home/data'
+import { aboutBanner, features } from '../../apps/ecommerce/home/data'
 
 const About = () => {
   const Features = features.map((feature) => {

@@ -6,7 +6,7 @@ import {
   FaClock,
 } from 'react-icons/fa'
 import './Contact.scss'
-import { contactBanner } from '../../apps/home/data'
+import { contactBanner } from '../../apps/ecommerce/home/data'
 import PageBanner from '../../../@core/components/ecom/pageBanner/PageBanner'
 
 const Contact = () => {
