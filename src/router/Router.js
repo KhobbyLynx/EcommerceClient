@@ -64,11 +64,11 @@ const Router = () => {
       element: <BlankLayout />,
       children: [{ path: '/blog', element: <Maintenance /> }],
     },
-    {
-      path: '/faq',
-      element: <BlankLayout />,
-      children: [{ path: '/faq', element: <Maintenance /> }],
-    },
+    // {
+    //   path: '/faq',
+    //   element: <BlankLayout />,
+    //   children: [{ path: '/faq', element: <Maintenance /> }],
+    // },
     {
       path: '/more',
       element: <BlankLayout />,
