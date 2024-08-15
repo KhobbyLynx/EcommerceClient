@@ -6,6 +6,8 @@ import { v4 as uuidv4 } from 'uuid'
 // ** Icon
 import { Coffee, LogIn, LogOut, X, MessageCircle } from 'react-feather'
 import { BiCart, BiHeart } from 'react-icons/bi'
+import { IoCheckmarkDoneCircleOutline } from 'react-icons/io5'
+import { MdErrorOutline } from 'react-icons/md'
 
 // ** Custom Components
 import Avatar from '@components/avatar'
@@ -205,6 +207,54 @@ export const ToastContentLogin = ({ t, name }) => {
   )
 }
 
+export const ToastContentSuccess = ({ t, title, msg }) => {
+  return (
+    <div className='d-flex'>
+      <div className='me-1'>
+        <Avatar
+          size='sm'
+          color='success'
+          icon={<IoCheckmarkDoneCircleOutline size={12} />}
+        />
+      </div>
+      <div className='d-flex flex-column'>
+        <div className='d-flex justify-content-between'>
+          <h6>
+            <strong>{title}</strong>
+          </h6>
+          <X
+            size={12}
+            className='cursor-pointer'
+            onClick={() => toast.dismiss(t.id)}
+          />
+        </div>
+        <p>{msg}</p>
+      </div>
+    </div>
+  )
+}
+export const ToastContentError = ({ t, title, msg }) => {
+  return (
+    <div className='d-flex'>
+      <div className='me-1'>
+        <Avatar size='sm' color='success' icon={<MdErrorOutline size={12} />} />
+      </div>
+      <div className='d-flex flex-column'>
+        <div className='d-flex justify-content-between'>
+          <h6>
+            <strong>{title}</strong>
+          </h6>
+          <X
+            size={12}
+            className='cursor-pointer'
+            onClick={() => toast.dismiss(t.id)}
+          />
+        </div>
+        <p>{msg}</p>
+      </div>
+    </div>
+  )
+}
 export const ToastContentLogout = ({ t, name, role }) => {
   return (
     <div className='d-flex'>
