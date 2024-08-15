@@ -12,10 +12,14 @@ import {
   CardBody,
   CardText,
   Badge,
+  FormFeedback,
+  Alert,
 } from 'reactstrap'
 import { ghanaRegions } from '../../../../../utility/Utils'
+import { AlertCircle } from 'react-feather'
 
 const Payment = ({ stepper, store }) => {
+  console.log('DA', store.selectedAddress)
   return (
     <Form
       className='list-view product-checkout'
@@ -33,24 +37,80 @@ const Payment = ({ stepper, store }) => {
           </CardHeader>
           <CardBody>
             <ul className='other-payment-options list-unstyled'>
-              <li className='py-50'>
-                <div className='form-check'>
-                  <Input
-                    type='radio'
-                    name='deliveryMethod'
-                    id='door-delivery'
-                  />
-                  <Label className='form-label' for='door-delivery'>
-                    Door Delivery
-                  </Label>
-                </div>
-              </li>
+              {store.selectedAddress.region === '241' ? (
+                <li className='py-50'>
+                  <div className='form-check'>
+                    <Input
+                      type='radio'
+                      name='deliveryMethod'
+                      id='door-delivery'
+                      disable={store.selectedAddress.digitalAddress === ''}
+                    />
+                    <Label className='form-label' for='door-delivery'>
+                      <p className='h5'>Door Delivery</p>
+                    </Label>
+                    <Alert color='info'>
+                      <div className='alert-body'>
+                        <span className='fw-bold'>
+                          Items will be sent to your provided Digital Address
+                        </span>
+                      </div>
+                    </Alert>
+                    {store.selectedAddress.digitalAddress === '' && (
+                      <div className='mb-2'>
+                        <Label for='digitalAddress'>
+                          <p className='h6'>Digital Address:</p>
+                        </Label>
+                        <Input
+                          type='text '
+                          id='digitalAddress'
+                          placeholder='XX-XXX-XXXX'
+                        ></Input>
+                        <FormFeedback>'error msg'</FormFeedback>
+                      </div>
+                    )}
+                  </div>
+                </li>
+              ) : (
+                <Alert color='danger'>
+                  <div className='alert-body'>
+                    <AlertCircle size={15} />{' '}
+                    <span className='fw-bold'>
+                      Door Delivery Only within Greater Accra
+                    </span>
+                  </div>
+                </Alert>
+              )}
               <li className='py-50'>
                 <div className='form-check'>
                   <Input type='radio' name='deliveryMethod' id='pick-up' />
                   <Label className='form-label' for='pick-up'>
-                    Pickup at Nearest Store
+                    <p className='h5'>Pickup at Nearest Store</p>
                   </Label>
+                  <Alert color='info'>
+                    <div className='alert-body'>
+                      <span className='fw-bold'>
+                        Order will be processed at the pick-up store{' '}
+                      </span>
+                    </div>
+                  </Alert>
+                  <div>
+                    <Label className='form-label' for='pick-up'>
+                      <p className='h6'>Select Pick-up Store:</p>
+                    </Label>
+                    <Input type='select' name='pick-up' id='pick-up'>
+                      <option value='' disabled>
+                        Please select
+                      </option>
+                      <option value='253'>Kasoa - New Markek Road</option>
+                      <option value='242'>Madina - Zongo Junction</option>
+                      <option value='251'>Kumasi - Central Market</option>
+                      <option value='252'>Osu - Oxford Street</option>
+                      <option value='244'>Circle - Odo Rice</option>
+                      <option value='245'>Winneba - Winnesec</option>
+                      <option value='241'>Accra - Kanta</option>
+                    </Input>
+                  </div>
                 </div>
               </li>
             </ul>

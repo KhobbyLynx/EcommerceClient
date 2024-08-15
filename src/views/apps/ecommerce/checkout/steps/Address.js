@@ -160,7 +160,6 @@ const Address = (props) => {
       // Set delivery address to redux
       dispatch(selectDeliveryAddress(newAddress))
 
-      console.log('Document successfully updated!')
       stepper.next()
       setSubmitting(false)
     } catch (error) {

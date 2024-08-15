@@ -14,6 +14,7 @@ import Delivery from './steps/Delivery'
 // ** Third Party Components
 import { ShoppingCart, Home, CreditCard } from 'react-feather'
 import { TbTruckDelivery } from 'react-icons/tb'
+import { IoArrowBackSharp } from 'react-icons/io5'
 
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux'
@@ -26,11 +27,14 @@ import {
 
 // ** Styles
 import '@styles/base/pages/app-ecommerce.scss'
+import { Button } from 'reactstrap'
 
 const Checkout = () => {
   // ** Ref & State
   const ref = useRef(null)
   const [stepper, setStepper] = useState(null)
+
+  /// Will navigate to the second step
 
   // ** Store Vars
   const dispatch = useDispatch()
@@ -43,7 +47,7 @@ const Checkout = () => {
 
   const steps = [
     {
-      id: 'cart',
+      id: 'Cart',
       title: 'Cart',
       subtitle: 'Your Cart Items',
       icon: <ShoppingCart size={18} />,
@@ -68,14 +72,14 @@ const Checkout = () => {
       content: <Address stepper={stepper} />,
     },
     {
-      id: 'delivery',
+      id: 'Delivery',
       title: 'Delivery',
       subtitle: 'Delivery Details',
       icon: <TbTruckDelivery size={18} />,
       content: <Delivery stepper={stepper} store={store} />,
     },
     {
-      id: 'payment',
+      id: 'Payment',
       title: 'Payment',
       subtitle: 'Select Payment Method',
       icon: <CreditCard size={18} />,
@@ -83,12 +87,26 @@ const Checkout = () => {
     },
   ]
 
+  console.log('STEPPER', stepper)
+
+  const handleBackStepper = () => {
+    stepper.to(stepper._currentIndex)
+  }
+
   return (
     <Fragment>
       <BreadCrumbs
         title='Checkout'
         data={[{ title: 'eCommerce' }, { title: 'Checkout' }]}
       />
+      <Button
+        outline
+        color='dark'
+        className='mb-2'
+        onClick={() => handleBackStepper()}
+      >
+        <IoArrowBackSharp size={18} /> <span>Back</span>
+      </Button>
       <Wizard
         ref={ref}
         steps={steps}
