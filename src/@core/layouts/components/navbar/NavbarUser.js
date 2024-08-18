@@ -50,10 +50,10 @@ const NavbarUser = (props) => {
       ) : (
         <>
           <Link to='/login'>
-            <Button color='second'>Log In</Button>
+            <Button color='primary'>Log In</Button>
           </Link>
           <Link to='/register'>
-            <Button color='second' outline>
+            <Button color='primary' outline>
               Sign Up
             </Button>
           </Link>
