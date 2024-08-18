@@ -87,8 +87,8 @@ const UserDropdown = () => {
             />
           </div>
           <div className='user-info-dropdown d-flex flex-column align-item-center justify-content-center '>
-            <p className='user-name fw-bold h6'>
-              {(userData && userData['username']) || 'John Doe'}
+            <p className='user-name fw-bold h6 text-nowrap'>
+              {(userData && userData['username']) || 'Lynx Ecom'}
             </p>
             <p className='user-status h6 text-success'>
               {(userData && userData.role) || 'Client'}

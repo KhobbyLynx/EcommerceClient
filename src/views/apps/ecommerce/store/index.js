@@ -50,9 +50,6 @@ export const getProducts = createAsyncThunk(
 
         const paginatedData = paginateArray(sortedData, perPage, page)
 
-        console.log('@Products', paginatedData)
-        console.log('@AllProducts', allData)
-
         dispatch({
           type: 'appEcommerce/getProductsSuccess',
           payload: {
@@ -96,7 +93,7 @@ export const getCartItems = createAsyncThunk(
     const userId = getState().auth.userData.id
 
     if (!userId) {
-      console.log('No user is signed in getCartItems')
+      console.log('No user is signed in - GETCARTITMES ')
       return
     }
 
@@ -595,7 +592,6 @@ export const filterProductsByCategory = createAsyncThunk(
 const calculateTotalAmount = (cartItems) => {
   let totalAmount = 0
 
-  console.log('@Home', cartItems)
   cartItems.forEach((item) => {
     totalAmount += item.salePrice * item.qty
   })
