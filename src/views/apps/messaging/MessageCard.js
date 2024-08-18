@@ -10,60 +10,59 @@ import { htmlToString } from '@utils'
 
 // ** Reactstrap Imports
 import { Input, Label } from 'reactstrap'
+import { checkMessage } from './store'
 
-const MailCard = (props) => {
+const MessageCard = (props) => {
   // ** Props
   const {
-    mail,
+    message,
+    currentUser,
     dispatch,
-    selectMail,
+    adminAvatar,
+    selectMessage,
     labelColors,
-    selectedMails,
-    handleMailClick,
+    selectedMessages,
+    handleMessageClick,
     handleMailReadUpdate,
     formatDateToMonthShort,
   } = props
 
-  // ** Function to render labels
-  const renderLabels = (arr) => {
-    if (arr && arr.length) {
-      return arr.map((label) => (
-        <span
-          key={label}
-          className={`bullet bullet-${labelColors[label]} bullet-sm mx-50`}
-        ></span>
-      ))
-    }
-  }
-
   // ** Function to handle read & mail click
   const onMailClick = () => {
-    handleMailClick(mail.id)
-    handleMailReadUpdate([mail.id], true)
+    handleMessageClick(message.id)
+    dispatch(selectMessage(message.id))
   }
 
   return (
     <li
-      onClick={() => onMailClick(mail.id)}
-      className={classnames('d-flex user-mail', { 'mail-read': mail.isRead })}
+      onClick={() => onMailClick(message.id)}
+      className={classnames('d-flex user-mail', {
+        'mail-read': !message?.feedback?.isRead,
+      })}
     >
       <div className='mail-left pe-50'>
-        <Avatar img={mail.from.avatar} />
+        <Avatar
+          img={
+            message.senderId !== currentUser.id
+              ? adminAvatar
+              : currentUser.avatar
+          }
+        />
         <div className='user-action'>
           <div className='form-check'>
             <Input
               type='checkbox'
-              id={`${mail.from.name}-${mail.id}`}
+              id={message.id}
               onChange={(e) => e.stopPropagation()}
-              checked={selectedMails.includes(mail.id)}
+              checked={selectedMessages.includes(message.id)}
               onClick={(e) => {
-                dispatch(selectMail(mail.id))
                 e.stopPropagation()
+                dispatch(checkMessage(message.id))
               }}
             />
             <Label
               onClick={(e) => e.stopPropagation()}
-              for={`${mail.from.name}-${mail.id}`}
+              for={message.id}
             ></Label>
           </div>
         </div>
@@ -71,25 +70,30 @@ const MailCard = (props) => {
       <div className='mail-body'>
         <div className='mail-details'>
           <div className='mail-items'>
-            <h5 className='mb-25'>{mail.from.name}</h5>
-            <span className='text-truncate'>{mail.subject}</span>
+            <h5 className='mb-25'>
+              {message.senderId !== currentUser.id
+                ? 'Admin'
+                : currentUser.username}
+            </h5>
+            <span className='text-truncate'>{message.title}</span>
           </div>
           <div className='mail-meta-item'>
-            {mail.attachments && mail.attachments.length ? (
-              <Paperclip size={14} />
-            ) : null}
-            {renderLabels(mail.labels)}
+            <span
+              className={`bullet bullet-${
+                labelColors[message.type]
+              } bullet-sm mx-50`}
+            ></span>
             <span className='mail-date'>
-              {formatDateToMonthShort(mail.time)}
+              {/* {formatDateToMonthShort(message.time)} */}
             </span>
           </div>
         </div>
         <div className='mail-message'>
-          <p className='text-truncate mb-0'>{htmlToString(mail.message)}</p>
+          <p className='text-truncate mb-0'>{htmlToString(message.message)}</p>
         </div>
       </div>
     </li>
   )
 }
 
-export default MailCard
+export default MessageCard

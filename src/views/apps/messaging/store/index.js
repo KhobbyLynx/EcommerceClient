@@ -1,141 +1,208 @@
 // ** Redux Imports
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
-// ** Axios Imports
-import axios from 'axios'
+// ** Firebaase Imports
+import {
+  arrayUnion,
+  doc,
+  getDoc,
+  onSnapshot,
+  updateDoc,
+} from 'firebase/firestore'
+import { db } from '../../../../configs/firebase'
 
-export const getMails = createAsyncThunk(
-  'appMessaging/getMails',
-  async (params) => {
-    const response = await axios.get('/apps/email/emails', { params })
-    return {
-      params,
-      data: response.data,
+// GET ALL MESSAGES
+export const getAllMessages = createAsyncThunk(
+  'appMessaging/getAllMessages',
+  async (_, { dispatch, getState }) => {
+    // Get Login user id
+    const userId = getState().auth.userData.id
+
+    console.log('GETALLMESSAGES', userId)
+
+    if (!userId) {
+      console.log('No user is signed in - GETALLMESSAGES')
+      return
+    }
+
+    try {
+      const messagesRef = doc(db, 'messaging', userId)
+
+      const unsubscribe = onSnapshot(messagesRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const messagesData = snapshot.data()
+          if (!messagesData || !messagesData.chat.length) {
+            console.log('No messages found - GETALLMESSAGES')
+            return
+          }
+
+          const unseenMsgs = messagesData.unseenMsgs
+          const messagesArray = messagesData.chat
+
+          const messages = messagesArray.sort(
+            (a, b) => new Date(a.time) - new Date(b.time)
+          )
+
+          console.log('GETALLMESSAGES', messagesData)
+
+          dispatch({
+            type: 'appMessaging/getAllMessagesSuccess',
+            payload: {
+              messages,
+              unseenMsgs,
+              unsubscribe,
+            },
+          })
+        } else {
+          console.log('Messages Document does not exist -GETALLMESSAGES')
+        }
+      })
+
+      return Promise.resolve()
+    } catch (error) {
+      console.log('Error fetching all Messages -GETALLMESSAGES', error)
     }
   }
 )
 
-export const updateMails = createAsyncThunk(
-  'appMessaging/updateMails',
-  async ({ emailIds, dataToUpdate }, { dispatch, getState }) => {
-    const response = await axios.post('/apps/email/update-emails', {
-      emailIds,
-      dataToUpdate,
-    })
-    await dispatch(getMails(getState().email.params))
-    return {
-      emailIds,
-      dataToUpdate,
-      data: response.data,
+// ACTION TO UPDATE MARKASREAD
+export const updateMessageAsRead = (messageId) => ({
+  type: 'appMessaging/updateMessageAsRead',
+  payload: messageId,
+})
+
+// MARK AS READ
+export const markAsRead = createAsyncThunk(
+  'appMessaging/markAsRead',
+  async (messageIds, { dispatch, getState }) => {
+    try {
+      const unseenMsgs = getState().messaging.unseenMsgs
+      const userId = getState().auth.userData.id
+
+      if (!Array.isArray(messageIds) || messageIds.length === 0) {
+        throw new Error('No message IDs provided. Please provide valid IDs.')
+      }
+
+      const messagesRef = doc(db, 'messaging', userId)
+
+      // // Retrieve current chat data from Firestore
+      // const docSnapshot = await getDoc(messagesRef)
+      // const chat = docSnapshot.data().chat || []
+
+      const messages = getState().messaging.messages
+
+      // Update the relevant messages
+      const updatedChat = messages.map((msg) => {
+        if (messageIds.includes(msg.id)) {
+          return {
+            ...msg,
+            feedback: {
+              isRead: true,
+              isDelivered: true,
+              sent: true,
+            },
+          }
+        }
+        return msg
+      })
+
+      // Write the updated chat array back to Firestore
+      await updateDoc(messagesRef, {
+        unseenMsgs: unseenMsgs - messageIds.length,
+        chat: updatedChat,
+      })
+
+      // Dispatch the update for each messageId
+      messageIds.forEach((messageId) => {
+        dispatch(updateMessageAsRead(messageId))
+      })
+    } catch (error) {
+      console.log('Error - MARKASREAD', error)
     }
-  }
-)
-
-export const updateMailLabel = createAsyncThunk(
-  'appMessaging/updateMailLabel',
-  async ({ emailIds, label }, { dispatch, getState }) => {
-    const response = await axios.post('/apps/email/update-emails-label', {
-      emailIds,
-      label,
-    })
-    await dispatch(getMails(getState().email.params))
-    return response.data
-  }
-)
-
-export const paginateMail = createAsyncThunk(
-  'appMessaging/paginateMail',
-  async ({ dir, emailId }) => {
-    const response = await axios.get('/apps/email/paginate-email', {
-      params: { dir, emailId },
-    })
-    return response.data
-  }
-)
-
-export const selectCurrentMail = createAsyncThunk(
-  'appMessaging/selectCurrentMail',
-  async (id) => {
-    const response = await axios.get('/apps/email/get-email', { id })
-    return response.data
   }
 )
 
 export const appMessagingSlice = createSlice({
   name: 'appMessaging',
   initialState: {
-    mails: [],
-    params: {},
-    emailsMeta: {},
-    selectedMails: [],
-    currentMail: null,
+    messages: [],
+    selectedMessages: [],
+    unseenMsgs: 0,
+    selectedMessage: {},
+
+    // Unsubcribe for firebase onSnapshot
+    unsubscribeMessages: null,
   },
   reducers: {
-    selectMail: (state, action) => {
-      const selectedMails = state.selectedMails
-      if (!selectedMails.includes(action.payload)) {
-        selectedMails.push(action.payload)
-      } else {
-        selectedMails.splice(selectedMails.indexOf(action.payload), 1)
-      }
-      state.selectedMails = selectedMails
+    selectMessage: (state, action) => {
+      const selectedMsg = state.messages.find(
+        (msg) => msg.id === action.payload
+      )
+      state.selectedMessage = selectedMsg
     },
-    selectAllMail: (state, action) => {
-      const selectAllMailsArr = []
+    checkMessage: (state, action) => {
+      const selectedMessages = state.selectedMessages
+      if (!selectedMessages.includes(action.payload)) {
+        selectedMessages.push(action.payload)
+      } else {
+        selectedMessages.splice(selectedMessages.indexOf(action.payload), 1)
+      }
+    },
+    selectAllMessage: (state, action) => {
+      const selectAllMessagesArr = []
       if (action.payload) {
-        selectAllMailsArr.length = 0
-        state.mails.forEach((mail) => selectAllMailsArr.push(mail.id))
+        selectAllMessagesArr.length = 0
+        state.messages.forEach((msg) => selectAllMessagesArr.push(msg.id))
+        console.log('selectAllMessagesArr', selectAllMessagesArr)
       } else {
-        selectAllMailsArr.length = 0
+        selectAllMessagesArr.length = 0
       }
-      state.selectedMails = selectAllMailsArr
+      state.selectedMessages = selectAllMessagesArr
+      console.log('selectedMessages', state.selectedMessages)
     },
-    resetSelectedMail: (state) => {
-      state.selectedMails = []
+    resetSelectedMessage: (state) => {
+      state.selectedMessages = []
+    },
+
+    updateMessageAsRead: (state, action) => {
+      const msgToUpdate = state.messages.find(
+        (msg) => msg.id === action.payload
+      )
+      const othersMsgs = state.messages.filter(
+        (msg) => msg.id !== action.payload
+      )
+
+      const updatedMsg = {
+        ...msgToUpdate,
+        feedback: {
+          isRead: true,
+          isDelivered: true,
+          sent: true,
+        },
+      }
+
+      state.messages = [...othersMsgs, updatedMsg]
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(getMails.fulfilled, (state, action) => {
-        let currMail = null
-        if (state.currentMail !== null && state.currentMail !== undefined) {
-          currMail = action.payload.data.emails.find(
-            (i) => i.id === state.currentMail.id
-          )
-        }
-        state.currentMail = currMail
-        state.params = action.payload.params
-        state.mails = action.payload.data.emails
-        state.emailsMeta = action.payload.data.emailsMeta
-      })
-      .addCase(updateMails.fulfilled, (state, action) => {
-        function updateMailData(email) {
-          Object.assign(email, action.payload.dataToUpdate)
-        }
-        state.mails.forEach((email) => {
-          if (action.payload.emailIds.includes(email.id)) {
-            updateMailData(email)
-          }
-        })
-      })
-      .addCase(paginateMail.fulfilled, (state, action) => {
-        const data = action.payload
-        const dataIndex = state.mails.findIndex((i) => i.id === data.id)
-        dataIndex === 0
-          ? (data.hasPreviousMail = false)
-          : (data.hasPreviousMail = true)
-        dataIndex === state.mails.length - 1
-          ? (data.hasNextMail = false)
-          : (data.hasNextMail = true)
-        state.currentMail = data
-      })
-      .addCase(selectCurrentMail.fulfilled, (state, action) => {
-        state.currentMail = action.payload
-      })
+    builder.addCase('appMessaging/getAllMessagesSuccess', (state, action) => {
+      state.unseenMsgs = action.payload.unseenMsgs
+      state.messages = action.payload.messages
+
+      if (state.unsubscribeMessages) {
+        state.unsubscribeMessages()
+      }
+
+      state.unsubscribeMessages = action.payload.unsubscribe
+    })
   },
 })
 
-export const { selectMail, selectAllMail, resetSelectedMail } =
-  appMessagingSlice.actions
+export const {
+  selectMessage,
+  selectAllMessage,
+  resetSelectedMessage,
+  checkMessage,
+} = appMessagingSlice.actions
 
 export default appMessagingSlice.reducer

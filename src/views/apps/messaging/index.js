@@ -1,9 +1,8 @@
 // ** React Imports
-import { useParams } from 'react-router-dom'
 import { Fragment, useEffect, useState } from 'react'
 
 // ** Email App Component Imports
-import Mails from './Mails'
+import Messages from './Messages'
 import Sidebar from './Sidebar'
 
 // ** Third Party Components
@@ -12,60 +11,51 @@ import classnames from 'classnames'
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  getMails,
-  selectMail,
-  updateMails,
-  paginateMail,
-  selectAllMail,
-  updateMailLabel,
-  resetSelectedMail,
-  selectCurrentMail,
+  selectMessage,
+  selectAllMessage,
+  resetSelectedMessage,
+  getAllMessages,
 } from './store'
 
 // ** Styles
 import '@styles/react/apps/app-email.scss'
 
-import { data } from './store/data'
+// Demo Avatar
+import avatar1 from '@src/assets/images/avatars/1.png'
 
-const EmailApp = () => {
+// ** Utils
+import { getUserData } from '../../../utility/Utils'
+
+const MessageApp = () => {
+  const currentUser = getUserData()
+
   // ** States
-  const [query, setQuery] = useState('')
-  const [openMail, setOpenMail] = useState(false)
+  const [openMessage, setOpenMessage] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [composeOpen, setComposeOpen] = useState(false)
+  const [createMsgOpen, setCreateMsgOpen] = useState(false)
 
   // ** Toggle Compose Function
-  const toggleCompose = () => setComposeOpen(!composeOpen)
+  const toggleCreateMsg = () => setCreateMsgOpen(!createMsgOpen)
 
   // ** Store Variables
   const dispatch = useDispatch()
   const store = useSelector((state) => state.messaging)
 
-  // ** Vars
-  const params = useParams()
-
   // ** UseEffect: GET initial data on Mount
   useEffect(() => {
-    dispatch(
-      getMails({
-        q: query || '',
-        folder: params.folder || 'inbox',
-        label: params.label || '',
-      })
-    )
-  }, [query, params.folder, params.label])
+    dispatch(getAllMessages())
+  }, [dispatch])
 
   return (
     <Fragment>
       <Sidebar
-        store={data}
+        store={store}
         dispatch={dispatch}
-        getMails={getMails}
-        setOpenMail={setOpenMail}
+        setOpenMessage={setOpenMessage}
         sidebarOpen={sidebarOpen}
-        toggleCompose={toggleCompose}
+        toggleCreateMsg={toggleCreateMsg}
         setSidebarOpen={setSidebarOpen}
-        resetSelectedMail={resetSelectedMail}
+        resetSelectedMessage={resetSelectedMessage}
       />
       <div className='content-right'>
         <div className='content-body'>
@@ -75,24 +65,20 @@ const EmailApp = () => {
             })}
             onClick={() => setSidebarOpen(false)}
           ></div>
-          <Mails
-            store={data}
-            query={query}
-            setQuery={setQuery}
+          <Messages
+            currentUser={currentUser}
+            adminAvatar={avatar1}
+            store={store}
             dispatch={dispatch}
-            getMails={getMails}
-            openMail={openMail}
-            selectMail={selectMail}
-            setOpenMail={setOpenMail}
-            updateMails={updateMails}
-            composeOpen={composeOpen}
-            paginateMail={paginateMail}
-            selectAllMail={selectAllMail}
-            toggleCompose={toggleCompose}
+            selectedMessages={store.selectedMessages}
+            openMessage={openMessage}
+            selectMessage={selectMessage}
+            setOpenMessage={setOpenMessage}
+            createMsgOpen={createMsgOpen}
+            selectAllMessage={selectAllMessage}
+            toggleCreateMsg={toggleCreateMsg}
             setSidebarOpen={setSidebarOpen}
-            updateMailLabel={updateMailLabel}
-            selectCurrentMail={selectCurrentMail}
-            resetSelectedMail={resetSelectedMail}
+            resetSelectedMessage={resetSelectedMessage}
           />
         </div>
       </div>
@@ -100,4 +86,4 @@ const EmailApp = () => {
   )
 }
 
-export default EmailApp
+export default MessageApp

@@ -22,6 +22,7 @@ import {
 // ** Styles
 import '@styles/react/apps/app-ecommerce.scss'
 import { useParams } from 'react-router-dom'
+import { getAllMessages } from '../../messaging/store'
 
 const Shop = () => {
   // ** States
@@ -41,6 +42,7 @@ const Shop = () => {
         page: 1,
       })
     )
+    dispatch(getAllMessages())
   }, [dispatch])
 
   const params = useParams()

@@ -22,6 +22,7 @@ import {
 
 // ** Styles
 import '@styles/react/apps/app-ecommerce.scss'
+import { getAllMessages } from '../../messaging/store'
 
 const Home = () => {
   // ** States
@@ -42,6 +43,7 @@ const Home = () => {
     )
     dispatch(getCartItems())
     dispatch(getWishlistItems())
+    dispatch(getAllMessages())
   }, [])
 
   const productsSetOne = store.allProducts.filter(
