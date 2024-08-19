@@ -22,7 +22,7 @@ import {
 
 // ** Styles
 import '@styles/react/apps/app-ecommerce.scss'
-import { getAllMessages } from '../../messaging/store'
+import { getAllMessages, getNotifications } from '../../messaging/store'
 
 const Home = () => {
   // ** States
@@ -31,7 +31,7 @@ const Home = () => {
   const dispatch = useDispatch()
   const store = useSelector((state) => state.ecommerce)
 
-  // ** Get products
+  // ** UseEffect
   useEffect(() => {
     dispatch(
       getProducts({
@@ -44,6 +44,7 @@ const Home = () => {
     dispatch(getCartItems())
     dispatch(getWishlistItems())
     dispatch(getAllMessages())
+    dispatch(getNotifications())
   }, [])
 
   const productsSetOne = store.allProducts.filter(
