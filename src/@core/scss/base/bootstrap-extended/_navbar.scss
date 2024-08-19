@@ -354,6 +354,9 @@
       }
 
       .media-list {
+        .is-read {
+          background: rgba($white, 0.05);
+        }
         .list-item {
           display: flex;
           flex-grow: 1;

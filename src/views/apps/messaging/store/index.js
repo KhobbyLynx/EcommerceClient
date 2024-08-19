@@ -2,13 +2,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Firebaase Imports
-import {
-  arrayUnion,
-  doc,
-  getDoc,
-  onSnapshot,
-  updateDoc,
-} from 'firebase/firestore'
+import { doc, onSnapshot, updateDoc } from 'firebase/firestore'
 import { db } from '../../../../configs/firebase'
 
 // GET ALL MESSAGES
@@ -17,8 +11,6 @@ export const getAllMessages = createAsyncThunk(
   async (_, { dispatch, getState }) => {
     // Get Login user id
     const userId = getState().auth.userData.id
-
-    console.log('GETALLMESSAGES', userId)
 
     if (!userId) {
       console.log('No user is signed in - GETALLMESSAGES')
@@ -31,19 +23,12 @@ export const getAllMessages = createAsyncThunk(
       const unsubscribe = onSnapshot(messagesRef, (snapshot) => {
         if (snapshot.exists()) {
           const messagesData = snapshot.data()
-          if (!messagesData || !messagesData.chat.length) {
-            console.log('No messages found - GETALLMESSAGES')
-            return
-          }
 
-          const unseenMsgs = messagesData.unseenMsgs
-          const messagesArray = messagesData.chat
+          const messages = messagesData.chat || []
 
-          const messages = messagesArray.sort(
-            (a, b) => new Date(a.time) - new Date(b.time)
-          )
-
-          console.log('GETALLMESSAGES', messagesData)
+          const unseenMsgs = messages.filter(
+            (msg) => msg.feedback.isRead === false
+          ).length
 
           dispatch({
             type: 'appMessaging/getAllMessagesSuccess',
@@ -54,7 +39,7 @@ export const getAllMessages = createAsyncThunk(
             },
           })
         } else {
-          console.log('Messages Document does not exist -GETALLMESSAGES')
+          console.log('Messages Document does not exist - GETALLMESSAGES')
         }
       })
 
@@ -64,11 +49,68 @@ export const getAllMessages = createAsyncThunk(
     }
   }
 )
+// GET ALL NOTIFICATIONS
+export const getNotifications = createAsyncThunk(
+  'appMessaging/getNotifications',
+  async (_, { dispatch, getState }) => {
+    // Get Login user id
+    const userId = getState().auth.userData.id
+
+    if (!userId) {
+      console.log('No user is signed in - GETALLMESSAGES')
+      return
+    }
+
+    try {
+      const notificationsRef = doc(db, 'notifications', userId)
+
+      const unsubscribe = onSnapshot(notificationsRef, (snapshot) => {
+        console.log('Notifications received:', snapshot.exists())
+
+        if (snapshot.exists()) {
+          const notificationsData = snapshot.data()
+          console.log('Notifications Data received:', notificationsData)
+
+          const notes = notificationsData.notifications || []
+
+          const unseenNotes = notes.filter(
+            (notes) => notes.isRead === false
+          ).length
+
+          console.log('Processed notes:', notes)
+
+          dispatch({
+            type: 'appMessaging/getNotificationsSuccess',
+            payload: {
+              notes,
+              unseenNotes,
+              unsubscribe,
+            },
+          })
+        } else {
+          console.log(
+            'Notifications Document does not exist - GETNOTIFICATIONS'
+          )
+        }
+      })
+
+      return Promise.resolve()
+    } catch (error) {
+      console.log('Error fetching all notifications -GETNOTIFICATIONS', error)
+    }
+  }
+)
 
 // ACTION TO UPDATE MARKASREAD
 export const updateMessageAsRead = (messageId) => ({
   type: 'appMessaging/updateMessageAsRead',
   payload: messageId,
+})
+
+// ACTION TO UPDATE MARKASREAD - NOTIFICATIONS
+export const updateNotificationsAsRead = (noteIds) => ({
+  type: 'appMessaging/updateNotificationsAsRead',
+  payload: noteIds, // Passing an array of IDs
 })
 
 // MARK AS READ
@@ -80,14 +122,12 @@ export const markAsRead = createAsyncThunk(
       const userId = getState().auth.userData.id
 
       if (!Array.isArray(messageIds) || messageIds.length === 0) {
-        throw new Error('No message IDs provided. Please provide valid IDs.')
+        throw new Error(
+          'No message IDs provided. Please select message - MARKASREAD.'
+        )
       }
 
       const messagesRef = doc(db, 'messaging', userId)
-
-      // // Retrieve current chat data from Firestore
-      // const docSnapshot = await getDoc(messagesRef)
-      // const chat = docSnapshot.data().chat || []
 
       const messages = getState().messaging.messages
 
@@ -122,16 +162,62 @@ export const markAsRead = createAsyncThunk(
   }
 )
 
+// MARK AS READ - NOTIFICATIONS
+export const markNotificationAsRead = createAsyncThunk(
+  'appMessaging/markNotificationAsRead',
+  async (noteIds, { dispatch, getState }) => {
+    console.log('Note Ids Received:', noteIds) // Add this to ensure noteIds are passed correctly
+
+    try {
+      const userId = getState().auth.userData.id
+      if (!Array.isArray(noteIds) || noteIds.length === 0) {
+        throw new Error('No notifications selected - MARKASREAD NOTIFICATIONS.')
+      }
+
+      const notesRef = doc(db, 'notifications', userId)
+
+      const notifications = getState().messaging.notifications
+
+      // Update the relevant notifications
+      const updatedNotifications = notifications.map((note) => {
+        if (noteIds.includes(note.id)) {
+          return {
+            ...note,
+            isRead: true,
+          }
+        }
+        return note
+      })
+      console.log('updatedNotifications:', updatedNotifications)
+      // Write the updated notification array back to Firestore
+      await updateDoc(notesRef, {
+        notifications: updatedNotifications,
+      })
+
+      // Dispatch the update noteIds
+      dispatch(updateNotificationsAsRead(noteIds))
+    } catch (error) {
+      console.log('Error - MARKASREAD NOTIFICATION', error)
+    }
+  }
+)
+
 export const appMessagingSlice = createSlice({
   name: 'appMessaging',
   initialState: {
+    // Messages
     messages: [],
     selectedMessages: [],
     unseenMsgs: 0,
     selectedMessage: {},
 
+    // Notifications
+    notifications: [],
+    unseenNotes: 0,
+
     // Unsubcribe for firebase onSnapshot
     unsubscribeMessages: null,
+    unsubscribeNotifications: null,
   },
   reducers: {
     selectMessage: (state, action) => {
@@ -153,7 +239,6 @@ export const appMessagingSlice = createSlice({
       if (action.payload) {
         selectAllMessagesArr.length = 0
         state.messages.forEach((msg) => selectAllMessagesArr.push(msg.id))
-        console.log('selectAllMessagesArr', selectAllMessagesArr)
       } else {
         selectAllMessagesArr.length = 0
       }
@@ -183,18 +268,39 @@ export const appMessagingSlice = createSlice({
 
       state.messages = [...othersMsgs, updatedMsg]
     },
+    updateNotificationsAsRead: (state, action) => {
+      const noteIds = action.payload // Assuming this is an array of IDs
+
+      state.notifications = state.notifications.map((note) =>
+        noteIds.includes(note.id) ? { ...note, isRead: true } : note
+      )
+    },
   },
+
   extraReducers: (builder) => {
-    builder.addCase('appMessaging/getAllMessagesSuccess', (state, action) => {
-      state.unseenMsgs = action.payload.unseenMsgs
-      state.messages = action.payload.messages
+    builder
+      .addCase('appMessaging/getAllMessagesSuccess', (state, action) => {
+        state.unseenMsgs = action.payload.unseenMsgs
+        const messages = action.payload.messages
+        state.messages = messages
 
-      if (state.unsubscribeMessages) {
-        state.unsubscribeMessages()
-      }
+        if (state.unsubscribeMessages) {
+          state.unsubscribeMessages()
+        }
 
-      state.unsubscribeMessages = action.payload.unsubscribe
-    })
+        state.unsubscribeMessages = action.payload.unsubscribe
+      })
+      .addCase('appMessaging/getNotificationsSuccess', (state, action) => {
+        const notifications = action.payload.notes
+        state.notifications = notifications
+        state.unseenNotes = action.payload.unseenNotes
+
+        if (state.unsubscribeNotifications) {
+          state.unsubscribeNotifications()
+        }
+
+        state.unsubscribeNotifications = action.payload.unsubscribe
+      })
   },
 })
 

@@ -349,7 +349,7 @@
       // padding: calc(#{$content-padding} + #{$navbar-height}* 2) #{$content-padding} 0 #{$content-padding};
     }
     .header-navbar {
-      background-color: $body-bg;
+      // background-color: $body-bg;
       box-shadow: none;
     }
     .horizontal-menu-wrapper {
@@ -413,9 +413,9 @@
   }
   // navbar static
   &.navbar-static {
-    .app-content {
-      // padding: calc(#{$content-padding} + #{$horizontal-menu-height}) #{$content-padding} 0 #{$content-padding};
-    }
+    // .app-content {
+    //   // padding: calc(#{$content-padding} + #{$horizontal-menu-height}) #{$content-padding} 0 #{$content-padding};
+    // }
     .content {
       min-height: calc(100% - calc(#{$horizontal-menu-height} + calc(#{$footer-height} + 0.2rem)));
     }
