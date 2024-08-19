@@ -14,99 +14,54 @@ import {
 } from '../utility/Utils'
 import toast from 'react-hot-toast'
 
-// Hard Coded Messages for testing purpose
-const messages = {
-  id: 1,
-  unseenMsgs: 0,
-  chat: [
-    {
-      feedback: {
-        isRead: true,
-        isDelivered: true,
-        isSent: true,
-      },
-      reply: [
-        {
-          feedback: {
-            isRead: false,
-            isDelivered: false,
-            isSent: true,
-          },
-          reply: [],
-          type: 'auto',
-          message: 'Hello. How can I help You?',
-          time: new Date(2023, 6, 9, 10, 45, 0, 0),
-          senderId: 'adminId',
-          respone: true,
-        },
-      ],
-      type: 'maunal',
-      message: 'Hi',
-      time: new Date(2023, 6, 9, 10, 30, 0, 0),
-      senderId: 'dJs850s1JWh0NLN1K9qEW6LZhby1',
-      respond: true,
-    },
-    {
-      feedback: {
-        isRead: false,
-        isDelivered: true,
-        isSent: true,
-      },
-      type: 'auto',
-      message: 'New Collection Shop Now!',
-      time: new Date(2023, 6, 9, 10, 45, 0, 0),
-      senderId: 'adminId',
-      response: false,
-    },
-    {
-      feedback: {
-        isRead: true,
-        isDelivered: true,
-        isSent: true,
-      },
-      reply: [
-        {
-          feedback: {
-            isRead: true,
-            isDelivered: true,
-            isSent: true,
-          },
-          reply: [],
-          type: 'manual',
-          message:
-            'History of your transactions can always be accessed in Orders',
-          time: new Date(2023, 6, 9, 10, 45, 30, 0),
-          senderId: 'adminId',
-          respone: true,
-        },
-        {
-          feedback: {
-            isRead: true,
-            isDelivered: true,
-            isSent: true,
-          },
-          reply: [],
-          type: 'manual',
-          message: 'Got it, thanks.',
-          time: new Date(2023, 6, 9, 10, 45, 30, 0),
-          senderId: 'dJs850s1JWh0NLN1K9qEW6LZhby1',
-          respone: true,
-        },
-      ],
-      type: 'maunal',
-      message: 'Can I get details of my last transaction I made last month?',
-      time: new Date(2023, 6, 9, 10, 45, 10, 0),
-      senderId: 'dJs850s1JWh0NLN1K9qEW6LZhby1',
-      respond: true,
-      type: 'manual',
-    },
-  ],
-}
 // **  Intial collections data
 const wishlistItems = []
 const cartItems = []
 const orders = []
-const notifications = []
+const notifications = [
+  {
+    id: 'FHJRIE24',
+    isRead: false,
+    avatarIcon: 'read',
+    subtitle: 'Won the monthly best seller badge.',
+    title: 'Congratulation Sam 🎉</span>winner!',
+  },
+  {
+    id: 'SLKPWN93',
+    isRead: false,
+    avatarIcon: 'message',
+    subtitle: 'You have 10 unread messages.',
+    title: 'New message</span>&nbsp;received',
+  },
+  {
+    id: 'WOQPDN94',
+    isRead: false,
+    avatarContent: 'MD',
+    subtitle: 'MD Inc. order updated',
+    title: 'Revised Order 👋 checkout',
+  },
+  {
+    id: 'WIDNPO00',
+    isRead: true,
+    avatarIcon: 'close',
+    subtitle: 'USA Server is down due to hight CPU usage',
+    title: 'Server down registered',
+  },
+  {
+    id: 'BSONRP89',
+    isRead: true,
+    avatarIcon: 'done',
+    subtitle: 'Last month sales report generated',
+    title: 'Sales report generated',
+  },
+  {
+    id: 'GPOSBE20',
+    isRead: true,
+    avatarIcon: 'warning',
+    subtitle: 'BLR Server using high memory',
+    title: 'High memory usage',
+  },
+]
 
 // ** REGISTER NEW USER
 export const handleRegisterUser = createAsyncThunk(
@@ -270,6 +225,8 @@ export const handleGoogleAuth = createAsyncThunk(
           fullname: userData?.fullname,
           status: 'online',
         }
+
+        await setDoc(doc(db, 'notifications', userId), { notifications })
 
         toast((t) => (
           <ToastContentLogin
