@@ -2,7 +2,6 @@
 import { Fragment } from 'react'
 
 // ** Custom Components
-// import NavbarSearch from './NavbarSearch'
 import NavbarUser from './NavbarUser'
 import NavbarBookmarks from './NavbarBookmarks'
 
@@ -12,11 +11,6 @@ const ThemeNavbar = (props) => {
 
   return (
     <Fragment>
-      {/* <div className='bookmark-wrapper d-flex align-items-center'>
-        <ul className='nav navbar-nav align-items-center ms-auto'>
-          <NavbarSearch />
-        </ul>
-      </div> */}
       <NavbarBookmarks setMenuVisibility={setMenuVisibility} />
       <NavbarUser skin={skin} setSkin={setSkin} />
     </Fragment>
