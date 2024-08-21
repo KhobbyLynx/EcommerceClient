@@ -8,6 +8,8 @@ import { Mail, Send, Bell } from 'react-feather'
 
 // ** Reactstrap Imports
 import { Button, ListGroup, ListGroupItem, Badge } from 'reactstrap'
+import { isMessageReply } from './store'
+import { useDispatch } from 'react-redux'
 
 const Sidebar = (props) => {
   // ** Props
@@ -16,7 +18,11 @@ const Sidebar = (props) => {
   // ** Vars
   const params = useParams()
 
+  const dispatch = useDispatch()
+
   const handleCreateMsg = () => {
+    // Call with Empty string to set isReply: false
+    dispatch(isMessageReply(''))
     toggleCreateMsg()
     setSidebarOpen(false)
   }
