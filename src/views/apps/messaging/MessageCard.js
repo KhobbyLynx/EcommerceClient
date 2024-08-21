@@ -37,16 +37,12 @@ const MessageCard = (props) => {
     <li
       onClick={() => onMailClick(message.id)}
       className={classnames('d-flex user-mail', {
-        'mail-read': !message?.feedback?.isRead,
+        'mail-read': !message?.isRead,
       })}
     >
       <div className='mail-left pe-50'>
         <Avatar
-          img={
-            message.senderId !== currentUser.id
-              ? adminAvatar
-              : currentUser.avatar
-          }
+          img={message.type === 'client' ? currentUser.avatar : adminAvatar}
         />
         <div className='user-action'>
           <div className='form-check'>
@@ -71,9 +67,7 @@ const MessageCard = (props) => {
         <div className='mail-details'>
           <div className='mail-items'>
             <h5 className='mb-25'>
-              {message.senderId !== currentUser.id
-                ? 'Admin'
-                : currentUser.username}
+              {message.type === 'client' ? currentUser.username : 'Admin'}
             </h5>
             <span className='text-truncate'>{message.title}</span>
           </div>
