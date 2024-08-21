@@ -43,7 +43,7 @@ import {
   DropdownToggle,
   UncontrolledDropdown,
 } from 'reactstrap'
-import { markAsRead, resetSelectedMessage } from './store'
+import { isMessageReply, markAsRead, resetSelectedMessage } from './store'
 
 const MessageDetails = (props) => {
   // ** Props
@@ -64,6 +64,13 @@ const MessageDetails = (props) => {
   // ** States
   const [showReplies, setShowReplies] = useState(false)
 
+  const handleReply = (msgId) => {
+    toggleCreateMsg()
+
+    // Set the reply redux state
+    dispatch(isMessageReply(msgId))
+  }
+
   // ** Renders Messages
   const renderMessage = (obj) => {
     console.log('CURRR', currentUser, obj, 'MSG', message)
@@ -72,17 +79,11 @@ const MessageDetails = (props) => {
         <CardHeader className='email-detail-head'>
           <div className='user-details d-flex justify-content-between align-items-center flex-wrap'>
             <Avatar
-              img={
-                obj.senderId === currentUser.id
-                  ? currentUser.avatar
-                  : adminAvatar
-              }
+              img={obj.type === 'client' ? currentUser.avatar : adminAvatar}
             />
             <div className='mail-items'>
               <h5 className='mb-25'>
-                {obj.senderId !== currentUser.id
-                  ? 'Admin'
-                  : currentUser.username}
+                {obj.type === 'client' ? currentUser.username : 'Admin'}
               </h5>
               <UncontrolledDropdown className='email-info-dropup'>
                 <DropdownToggle
@@ -91,9 +92,9 @@ const MessageDetails = (props) => {
                   caret
                 >
                   <span className='me-25'>
-                    {obj.senderId !== currentUser.id
-                      ? 'support@lynx.com'
-                      : currentUser.email}
+                    {obj.type === 'client'
+                      ? currentUser.email
+                      : 'support@lynx.com'}
                   </span>
                 </DropdownToggle>
                 <DropdownMenu>
@@ -102,18 +103,17 @@ const MessageDetails = (props) => {
                       <tr>
                         <td className='text-end text-muted align-top'>From:</td>
                         <td>
-                          {obj.senderId !== currentUser.id
-                            ? 'Admin'
-                            : currentUser.username}
+                          {obj.type === 'client'
+                            ? currentUser.username
+                            : 'Admin'}
                         </td>
                       </tr>
                       <tr>
                         <td className='text-end text-muted align-top'>To:</td>
                         <td>
-                          {' '}
-                          {obj.senderId === currentUser.id
-                            ? 'Admin'
-                            : currentUser.username}
+                          {obj.type === 'client'
+                            ? currentUser.username
+                            : 'Admin'}
                         </td>
                       </tr>
                       <tr>
@@ -141,7 +141,9 @@ const MessageDetails = (props) => {
                 {message.respond && (
                   <DropdownItem
                     className='d-flex align-items-center w-100'
-                    onClick={() => toggleCreateMsg()}
+                    onClick={() => {
+                      handleReply(message.id)
+                    }}
                   >
                     <CornerUpLeft className='me-50' size={14} />
                     Reply
@@ -283,7 +285,7 @@ const MessageDetails = (props) => {
                           href='/'
                           onClick={(e) => {
                             e.preventDefault()
-                            toggleCreateMsg()
+                            handleReply(message.id)
                           }}
                         >
                           Reply
