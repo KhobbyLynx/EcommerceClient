@@ -64,11 +64,10 @@ const NotificationDropdown = () => {
 
   // Icons
   const statusIconMap = {
-    close: <FaTimes style={{ color: 'red' }} />,
-    done: <FaCheck style={{ color: 'green' }} />,
-    warning: <FaExclamation style={{ color: 'orange' }} />,
-    info: <FaInfoCircle style={{ color: 'blue' }} />,
-    // Add other statuses and their icons here
+    close: <FaTimes color='light-danger' />,
+    done: <FaCheck color='light-success' />,
+    warning: <FaExclamation color='light-orange' />,
+    info: <FaInfoCircle color='light-info' />,
   }
 
   const StatusIcon = ({ status }) => {
@@ -145,7 +144,10 @@ const NotificationDropdown = () => {
         tag='a'
         className='nav-link'
         href='/'
-        onClick={(e) => e.preventDefault()}
+        onClick={(e) => {
+          e.preventDefault()
+          dispatch(getNotifications())
+        }}
       >
         <Bell className='ficon' />
         {unReadNotifications > 0 && (
@@ -165,7 +167,12 @@ const NotificationDropdown = () => {
         </li>
         {renderNotificationItems()}
         <li className='dropdown-menu-footer'>
-          <Button color='primary' block onClick={handleReadAllNotifications}>
+          <Button
+            color='primary'
+            block
+            disabled={!unReadNotifications}
+            onClick={handleReadAllNotifications}
+          >
             Read all notifications
           </Button>
         </li>
