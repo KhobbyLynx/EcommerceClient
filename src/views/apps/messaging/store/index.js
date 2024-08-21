@@ -4,6 +4,12 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 // ** Firebaase Imports
 import { doc, onSnapshot, updateDoc } from 'firebase/firestore'
 import { db } from '../../../../configs/firebase'
+import {
+  generateRandomId,
+  ToastContentError,
+  ToastContentSuccess,
+} from '../../../../utility/Utils'
+import toast from 'react-hot-toast'
 
 // GET ALL MESSAGES
 export const getAllMessages = createAsyncThunk(
@@ -27,7 +33,7 @@ export const getAllMessages = createAsyncThunk(
           const messages = messagesData.chat || []
 
           const unseenMsgs = messages.filter(
-            (msg) => msg.feedback.isRead === false
+            (msg) => msg.isRead === false
           ).length
 
           dispatch({
@@ -113,6 +119,18 @@ export const updateNotificationsAsRead = (noteIds) => ({
   payload: noteIds, // Passing an array of IDs
 })
 
+// ACTION TO CREATE MESSAGE
+export const createMessageSuccess = (msgs) => ({
+  type: 'appMessaging/createMessageSuccess',
+  payload: msgs, // Passing an array of IDs
+})
+
+// ACTION TO CREATE NOTIFICATION
+export const createNotificationSuccess = (notes) => ({
+  type: 'appMessaging/createNotificationSuccess',
+  payload: notes, // Passing an array of IDs
+})
+
 // MARK AS READ
 export const markAsRead = createAsyncThunk(
   'appMessaging/markAsRead',
@@ -136,11 +154,7 @@ export const markAsRead = createAsyncThunk(
         if (messageIds.includes(msg.id)) {
           return {
             ...msg,
-            feedback: {
-              isRead: true,
-              isDelivered: true,
-              sent: true,
-            },
+            isRead: true,
           }
         }
         return msg
@@ -202,6 +216,194 @@ export const markNotificationAsRead = createAsyncThunk(
   }
 )
 
+// CREATE NOTIFICATION
+export const createNotification = createAsyncThunk(
+  'appMessaging/createNotification',
+  async (data, { dispatch, getState }) => {
+    try {
+      // Data from Input
+      const {
+        subtitle,
+        title,
+        avatarContent = '',
+        img = '',
+        avatarIcon = '',
+      } = data
+
+      // Generate Id for new notification
+      const noteId = generateRandomId()
+
+      // UserId from Redux State
+      const userId = getState().auth.userData.id
+
+      // Notifcations Ref in Firebase
+      const NotifcationsRef = doc(db, 'notifications', userId)
+
+      // All Notifcations from Redux State
+      const notifications = getState().messaging.notifications
+
+      const newNotification = {
+        id: noteId,
+        subtitle,
+        title,
+        avatarIcon,
+        avatarContent,
+        img,
+        time: new Date(),
+        isRead: false,
+      }
+
+      const allNotifications = [...notifications, newNotification]
+
+      await updateDoc(NotifcationsRef, {
+        notifications: allNotifications,
+      })
+
+      dispatch(createNotificationSuccess(allNotifications))
+      dispatch(getNotifications())
+    } catch (error) {
+      console.log('Error creating notification- CREATENOTE')
+    }
+  }
+)
+
+// SEND MESSAGE
+export const createMessage = createAsyncThunk(
+  'appMessaging/createMessage',
+  async (data, { dispatch, getState }) => {
+    try {
+      // Data from Input
+      const { message, title } = data
+
+      // Generate Id for new message
+      const messageId = generateRandomId()
+
+      // UserId from Redux State
+      const userId = getState().auth.userData.id
+
+      // Messages Ref in Firebase
+      const messagesRef = doc(db, 'messaging', userId)
+
+      // All Messages from Redux State
+      const messages = getState().messaging.messages
+
+      const newMessage = {
+        id: messageId,
+        message,
+        title,
+        reply: [],
+        time: new Date(),
+        respond: true,
+        type: 'client',
+        sendId: userId,
+        isReadAdmin: false,
+        isRead: true,
+      }
+
+      const allMessages = [...messages, newMessage]
+
+      await updateDoc(messagesRef, {
+        chat: allMessages,
+      })
+
+      dispatch(
+        createNotification({
+          title: 'Message',
+          subtitle: 'Your message was sent successfully',
+          avatarIcon: 'done',
+        })
+      )
+      toast((t) => (
+        <ToastContentSuccess
+          t={t}
+          title='Success'
+          msg='Message sent successfully!'
+        />
+      ))
+
+      dispatch(createMessageSuccess(allMessages))
+      dispatch(getAllMessages())
+    } catch (error) {
+      console.log('Error creating message- CREATEMESSAGE')
+
+      toast((t) => (
+        <ToastContentError
+          t={t}
+          title='Not Sent'
+          msg='Error sending message!'
+        />
+      ))
+    }
+  }
+)
+
+// REPLY MESSAGE
+export const replyMessage = createAsyncThunk(
+  'appMessaging/replyMessage',
+  async (data, { dispatch, getState }) => {
+    try {
+      // Data from Input
+      const { message, title, msgId } = data
+
+      // Generate Id for new message
+      const messageId = generateRandomId()
+
+      // UserId from Redux State
+      const userId = getState().auth.userData.id
+
+      // Messages Ref in Firebase
+      const messagesRef = doc(db, 'messaging', userId)
+
+      // All Messages from Redux State
+      const messages = getState().messaging.messages
+
+      const newMessage = {
+        id: messageId,
+        message,
+        title,
+        time: new Date(),
+        respond: true,
+        type: 'client',
+        sendId: userId,
+        isReadAdmin: false,
+        isRead: true,
+      }
+
+      const updatedMsgs = messages.map((msg) => {
+        if (msg.id === msgId) {
+          return {
+            ...msg,
+            reply: [...msg.reply, newMessage],
+          }
+        }
+        return msg
+      })
+
+      await updateDoc(messagesRef, {
+        chat: updatedMsgs,
+      })
+
+      dispatch(getAllMessages())
+
+      toast((t) => (
+        <ToastContentSuccess
+          t={t}
+          title='Success'
+          msg='Reply sent successfully!'
+        />
+      ))
+
+      dispatch(createMessageSuccess(updatedMsgs))
+    } catch (error) {
+      console.log('Error replying message- REPLYMESSAGE')
+
+      toast((t) => (
+        <ToastContentError t={t} title='Not Sent' msg='Error sending reply!' />
+      ))
+    }
+  }
+)
+
 export const appMessagingSlice = createSlice({
   name: 'appMessaging',
   initialState: {
@@ -210,6 +412,8 @@ export const appMessagingSlice = createSlice({
     selectedMessages: [],
     unseenMsgs: 0,
     selectedMessage: {},
+    isReply: false,
+    msgToReplyId: '',
 
     // Notifications
     notifications: [],
@@ -259,11 +463,7 @@ export const appMessagingSlice = createSlice({
 
       const updatedMsg = {
         ...msgToUpdate,
-        feedback: {
-          isRead: true,
-          isDelivered: true,
-          sent: true,
-        },
+        isRead: true,
       }
 
       state.messages = [...othersMsgs, updatedMsg]
@@ -274,6 +474,16 @@ export const appMessagingSlice = createSlice({
       state.notifications = state.notifications.map((note) =>
         noteIds.includes(note.id) ? { ...note, isRead: true } : note
       )
+    },
+    createMessageSuccess: (state, action) => {
+      state.messages = action.payload
+    },
+    isMessageReply: (state, action) => {
+      state.msgToReplyId = action.payload
+      state.isReply = !!action.payload
+    },
+    createNotificationSuccess: (state, action) => {
+      state.notifications = action.payload
     },
   },
 
@@ -309,6 +519,7 @@ export const {
   selectAllMessage,
   resetSelectedMessage,
   checkMessage,
+  isMessageReply,
 } = appMessagingSlice.actions
 
 export default appMessagingSlice.reducer
