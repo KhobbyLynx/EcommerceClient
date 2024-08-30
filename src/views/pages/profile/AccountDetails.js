@@ -102,11 +102,11 @@ const AccountDetails = ({ data }) => {
 
   // ** Hooks
   const defaultValues = {
-    address: addressInfo.address,
-    region: addressInfo.region,
-    city: addressInfo.city,
-    digitalAddress: addressInfo.digitalAddress,
-    phone: addressInfo.number,
+    address: addressInfo?.address,
+    region: addressInfo?.region,
+    city: addressInfo?.city,
+    digitalAddress: addressInfo?.digitalAddress,
+    phone: addressInfo?.number,
     lastName: data.fullname && data.fullname.split(' ')[1],
     firstName: data.fullname && data.fullname.split(' ')[0],
   }
