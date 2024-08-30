@@ -2,8 +2,9 @@
 import { useState } from 'react'
 
 // ** Third Party Components
-import SwiperCore, { Thumbs } from 'swiper'
+import SwiperCore from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react'
+import { Thumbs } from 'swiper/modules'
 
 import 'swiper/css'
 import 'swiper/scss/navigation'
