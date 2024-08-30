@@ -4,7 +4,8 @@ import { Fragment, useEffect } from 'react'
 // ** Third Party Components
 import classnames from 'classnames'
 import { Star } from 'react-feather'
-import SwiperCore, { Navigation } from 'swiper'
+import SwiperCore from 'swiper'
+import { Navigation } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 
 // ** Reactstrap Imports
