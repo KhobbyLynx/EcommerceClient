@@ -18,50 +18,7 @@ import toast from 'react-hot-toast'
 const wishlistItems = []
 const cartItems = []
 const orders = []
-const notifications = [
-  {
-    id: 'FHJRIE24',
-    isRead: false,
-    avatarIcon: 'read',
-    subtitle: 'Won the monthly best seller badge.',
-    title: 'Congratulation Sam 🎉</span>winner!',
-  },
-  {
-    id: 'SLKPWN93',
-    isRead: false,
-    avatarIcon: 'message',
-    subtitle: 'You have 10 unread messages.',
-    title: 'New message</span>&nbsp;received',
-  },
-  {
-    id: 'WOQPDN94',
-    isRead: false,
-    avatarContent: 'MD',
-    subtitle: 'MD Inc. order updated',
-    title: 'Revised Order 👋 checkout',
-  },
-  {
-    id: 'WIDNPO00',
-    isRead: true,
-    avatarIcon: 'close',
-    subtitle: 'USA Server is down due to hight CPU usage',
-    title: 'Server down registered',
-  },
-  {
-    id: 'BSONRP89',
-    isRead: true,
-    avatarIcon: 'done',
-    subtitle: 'Last month sales report generated',
-    title: 'Sales report generated',
-  },
-  {
-    id: 'GPOSBE20',
-    isRead: true,
-    avatarIcon: 'warning',
-    subtitle: 'BLR Server using high memory',
-    title: 'High memory usage',
-  },
-]
+const notifications = []
 
 // ** REGISTER NEW USER
 export const handleRegisterUser = createAsyncThunk(
