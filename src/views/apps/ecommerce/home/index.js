@@ -54,21 +54,11 @@ const Home = () => {
     (pro) => pro.featuredHome === true
   )
 
-  const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
 
-  const handleFilterChange = (key, value) => {
-    setTimeout(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-    }, 800)
-    if (searchParams === '') {
-      if (searchParams.has(key)) {
-        searchParams.delete(key)
-        setSearchParams(searchParams)
-      }
-    } else {
-      navigate(`/shop?${key}=${value}`)
-    }
+  const handleFilterChange = (value) => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+    navigate(`/category/${value}`)
   }
 
   return (
@@ -108,7 +98,7 @@ const Home = () => {
         <p>
           Up to <span>70% off</span> ‒ All Water Pumps
         </p>
-        <button onClick={() => handleFilterChange('q', 'pumps')}>
+        <button onClick={() => handleFilterChange('pumps')}>
           Explore More
         </button>
       </section>
