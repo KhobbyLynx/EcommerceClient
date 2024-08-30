@@ -15,13 +15,19 @@ const Category = () => {
     navigate('/shop')
   }
 
+  const handleCategorySearch = (cat) => {
+    const name = cat.replace(/\s+/g, '').toLowerCase()
+    navigate(`/category/${name}`)
+  }
+
   return (
     <div className='category'>
       {categories.map((category) => (
         <div
           key={category.id}
           className='cat__card'
-          onClick={() => handleCategoryFilter(category.title)}
+          // onClick={() => handleCategoryFilter(category.title)}
+          onClick={() => handleCategorySearch(category.title)}
         >
           <img src={category.url} alt={category.title} />
           <p>{category.title}</p>
