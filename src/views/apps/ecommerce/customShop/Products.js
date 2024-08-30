@@ -73,6 +73,7 @@ const ProductsPage = (props) => {
     <div className=''>
       <div className='content-body'>
         <ProductsHeader
+          productsLength={products.length}
           store={store}
           dispatch={dispatch}
           activeView={activeView}
