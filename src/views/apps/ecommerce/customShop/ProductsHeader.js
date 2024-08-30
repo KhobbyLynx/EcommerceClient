@@ -23,6 +23,7 @@ const ProductsHeader = (props) => {
     getProducts,
     store,
     setSidebarOpen,
+    productsLength,
   } = props
 
   // ** Sorting obj
@@ -47,7 +48,7 @@ const ProductsHeader = (props) => {
                 </span>
               </button>
               <span className='search-results'>
-                {store.totalFilteredProducts} Results Found
+                {productsLength} Results Found
               </span>
             </div>
             <div className='view-options d-flex'>
