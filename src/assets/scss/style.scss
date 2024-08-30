@@ -115,13 +115,18 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 	height: auto !important;
 	position: relative;
 	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .swiper-slide img {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
-	display: block;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .relatedProduct-img {
