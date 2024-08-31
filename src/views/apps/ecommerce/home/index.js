@@ -53,12 +53,11 @@ const Home = () => {
   const productsSetTwo = store.allProducts.filter(
     (pro) => pro.featuredHome === true
   )
-
   const navigate = useNavigate()
 
   const handleFilterChange = (value) => {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-    navigate(`/category/${value}`)
+    navigate(`/q/${value}`)
   }
 
   return (
@@ -128,31 +127,63 @@ const Home = () => {
       <div className='ps-lg-2 pe-lg-2'>
         <section className='big__banner'>
           <div className='banner__box'>
-            <h4>crazy deals</h4>
-            <h2>Up to 70% discount</h2>
-            <span>Your One-Stop Shop for Tech and Water Solutions</span>
-            <Link to='/shop'>
-              <button>Order Now!</button>
+            <h4>P47 WIREKESS HEADSET</h4>
+            <h2>Up to 20% discount</h2>
+            <span>Your One-Stop Shop for Tech - Extra comfortable</span>
+            <Link to='/product-detail/9374DD7E'>
+              <button
+                onClick={() =>
+                  window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+                }
+              >
+                Order Now!
+              </button>
             </Link>
           </div>
           <div className='banner__box'>
             <h4>Future-Ready Tech</h4>
             <h2>upcoming season</h2>
             <span>Solutions That Power Your World</span>
-            <button className='white'>Explore</button>
+            <button
+              className='white'
+              onClick={() => {
+                navigate('/q/tech')
+                window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+              }}
+            >
+              Explore
+            </button>
           </div>
         </section>
 
         <section className='small__banner'>
-          <div className='banner__box'>
+          <div
+            className='banner__box'
+            onClick={() => {
+              navigate('/q/seasonalsale')
+              window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+            }}
+          >
             <h2>SEASONAL SALE</h2>
             <h3>Winter Collection -50% OFF</h3>
           </div>
-          <div className='banner__box'>
-            <h2>NEW FOOTWEAR COLLECTION</h2>
-            <h3>Spring/Summer 2023</h3>
+          <div
+            className='banner__box'
+            onClick={() => {
+              navigate('/q/generators')
+              window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+            }}
+          >
+            <h2>CALL FOR A GENERATOR NOW</h2>
+            <h3>Spring/Summer 2024</h3>
           </div>
-          <div className='banner__box'>
+          <div
+            className='banner__box'
+            onClick={() => {
+              navigate('/q/newrelease')
+              window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+            }}
+          >
             <h2>Tech</h2>
             <h3>New Tech Releases</h3>
           </div>
