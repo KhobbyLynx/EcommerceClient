@@ -11,8 +11,14 @@ import {
   ToastContentLogin,
   ToastContentRegister,
   logoutFirebase,
+  splitEmail,
 } from '../utility/Utils'
+
+// ** Toast
 import toast from 'react-hot-toast'
+
+// ** Default Avatar
+import DefaultAvatar from '@src/assets/images/avatars/avatar-blank.png'
 
 // **  Intial collections data
 const wishlistItems = []
@@ -23,7 +29,7 @@ const notifications = []
 // ** REGISTER NEW USER
 export const handleRegisterUser = createAsyncThunk(
   'appEcommerce/handleRegisterUser',
-  async (userData) => {
+  async (userData, { rejectWithValue }) => {
     const { email, password } = userData
     logoutFirebase()
     try {
@@ -37,7 +43,8 @@ export const handleRegisterUser = createAsyncThunk(
       const { email: authEmail, uid: userId, photoURL, displayName } = user
       const { accessToken, refreshToken } = user.stsTokenManager
       const { createdAt, lastLoginAt } = user.metadata
-      const username = displayName
+      const { username: name } = splitEmail(authEmail)
+      const username = displayName ? displayName : name
 
       const createdUserData = {
         email: authEmail,
@@ -73,7 +80,7 @@ export const handleRegisterUser = createAsyncThunk(
       await setDoc(doc(db, 'orders', userId), { orders })
       await setDoc(doc(db, 'notifications', userId), { notifications })
 
-      console.log('User created success', user, createdUserData)
+      console.log('User created successfully', user, createdUserData)
       toast((t) => (
         <ToastContentRegister
           t={t}
@@ -81,13 +88,13 @@ export const handleRegisterUser = createAsyncThunk(
           name={localUserData.username}
         />
       ))
+      console.log('localUserData', localUserData)
 
       return localUserData
     } catch (error) {
-      const errorCode = error.code
-      const errorMessage = error.message
-
-      console.log('Error creating user Account', errorCode, errorMessage)
+      console.log('Error creating user account', error.code, error.message)
+      // Pass error message to rejectWithValue
+      return rejectWithValue(error.message)
     }
   }
 )
@@ -168,15 +175,16 @@ export const handleGoogleAuth = createAsyncThunk(
         const userFromFirebaseDocs = await getDoc(userRef)
         const userData = userFromFirebaseDocs.data()
 
-        console.log('USER DATA IN FUNC', userData)
+        // ** Set Avatar
+        const avatar = photoURL ? photoURL : DefaultAvatar
 
         localUserData = {
           email: authEmail,
           id: userId,
           accessToken,
           refreshToken,
-          role: 'client',
-          avatar: photoURL,
+          role: userData?.role,
+          avatar,
           username,
           address: userData?.address,
           fullname: userData?.fullname,
@@ -208,8 +216,23 @@ export const handleGoogleAuth = createAsyncThunk(
 
 const initialUser = () => {
   const item = window.localStorage.getItem('userData')
-  //** Parse stored json or if none return initialValue
-  return item ? JSON.parse(item) : {}
+
+  // Check if the item is null or "undefined" string
+  if (item === null || item === 'undefined') {
+    return null // Return an empty object if no data is found
+  }
+
+  try {
+    // Attempt to parse the JSON string
+    const parsedItem = JSON.parse(item)
+
+    // Return the parsed item if it's valid
+    return parsedItem !== undefined ? parsedItem : null
+  } catch (error) {
+    // Handle JSON parsing errors (e.g., corrupted data)
+    console.error('Error parsing JSON from localStorage:', error)
+    return null // Return an empty object if parsing fails
+  }
 }
 
 export const authSlice = createSlice({
