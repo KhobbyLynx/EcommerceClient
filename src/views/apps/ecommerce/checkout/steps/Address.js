@@ -404,7 +404,7 @@ const Address = (props) => {
           </CardBody>
         </Card>
         <div className='customer-card'>
-          {userData.address.length > 0 &&
+          {userData.address?.length > 0 &&
             userData.address.map((ad) => (
               <Card>
                 <CardHeader>

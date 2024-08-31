@@ -46,7 +46,7 @@ const AccountDetails = ({ data }) => {
   const dispatch = useDispatch()
 
   const addressInfo =
-    data.address.length > 0 && data.address.find((ad) => ad.default === true)
+    data?.address?.length > 0 && data.address?.find((ad) => ad.default === true)
 
   // const profileSchema = yup.object().shape({
   //   firstName: yup.string().required('First name is required'),
