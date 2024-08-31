@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react'
 
 // ** Third Party Components
-import axios from 'axios'
 import classnames from 'classnames'
 import * as Icon from 'react-feather'
 import { ImSearch } from 'react-icons/im'
@@ -11,27 +10,36 @@ import { ImSearch } from 'react-icons/im'
 import { NavItem, NavLink } from 'reactstrap'
 
 // ** Store & Actions
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { handleSearchQuery } from '@store/navbar'
 
 // ** Custom Components
 import Autocomplete from '@components/autocomplete'
+import { useNavigate } from 'react-router-dom'
 
 const NavbarSearch = () => {
   // ** Store Vars
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   // ** States
   const [suggestions, setSuggestions] = useState([])
   const [navbarSearch, setNavbarSearch] = useState(false)
 
-  // // ** ComponentDidMount
+  const searchQuery = useSelector((state) => state.navbar.query)
   // useEffect(() => {
-  //   axios.get('/api/main-search/data').then(({ data }) => {
-  //     setSuggestions(data.searchArr)
-  //   })
-  // }, [])
+  //   if (navbarSearch && searchQuery) {
+  //     navigate(`/q/${searchQuery}`)
+  //     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  //   }
+  // }, [searchQuery])
 
+  const dispatchSearch = () => {
+    if (navbarSearch && searchQuery) {
+      navigate(`/q/${searchQuery}`)
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+    }
+  }
   // ** Removes query in store
   const handleClearQueryInStore = () => dispatch(handleSearchQuery(''))
 
@@ -40,6 +48,7 @@ const NavbarSearch = () => {
     if (navbarSearch === true) {
       setNavbarSearch(false)
       handleClearQueryInStore()
+      dispatchSearch()
     }
   }
 
@@ -54,10 +63,12 @@ const NavbarSearch = () => {
   // ** Function to close search on ESC & ENTER Click
   const onKeyDown = (e) => {
     if (e.keyCode === 27 || e.keyCode === 13) {
-      setTimeout(() => {
-        setNavbarSearch(false)
-        handleClearQueryInStore()
-      }, 1)
+      dispatchSearch()
+
+      // setTimeout(() => {
+      //   setNavbarSearch(false)
+      //   handleClearQueryInStore()
+      // }, 1)
     }
   }
 
@@ -96,7 +107,7 @@ const NavbarSearch = () => {
             filterKey='title'
             filterHeaderKey='groupTitle'
             grouped={true}
-            placeholder='Explore...'
+            placeholder='What are you looking for?...'
             autoFocus={true}
             onSuggestionItemClick={handleSuggestionItemClick}
             externalClick={handleExternalClick}
