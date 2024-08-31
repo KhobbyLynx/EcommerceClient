@@ -24,7 +24,7 @@ const AccountSettings = () => {
       <Row>
         <Col xs={12}>
           <AccountDetails data={currentUser} />
-          <OrderHistory />
+          {/* <OrderHistory /> */}
         </Col>
       </Row>
     </>
