@@ -76,15 +76,7 @@ const AppRoutes = [
   },
   {
     element: <CustomShop />,
-    path: '/category/:id',
-    meta: {
-      className: 'ecommerce-application',
-      publicRoute: true,
-    },
-  },
-  {
-    element: <CustomShop />,
-    path: '/pumps',
+    path: '/q/:id',
     meta: {
       className: 'ecommerce-application',
       publicRoute: true,
