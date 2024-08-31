@@ -1,4 +1,5 @@
 // ** React Imports
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 // ** Icons Imports
@@ -18,6 +19,7 @@ import {
   Input,
   Button,
   FormFeedback,
+  Spinner,
 } from 'reactstrap'
 
 // ** Styles
@@ -29,11 +31,13 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Controller, useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
-import { useState } from 'react'
 import {
   handleGoogleAuth,
   handleRegisterUser,
 } from '../../../redux/authentication'
+
+// ** Loader
+import SpinnerModal from './SpinnerModal'
 
 const defaultValues = {
   email: '',
@@ -71,6 +75,13 @@ const RegisterSchema = yup.object().shape({
 const RegisterBasic = () => {
   // ** State
   const [errorMsg, setErrorMsg] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setErrorMsg('')
+    }, 3500)
+  }, [errorMsg])
 
   // ** Hooks
   const dispatch = useDispatch()
@@ -82,14 +93,31 @@ const RegisterBasic = () => {
   } = useForm({ defaultValues, resolver: yupResolver(RegisterSchema) })
 
   const onSubmit = async (data) => {
+    setSubmitting(true)
     try {
-      await dispatch(handleRegisterUser(data))
-      navigate('/home')
+      // Await the dispatch call and ensure it completes successfully
+      const resultAction = await dispatch(handleRegisterUser(data))
+
+      // Check if the action was fulfilled or rejected
+      if (handleRegisterUser.fulfilled.match(resultAction)) {
+        // Navigate only if the dispatch was successful
+        navigate('/home')
+      } else {
+        // Handle the case where the action was rejected
+        if (resultAction.payload.includes('auth/email-already-in-use')) {
+          setErrorMsg('Email Already In Use')
+        } else {
+          setErrorMsg('Registration failed. Please try again.')
+        }
+      }
     } catch (error) {
-      const errorCode = error.code
-      const errorMessage = error.message
-      console.log('Error At Register Page', errorMessage, errorCode)
-      setErrorMsg(errorMessage)
+      // Handle any unexpected errors
+
+      setErrorMsg('An unexpected error occurred.')
+      console.log('Error At Register Page', error.message, error.code)
+    } finally {
+      // Ensure submitting state is reset regardless of success or failure
+      setSubmitting(false)
     }
   }
 
@@ -99,147 +127,167 @@ const RegisterBasic = () => {
   }
 
   return (
-    <div className='auth-wrapper auth-basic px-2'>
-      <div className='auth-inner my-2'>
-        <Card className='mb-0'>
-          <CardBody>
-            <Link className='brand-logo' to='/'>
-              <img
-                src={themeConfig.app.appLogoImage}
-                alt=''
-                style={{ maxWidth: '36px', maxHeight: '32px' }}
-              />
-              <h2 className='brand-text text-primary ms-1'>
-                {themeConfig.app.appName}
-              </h2>
-            </Link>
-            <CardTitle tag='h4' className='mb-1'>
-              Just Shop it! 🚀
-            </CardTitle>
-            <CardText className='mb-2'>Get it delivered now!</CardText>
-            <Form
-              className='auth-register-form mt-2'
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              <div className='mb-1'>
-                <Label className='form-label' for='email'>
-                  Email
-                </Label>
-                <Controller
-                  id='email'
-                  name='email'
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type='email'
-                      placeholder='john@gmail.com'
-                      invalid={errors.email && true}
-                      {...field}
-                    />
-                  )}
+    <>
+      <SpinnerModal submitting={submitting} page='register' />
+      <div className='auth-wrapper auth-basic px-2'>
+        <div className='auth-inner my-2'>
+          <Card className='mb-0'>
+            <CardBody>
+              <Link className='brand-logo' to='/'>
+                <img
+                  src={themeConfig.app.appLogoImage}
+                  alt=''
+                  style={{ maxWidth: '36px', maxHeight: '32px' }}
                 />
-                {errors.email ? (
-                  <FormFeedback>{errors.email.message}</FormFeedback>
-                ) : null}
-              </div>
-              <div className='mb-1'>
-                <Label className='form-label' for='password'>
-                  Password
-                </Label>
-                <Controller
-                  id='password'
-                  name='password'
-                  control={control}
-                  render={({ field }) => (
-                    <InputPasswordToggle
-                      className='input-group-merge'
-                      invalid={errors.password && true}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.password ? (
-                  <FormFeedback>{errors.password.message}</FormFeedback>
-                ) : null}
-              </div>
-              <div className='mb-1'>
-                <Label className='form-label' for='confirm-password'>
-                  Confirm Password
-                </Label>
-                <Controller
-                  id='confirm-password'
-                  name='passwordConfirm'
-                  control={control}
-                  render={({ field }) => (
-                    <InputPasswordToggle
-                      className='input-group-merge'
-                      invalid={errors.passwordConfirm && true}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.passwordConfirm ? (
-                  <FormFeedback>{errors.passwordConfirm.message}</FormFeedback>
-                ) : null}
-              </div>
-              <div className='form-check mb-1'>
-                <Controller
-                  name='terms'
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      id='terms'
-                      type='checkbox'
-                      checked={field.value}
-                      invalid={errors.terms && true}
-                    />
-                  )}
-                />
-                <Label className='form-check-label' for='terms'>
-                  I agree to
-                  <a
-                    className='ms-25'
-                    href='/'
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    privacy policy & terms
-                  </a>
-                </Label>
-                {errors.terms ? (
-                  <FormFeedback>{errors.terms.message}</FormFeedback>
-                ) : null}
-              </div>
-              {errorMsg !== '' ? <p>{errorMsg}</p> : null}
-              <Button color='primary' block>
-                Sign up
-              </Button>
-            </Form>
-            <p className='text-center mt-2'>
-              <span className='me-25'>Already have an account?</span>
-              <Link to='/login'>
-                <span>Sign in instead</span>
+                <h2 className='brand-text text-primary ms-1'>
+                  {themeConfig.app.appName}
+                </h2>
               </Link>
-            </p>
-            <div className='divider my-2'>
-              <div className='divider-text'>or</div>
-            </div>
-            <div className='auth-footer-btn d-flex justify-content-center'>
-              <div className='auth-footer-btn d-flex justify-content-center'>
-                <Button
-                  color='google'
-                  className='d-flex align-items-center justify-content-center'
-                  onClick={() => handleCreateAccountWithGoogle()}
-                >
-                  <h6 className='m-0 pe-1 text-white'>Google</h6>
-                  <FcGoogle size={14} />
+              <CardTitle tag='h4' className='mb-1'>
+                Just Shop it! 🚀
+              </CardTitle>
+              <CardText className='mb-2'>Get it delivered now!</CardText>
+              <Form
+                className='auth-register-form mt-2'
+                onSubmit={handleSubmit(onSubmit)}
+              >
+                <div className='mb-1'>
+                  <Label className='form-label' for='email'>
+                    Email
+                  </Label>
+                  <Controller
+                    id='email'
+                    name='email'
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        type='email'
+                        placeholder='john@gmail.com'
+                        invalid={errors.email && true}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.email ? (
+                    <FormFeedback>{errors.email.message}</FormFeedback>
+                  ) : null}
+                </div>
+                <div className='mb-1'>
+                  <Label className='form-label' for='password'>
+                    Password
+                  </Label>
+                  <Controller
+                    id='password'
+                    name='password'
+                    control={control}
+                    render={({ field }) => (
+                      <InputPasswordToggle
+                        className='input-group-merge'
+                        invalid={errors.password && true}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.password ? (
+                    <FormFeedback>{errors.password.message}</FormFeedback>
+                  ) : null}
+                </div>
+                <div className='mb-1'>
+                  <Label className='form-label' for='confirm-password'>
+                    Confirm Password
+                  </Label>
+                  <Controller
+                    id='confirm-password'
+                    name='passwordConfirm'
+                    control={control}
+                    render={({ field }) => (
+                      <InputPasswordToggle
+                        className='input-group-merge'
+                        invalid={errors.passwordConfirm && true}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.passwordConfirm ? (
+                    <FormFeedback>
+                      {errors.passwordConfirm.message}
+                    </FormFeedback>
+                  ) : null}
+                </div>
+                <div className='form-check mb-1'>
+                  <Controller
+                    name='terms'
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        id='terms'
+                        type='checkbox'
+                        checked={field.value}
+                        invalid={errors.terms && true}
+                      />
+                    )}
+                  />
+                  <Label className='form-check-label' for='terms'>
+                    I agree to
+                    <a
+                      className='ms-25'
+                      href='/'
+                      onClick={(e) => e.preventDefault()}
+                    >
+                      privacy policy & terms
+                    </a>
+                  </Label>
+                  {errors.terms ? (
+                    <FormFeedback>{errors.terms.message}</FormFeedback>
+                  ) : null}
+                </div>
+                <Button color='primary' block disabled={submitting}>
+                  {submitting ? (
+                    <>
+                      <Spinner
+                        className='me-25 text-center'
+                        color='white'
+                        size='sm'
+                      />
+                    </>
+                  ) : (
+                    'Sign In'
+                  )}
                 </Button>
+              </Form>
+              {errorMsg && (
+                <p className='mt-1 text-danger text-center'>{errorMsg}</p>
+              )}
+              <p className='text-center mt-2'>
+                <span className='me-25'>Already have an account?</span>
+                <Link to='/login'>
+                  <span>Sign in instead</span>
+                </Link>
+              </p>
+              <div className='divider my-2'>
+                <div className='divider-text'>or</div>
               </div>
-            </div>
-          </CardBody>
-        </Card>
+              <div className='auth-footer-btn d-flex justify-content-center'>
+                <div className='auth-footer-btn d-flex justify-content-center'>
+                  <Button
+                    color='google'
+                    className='d-flex align-items-center justify-content-center'
+                    onClick={() => {
+                      handleCreateAccountWithGoogle()
+                      setSubmitting(true)
+                    }}
+                  >
+                    <h6 className='m-0 pe-1 text-white'>Google</h6>
+                    <FcGoogle size={14} />
+                  </Button>
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 
