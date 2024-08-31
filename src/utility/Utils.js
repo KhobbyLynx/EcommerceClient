@@ -119,7 +119,30 @@ export const formatDateToMonthShort = (value, toTimeForCurrentDay = true) => {
  *  ? e.g. If you are using cookies to store the application please update this function
  */
 export const isUserLoggedIn = () => localStorage.getItem('userData')
-export const getUserData = () => JSON.parse(localStorage.getItem('userData'))
+export const getUserData = () => {
+  const item = localStorage.getItem('userData')
+
+  // Check if the item is null or the string "undefined"
+  if (item === null || item === 'undefined') {
+    // Remove the item from localStorage
+    localStorage.removeItem('userData')
+    return null // Return an empty object if no valid data is found
+  }
+
+  try {
+    // Attempt to parse the JSON string
+    const parsedItem = JSON.parse(item)
+
+    // Check if parsedItem is undefined or any unexpected value
+    return parsedItem !== undefined ? parsedItem : null
+  } catch (error) {
+    // Handle JSON parsing errors (e.g., corrupted data)
+    console.error('Error parsing JSON from localStorage:', error)
+    // Remove the item from localStorage
+    localStorage.removeItem('userData')
+    return null // Return an empty object if parsing fails
+  }
+}
 
 /**
  ** This function is used for demo purpose route navigation

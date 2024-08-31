@@ -36,7 +36,7 @@ import {
 import defaultAvatar from '@src/assets/images/avatars/avatar-blank.png'
 
 // ** Utils
-import { logoutFirebase } from '../../../../utility/Utils'
+import { getUserData, logoutFirebase } from '../../../../utility/Utils'
 
 const UserDropdown = () => {
   // ** Store Vars
@@ -49,7 +49,7 @@ const UserDropdown = () => {
   //** ComponentDidMount
   useEffect(() => {
     if (isUserLoggedIn() !== null) {
-      setUserData(JSON.parse(localStorage.getItem('userData')))
+      setUserData(getUserData())
     }
   }, [])
 
