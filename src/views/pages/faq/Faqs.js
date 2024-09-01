@@ -22,7 +22,6 @@ import {
 } from 'reactstrap'
 
 // ** Images
-import illustration from '@src/assets/images/illustration/faq-illustrations.svg'
 
 const Faqs = ({ data }) => {
   const dataToRender = []
@@ -107,12 +106,12 @@ const Faqs = ({ data }) => {
             <Nav tag='ul' className='nav-left' pills vertical>
               {renderTabs()}
             </Nav>
-            <img
+            {/* <img
               alt='illustration'
               src={illustration}
               style={{ transform: 'scaleX(1)' }}
               className='img-fluid d-none d-md-block'
-            />
+            /> */}
           </div>
         </Col>
         <Col lg='9' md='8' sm='12'>
