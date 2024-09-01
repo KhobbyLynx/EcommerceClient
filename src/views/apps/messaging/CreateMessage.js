@@ -54,7 +54,6 @@ const CreateMessage = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     setPending(true)
-    console.log('Submitted - MESSAGE')
 
     // Check if title is empty
     if (!title) {

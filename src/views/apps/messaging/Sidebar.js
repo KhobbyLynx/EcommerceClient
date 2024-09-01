@@ -27,7 +27,6 @@ const Sidebar = (props) => {
     setSidebarOpen(false)
   }
 
-  console.log('PARAMS', params)
   // ** Functions To Active List Item
   const handleActiveItem = (value) => {
     if (params.folder && params.folder === value) {

@@ -14,8 +14,6 @@ const handlePaymentRequest = (totalPayment) => {
           amount: 1000,
         })
 
-        console.log('RES', res)
-
         // ** Authorization url uses redirects pop-up
         // ** Access Code uses in-app pop-up
         // const geturl = res.data.data.authorization_url

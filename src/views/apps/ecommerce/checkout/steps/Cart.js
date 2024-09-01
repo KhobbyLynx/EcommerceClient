@@ -139,16 +139,6 @@ const Cart = (props) => {
       let availableOffers = 0
 
       // ** Handle Quantity Change
-      console.log(
-        '44444444',
-        store.overallTotal,
-        typeof store.discount,
-        store.deliveryCharges,
-        store.savedOnDelivery,
-        typeof store.totalAmount,
-        store.couponDiscount
-      )
-
       const handleQuantityChange = (value) => {
         dispatch(updateCartItems({ newQty: value, productId: item.id }))
       }

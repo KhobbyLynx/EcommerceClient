@@ -23,7 +23,6 @@ const ConfirmationModal = ({
   setModal,
 }) => {
   const handleAccept = (id) => {
-    console.log('IDDD', id)
     confirmFunction(id)
     setModal(!modal)
   }

@@ -19,7 +19,6 @@ import { ghanaRegions } from '../../../../../utility/Utils'
 import { AlertCircle } from 'react-feather'
 
 const Payment = ({ stepper, store }) => {
-  console.log('DA', store.selectedAddress)
   return (
     <Form
       className='list-view product-checkout'

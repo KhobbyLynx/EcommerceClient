@@ -87,8 +87,6 @@ const Checkout = () => {
     },
   ]
 
-  console.log('STEPPER', stepper)
-
   const handleBackStepper = () => {
     stepper.to(stepper._currentIndex)
   }

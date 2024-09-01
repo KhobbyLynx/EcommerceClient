@@ -44,8 +44,7 @@ import {
 
 // ** Avatar Images
 import avatar1 from '@src/assets/images/avatars/1-small.png'
-import avatar9 from '@src/assets/images/avatars/9-small.png'
-import avatar10 from '@src/assets/images/avatars/10-small.png'
+import avatar9 from '@src/assets/images/avatars/2-small.png'
 
 // ** Styles
 import '@styles/react/apps/app-invoice.scss'
@@ -93,7 +92,7 @@ const data = [
     },
     service: 'UI/UX Design & Development',
     total: 5219,
-    avatar: avatar10,
+    avatar: avatar1,
     invoiceStatus: 'Downloaded',
     balance: 0,
     dueDate: '15 Dec 2019',
@@ -147,7 +146,7 @@ const data = [
     },
     service: 'UI/UX Design & Development',
     total: 4056,
-    avatar: avatar10,
+    avatar: avatar1,
     invoiceStatus: 'Draft',
     balance: '$815',
     dueDate: '30 Jun 2019',

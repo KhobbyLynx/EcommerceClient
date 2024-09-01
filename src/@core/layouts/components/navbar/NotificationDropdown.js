@@ -51,7 +51,6 @@ const NotificationDropdown = () => {
       .filter((note) => !note.isRead) // Filter out unread notifications
       .map((note) => note.id) // Extract their IDs
 
-    console.log('handleReadAllNotifications clicked', allNotificationsId)
     if (allNotificationsId.length > 0) {
       dispatch(markNotificationAsRead(allNotificationsId)) // Pass the array of IDs to the function
     }

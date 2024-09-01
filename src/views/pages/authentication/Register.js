@@ -111,8 +111,7 @@ const RegisterBasic = () => {
         }
       }
     } catch (error) {
-      // Handle any unexpected errors
-
+      // Handle errors
       setErrorMsg('An unexpected error occurred.')
       console.log('Error At Register Page', error.message, error.code)
     } finally {

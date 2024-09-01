@@ -71,19 +71,14 @@ export const getNotifications = createAsyncThunk(
       const notificationsRef = doc(db, 'notifications', userId)
 
       const unsubscribe = onSnapshot(notificationsRef, (snapshot) => {
-        console.log('Notifications received:', snapshot.exists())
-
         if (snapshot.exists()) {
           const notificationsData = snapshot.data()
-          console.log('Notifications Data received:', notificationsData)
 
           const notes = notificationsData.notifications || []
 
           const unseenNotes = notes.filter(
             (notes) => notes.isRead === false
           ).length
-
-          console.log('Processed notes:', notes)
 
           dispatch({
             type: 'appMessaging/getNotificationsSuccess',
@@ -180,8 +175,6 @@ export const markAsRead = createAsyncThunk(
 export const markNotificationAsRead = createAsyncThunk(
   'appMessaging/markNotificationAsRead',
   async (noteIds, { dispatch, getState }) => {
-    console.log('Note Ids Received:', noteIds) // Add this to ensure noteIds are passed correctly
-
     try {
       const userId = getState().auth.userData.id
       if (!Array.isArray(noteIds) || noteIds.length === 0) {
@@ -202,7 +195,6 @@ export const markNotificationAsRead = createAsyncThunk(
         }
         return note
       })
-      console.log('updatedNotifications:', updatedNotifications)
       // Write the updated notification array back to Firestore
       await updateDoc(notesRef, {
         notifications: updatedNotifications,
@@ -447,7 +439,6 @@ export const appMessagingSlice = createSlice({
         selectAllMessagesArr.length = 0
       }
       state.selectedMessages = selectAllMessagesArr
-      console.log('selectedMessages', state.selectedMessages)
     },
     resetSelectedMessage: (state) => {
       state.selectedMessages = []

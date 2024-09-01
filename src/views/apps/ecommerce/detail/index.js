@@ -29,11 +29,9 @@ const Details = () => {
   const { product: productId } = useParams()
   // const productId = params.substring(params.lastIndexOf('-') + 1)
 
-  console.log('--Product ID Params', productId)
   // ** Store Vars
   const dispatch = useDispatch()
   const store = useSelector((state) => state.ecommerce)
-  console.log('-Single Product', store.productDetail)
 
   // ** ComponentDidMount : Get product
   useEffect(() => {

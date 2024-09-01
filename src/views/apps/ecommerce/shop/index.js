@@ -45,10 +45,6 @@ const Shop = () => {
     dispatch(getAllMessages())
   }, [dispatch])
 
-  const params = useParams()
-
-  console.log('Params from Custom Page', params)
-
   return (
     <Fragment>
       <Breadcrumbs

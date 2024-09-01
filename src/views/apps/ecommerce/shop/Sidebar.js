@@ -46,7 +46,6 @@ const Sidebar = (props) => {
 
   // ** Handle Price Filter Change
   const handleRadioChange = (selectedPriceRange) => {
-    console.log('@selectedPriceRange', selectedPriceRange)
     dispatch(filterProductsByPrice(selectedPriceRange))
   }
 

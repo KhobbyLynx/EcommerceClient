@@ -73,7 +73,6 @@ const MessageDetails = (props) => {
 
   // ** Renders Messages
   const renderMessage = (obj) => {
-    console.log('CURRR', currentUser, obj, 'MSG', message)
     return (
       <Card>
         <CardHeader className='email-detail-head'>
