@@ -22,7 +22,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import {
   generateRandomId,
-  getUserId,
+  getUserData,
   ghanaRegions,
 } from '../../../../../utility/Utils'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
@@ -107,7 +107,6 @@ const Address = (props) => {
   const [submitting, setSubmitting] = useState(false)
 
   const userData = useSelector((state) => state.auth.userData)
-  console.log('ERRRH', userData)
 
   // ** Hooks
   const dispatch = useDispatch()
@@ -135,7 +134,7 @@ const Address = (props) => {
     }
 
     try {
-      const userId = getUserId()
+      const userId = getUserData().id
       const userProfileRef = doc(db, 'profiles', userId)
 
       const docSnap = await getDoc(userProfileRef)
@@ -170,7 +169,7 @@ const Address = (props) => {
   }
 
   const handleDeleteAddress = async (addressId) => {
-    const userId = getUserId()
+    const userId = getUserData().id
     const userProfileRef = doc(db, 'profiles', userId)
 
     try {
@@ -193,8 +192,6 @@ const Address = (props) => {
       await updateDoc(userProfileRef, { address: updatedAddresses })
 
       dispatch(updateAddresses(updatedAddresses))
-
-      console.log('Document successfully updated!')
     } catch (error) {
       console.error('Error updating document: ', error)
       throw error

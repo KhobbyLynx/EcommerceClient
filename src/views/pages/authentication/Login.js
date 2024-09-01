@@ -94,18 +94,15 @@ const LoginBasic = () => {
       // ** get single user data
       const userFromFirebaseDocs = await getDoc(userRef)
 
-      // user role
-      let userRole
-      let username
+      // user data
+      let userDataFromDB
 
       // ** role conditionals
       if (userFromFirebaseDocs.exists()) {
         const userData = userFromFirebaseDocs.data()
-        console.log('User Data from Firbase profiles', userData)
-        userRole = userData.role
-        username = userData.username
+        userDataFromDB = userData
 
-        if (userRole !== 'client' && userRole !== 'admin') {
+        if (userData.role !== 'client' && userData.role !== 'admin') {
           setErrorMsg('Account is not valid')
           logoutFirebase()
           return
@@ -116,13 +113,12 @@ const LoginBasic = () => {
       const avatar = photoURL ? photoURL : DefaultAvatar
 
       const loginData = {
+        ...userDataFromDB,
         email: authEmail,
         id: userId,
         accessToken,
         refreshToken,
-        role: userRole,
         avatar,
-        username,
       }
 
       dispatch(handleLogin(loginData))

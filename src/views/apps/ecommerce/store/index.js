@@ -17,7 +17,7 @@ import {
 import { db } from '../../../../configs/firebase'
 
 // ** Utils
-import { generateRandomId, getUserId } from '../../../../utility/Utils'
+import { generateRandomId, getUserData } from '../../../../utility/Utils'
 import { paginateArray } from '../../../../utility/HelperFunctions'
 
 // ** GET ALL PRODUCTS
@@ -189,8 +189,6 @@ export const getCoupons = createAsyncThunk(
         ...doc.data(),
       }))
 
-      console.log('Coupons', coupons)
-
       return coupons
     } catch (error) {
       console.log('Error fetching coupons', error)
@@ -250,7 +248,6 @@ export const addToCart = createAsyncThunk(
 
     // ** Get Login user id
     const userId = getState().auth.userData.id
-    console.log('User ID @@@@@', userId)
 
     if (!userId) {
       console.log('No user is signed in addToCart')
@@ -318,7 +315,7 @@ export const getWishlistItems = createAsyncThunk(
   'appEcommerce/getWishlistItems',
   async (_, { dispatch, getState }) => {
     // ** Get Login user id
-    const userId = getUserId()
+    const userId = getUserData().id
 
     if (!userId) {
       return
@@ -340,7 +337,6 @@ export const getWishlistItems = createAsyncThunk(
       }
 
       if (!allProducts || allProducts.length === 0) {
-        console.log('All products are empty @ ~Wishlist')
         return
       }
 
@@ -351,7 +347,6 @@ export const getWishlistItems = createAsyncThunk(
           const wishlistData = snapshot.data()
 
           if (!wishlistData || !wishlistData.wishlistItems) {
-            console.log('No wishlist items found')
             return
           }
 
@@ -449,7 +444,6 @@ export const addToWishlist = createAsyncThunk(
     const userId = getState().auth.userData.id
 
     if (!userId) {
-      console.log('No user is signed in @ ~addToWishlist')
       return
     }
 
@@ -524,7 +518,6 @@ export const filterProductsByPrice = createAsyncThunk(
 
     const params = state.ecommerce.params
     const { sortBy, perPage, page } = params
-    console.log('^Params', sortBy, perPage, page)
     let sortedData = state.ecommerce.allProducts
     if (sortBy === 'price-desc') {
       sortedData = filteredData.sort((a, b) => b.salePrice - a.salePrice)
@@ -546,7 +539,6 @@ export const filterProductsByPrice = createAsyncThunk(
           return true
       }
     })
-    console.log('@ filteredProducts', filteredProducts)
     return {
       filteredProducts,
       totalFilteredProducts: filteredProducts.length,
@@ -604,11 +596,6 @@ const calculateDiscount = (cartItems) => {
   // Get all discounted products
   const discountedProducts = cartItems.filter((item) => item.discounted !== '')
 
-  console.log(
-    'Discounted Products:',
-    discountedProducts.map((item) => ({ ...item }))
-  )
-
   // Calculate total discount
   discountedProducts.forEach((item) => {
     if (item.discounted === 'fixed') {
@@ -618,7 +605,6 @@ const calculateDiscount = (cartItems) => {
     }
   })
 
-  console.log('Total Discount:', totalDiscount)
   return totalDiscount
 }
 
@@ -716,9 +702,6 @@ export const appEcommerceSlice = createSlice({
         (product) => product.category === category
       )
       state.totalProducts = state.products.length
-
-      console.log('Products', state.products)
-      console.log('Filters Category', action.payload)
     },
     removeCategory: (state, action) => {
       return state.selectedCategory.filter(

@@ -10,6 +10,7 @@ import { collection, doc, getDoc, setDoc } from 'firebase/firestore'
 import {
   ToastContentLogin,
   ToastContentRegister,
+  getUserData,
   logoutFirebase,
   splitEmail,
 } from '../utility/Utils'
@@ -80,7 +81,6 @@ export const handleRegisterUser = createAsyncThunk(
       await setDoc(doc(db, 'orders', userId), { orders })
       await setDoc(doc(db, 'notifications', userId), { notifications })
 
-      console.log('User created successfully', user, createdUserData)
       toast((t) => (
         <ToastContentRegister
           t={t}
@@ -88,7 +88,6 @@ export const handleRegisterUser = createAsyncThunk(
           name={localUserData.username}
         />
       ))
-      console.log('localUserData', localUserData)
 
       return localUserData
     } catch (error) {
@@ -119,7 +118,6 @@ export const handleGoogleAuth = createAsyncThunk(
       let createdUserData = {}
       let localUserData = {}
 
-      console.log('URL PATHNAME', urlPath)
       if (urlPath === 'register') {
         createdUserData = {
           email: authEmail,
@@ -215,24 +213,9 @@ export const handleGoogleAuth = createAsyncThunk(
 )
 
 const initialUser = () => {
-  const item = window.localStorage.getItem('userData')
+  const userData = getUserData()
 
-  // Check if the item is null or "undefined" string
-  if (item === null || item === 'undefined') {
-    return null // Return an empty object if no data is found
-  }
-
-  try {
-    // Attempt to parse the JSON string
-    const parsedItem = JSON.parse(item)
-
-    // Return the parsed item if it's valid
-    return parsedItem !== undefined ? parsedItem : null
-  } catch (error) {
-    // Handle JSON parsing errors (e.g., corrupted data)
-    console.error('Error parsing JSON from localStorage:', error)
-    return null // Return an empty object if parsing fails
-  }
+  return userData
 }
 
 export const authSlice = createSlice({

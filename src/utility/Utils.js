@@ -12,7 +12,7 @@ import { MdErrorOutline } from 'react-icons/md'
 // ** Custom Components
 import Avatar from '@components/avatar'
 import toast from 'react-hot-toast'
-import { signOut } from 'firebase/auth'
+import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { auth } from '../configs/firebase'
 
 // ** Firebase Logout Func
@@ -52,16 +52,37 @@ export const generateRandomId = () => {
 }
 
 // ** Get User ID
-export const getUserId = () => {
-  const user = auth.currentUser
+// export const getUserId = () => {
+//   const user = auth.currentUser
 
-  if (user) {
-    // User is signed in, return the user ID
-    return user.uid
-  } else {
-    // No user is signed in
-    return null
-  }
+//   if (user) {
+//     // User is signed in, return the user ID
+//     return user.uid
+//   } else {
+//     // No user is signed in
+//     return null
+//   }
+// }
+
+export const getUserId = () => {
+  return new Promise((resolve, reject) => {
+    onAuthStateChanged(
+      auth,
+      (user) => {
+        if (user) {
+          // User is signed in, return the user ID
+          resolve(user.uid)
+        } else {
+          // No user is signed in
+          resolve(null)
+        }
+      },
+      (error) => {
+        // Handle any errors that occur
+        reject(error)
+      }
+    )
+  })
 }
 
 // ** Checks if an object is empty (returns boolean)

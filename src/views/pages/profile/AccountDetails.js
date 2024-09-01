@@ -22,7 +22,7 @@ import {
 } from 'reactstrap'
 
 // ** Utils
-import { getUserId, ToastContentSuccess } from '../../../utility/Utils'
+import { ToastContentError, ToastContentSuccess } from '../../../utility/Utils'
 
 // ** Firebase imports
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
@@ -119,14 +119,12 @@ const AccountDetails = ({ data }) => {
   // State to track if form has changed
   const [hasChanged, setHasChanged] = useState(false)
 
-  console.log('WATCH', hasChanged, watchedValues)
-
   // Effect to check if watched values have changed from default values
   useEffect(() => {
     const isFormChanged =
       JSON.stringify(watchedValues) !== JSON.stringify(defaultValues)
     setHasChanged(isFormChanged)
-    console.log('WATCH IN', hasChanged, watchedValues)
+    console.log('Passed User Data', data)
   }, [watchedValues, defaultValues])
 
   // Avatar Change
@@ -140,7 +138,6 @@ const AccountDetails = ({ data }) => {
   }
 
   const onSubmit = async (data) => {
-    console.log('PROFILE DATA', data)
     setSubmitting(true)
 
     // Custom validation
@@ -168,15 +165,17 @@ const AccountDetails = ({ data }) => {
     try {
       const {
         address,
-        region,
-        city,
-        phone,
-        lastName,
-        firstName,
-        digitalAddress,
+        region = '',
+        city = '',
+        phone = '',
+        lastName = '',
+        firstName = '',
+        digitalAddress = '',
       } = data
-      const userId = getUserId()
+      const userId = data.id
       const userProfileRef = doc(db, 'profiles', userId)
+
+      console.log('PROFILE UPDATE DATA', data)
 
       const docSnap = await getDoc(userProfileRef)
 
@@ -184,41 +183,69 @@ const AccountDetails = ({ data }) => {
         console.log('User Not Found! - PROFILE')
         return
       }
-      // Updated name
-      const updatedName = `${firstName.trim()} ${lastName.trim()}`
+
+      console.log('PROFILE FOUND')
 
       // Get the existing data
       const userData = docSnap.data()
+
+      // Updated name
+      const updatedName = `${firstName.trim()} ${lastName.trim()}`
+
+      // Only Updated the name if firstName and lastName has a value
+      if (firstName || lastName) {
+        // Check if the existing fullname was edited
+        if (userData?.fullname !== updatedName) {
+          // Update name in Database
+          await updateDoc(userProfileRef, {
+            ...userData,
+            fullname: updatedName,
+            updatedAt: new Date(),
+          })
+
+          // Update name in redux
+          dispatch(updateUserName(updatedName))
+        }
+      }
+
       const exitingAddress = userData.address || []
-
-      // Update name in Database
-      await updateDoc(userProfileRef, {
-        ...userData,
-        fullname: updatedName,
-        updatedAt: new Date(),
-      })
-
-      // Update name in redux
-      dispatch(updateUserName(updatedName))
-
       const defaultAddress = exitingAddress.find((ad) => ad.default === true)
       const otherAddress = exitingAddress.filter((ad) => ad.default === false)
 
+      console.log('Default Address', defaultAddress)
+      console.log('exitingAddress Address', exitingAddress)
+
       // New Address
-      const updatedAddress = {
-        ...defaultAddress,
-        digitalAddress: digitalAddress
-          ? digitalAddress
-          : defaultAddress.digitalAddress,
-        region: region ? region : defaultAddress.region,
-        city: city ? city : defaultAddress.city,
-        address: address ? address : defaultAddress.city,
-        number: phone ? phone : defaultAddress.phone,
-        updatedAt: new Date(),
+      let updatedAddress
+      if (defaultAddress) {
+        updatedAddress = {
+          ...defaultAddress,
+          digitalAddress: digitalAddress
+            ? digitalAddress
+            : defaultAddress.digitalAddress,
+          region: region ? region : defaultAddress.region,
+          city: city ? city : defaultAddress.city,
+          address: address ? address : defaultAddress.city,
+          number: phone ? phone : defaultAddress.phone,
+          updatedAt: new Date(),
+        }
+      } else {
+        updatedAddress = {
+          fullname: updatedName,
+          default: true,
+          digitalAddress,
+          region,
+          city,
+          address,
+          number: phone,
+          createdAt: new Date(),
+        }
       }
 
       // Update the array (add the new address)
       const updatedAddresses = [...otherAddress, updatedAddress]
+
+      console.log('updatedAddresses', updatedAddresses)
 
       // Write the updated array back to Firestore
       await updateDoc(userProfileRef, { address: updatedAddresses })
