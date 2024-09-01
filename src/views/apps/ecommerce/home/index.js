@@ -130,7 +130,7 @@ const Home = () => {
             <h4>P47 WIREKESS HEADSET</h4>
             <h2>Up to 20% discount</h2>
             <span>Your One-Stop Shop for Tech - Extra comfortable</span>
-            <Link to='/product-detail/9374DD7E'>
+            <Link to='/product-detail/069CEE8D'>
               <button
                 onClick={() =>
                   window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
