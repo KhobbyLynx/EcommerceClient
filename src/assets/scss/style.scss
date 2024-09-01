@@ -151,3 +151,10 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 .custom-bg {
 	background-color: #293655 !important;
 }
+
+// ** Center Nav Links
+.nav {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
