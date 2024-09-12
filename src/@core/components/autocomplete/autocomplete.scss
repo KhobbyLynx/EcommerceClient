@@ -33,6 +33,7 @@ $autocomplete-active-color: #f1f1f1;
       0 15px 30px 0 rgba(0, 0, 0, 0.11),
       0 5px 15px 0 rgba(0, 0, 0, 0.08);
     .suggestion-item {
+      width: 100%;
       padding: 0.9rem 1rem;
       color: $body-color;
       line-height: 1 !important;

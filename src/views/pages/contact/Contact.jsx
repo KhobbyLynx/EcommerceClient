@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   FaMapMarkedAlt,
   FaRegEnvelope,
@@ -8,8 +8,147 @@ import {
 import './Contact.scss'
 import { contactBanner } from '../../apps/ecommerce/home/data'
 import PageBanner from '../../../@core/components/ecom/pageBanner/PageBanner'
+import { Button, Col, Form, Input, Spinner } from 'reactstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import { createMessage, replyMessage } from '../../apps/messaging/store'
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
+import {
+  generateRandomId,
+  ToastContentError,
+  ToastContentSuccess,
+} from '../../../utility/Utils'
+import toast from 'react-hot-toast'
+import { db } from '../../../configs/firebase'
+
+const defaultValues = {
+  title: '',
+  message: '',
+  name: '',
+  email: '',
+}
 
 const Contact = () => {
+  const [pending, setPending] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
+  const [formData, setFormData] = useState(defaultValues)
+
+  // ** Dispatch
+  const dispatch = useDispatch()
+
+  // ** Redux
+  const store = useSelector((state) => state)
+  const userData = store.auth.userData
+
+  // Reset Error Msg
+  setTimeout(() => {
+    setErrorMsg('')
+  }, 3000)
+
+  // Handle input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData({
+      ...formData,
+      [name]: value, // Dynamically update the form field
+    })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setPending(true)
+
+    // Check if subject is empty
+    if (!formData.title) {
+      setPending(false)
+      setErrorMsg('Subject of message is required!')
+      return
+    }
+
+    // Check if name is empty
+    if (!formData.name) {
+      setPending(false)
+      setErrorMsg('Name is required!')
+      return
+    }
+
+    // Check if email is empty
+    if (!formData.email && userData.email) {
+      setPending(false)
+      setErrorMsg('Email is required!')
+      return
+    }
+
+    // Check if Body is empty
+    if (!formData.message) {
+      setPending(false)
+      setErrorMsg('Write a message to send!')
+      return
+    }
+
+    try {
+      if (userData && userData.email) {
+        console.log('userData @ Contact', userData)
+
+        // ** If user is logged In Send as an inbox msg
+        dispatch(createMessage(formData)) // Create a new message
+
+        const generalMessagesRef = collection(db, 'generalMessages')
+
+        // ** Write it to generalMessage
+        const docRef = await addDoc(generalMessagesRef, {
+          id: generateRandomId(),
+          name: formData.name,
+          email: formData.email,
+          subject: formData.title,
+          message: formData.message,
+          createdAt: new Date(),
+          isUserRegistered: [true, userData.id, userData.email],
+        })
+
+        setFormData(defaultValues)
+        setPending(false)
+
+        console.log('Message written with ID: ', docRef.id)
+      } else {
+        const generalMessagesRef = collection(db, 'generalMessages')
+
+        const docRef = await addDoc(generalMessagesRef, {
+          id: generateRandomId(),
+          name: formData.name,
+          email: formData.email,
+          subject: formData.title,
+          message: formData.message,
+          createdAt: new Date(),
+          isUserRegistered: [false],
+        })
+
+        toast((t) => (
+          <ToastContentSuccess
+            t={t}
+            title='Send Message'
+            msg='Message Submitted Successfully'
+          />
+        ))
+
+        setFormData(defaultValues)
+        setPending(false)
+
+        console.log('Message written with ID: ', docRef.id)
+      }
+    } catch (error) {
+      setPending(false)
+      console.log('Error Submitting Message @ Contact', error)
+      setErrorMsg('Error Submitting Message')
+
+      toast((t) => (
+        <ToastContentError
+          t={t}
+          title='Send Message'
+          msg='Error Submitting Message'
+        />
+      ))
+    }
+  }
   return (
     <div className='contact__section'>
       <PageBanner {...contactBanner} />
@@ -39,11 +178,11 @@ const Contact = () => {
         </div>
         <div className='map'>
           <iframe
-            src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2948.1756884000256!2d-71.09634868526435!3d42.36009494309324!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89e370aaf51a6a87%3A0xd0e08ea5b308203c!2sMassachusetts%20Institute%20of%20Technology!5e0!3m2!1sen!2sgh!4v1671415491775!5m2!1sen!2sgh'
+            src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d554.9225552929099!2d-0.43378874909588183!3d5.547139941652735!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdfbb3d5dc54ea5%3A0x8fa72c90c4cc09f2!2sKGee%20Water%20pumps%20and%20Generators!5e1!3m2!1sen!2sgh!4v1726095823978!5m2!1sen!2sgh'
             width='600'
             height='450'
             style={{ border: 0 }}
-            allowFullScreen=''
+            allowFullscreen=''
             loading='lazy'
             referrerPolicy='no-referrer-when-downgrade'
           ></iframe>
@@ -51,21 +190,68 @@ const Contact = () => {
       </section>
 
       <section className='form__details'>
-        <form>
+        <Form onSubmit={handleSubmit}>
           <span>LEAVE MESSAGE</span>
           <h2>We love to hear from you</h2>
-          <input type='text' placeholder='Your Name' />
-          <input type='text' placeholder='E-mail' />
-          <input type='text' placeholder='Subject' />
-          <textarea
-            name=''
-            id=''
+
+          <Input
+            id='name'
+            name='name'
+            placeholder='Your Name'
+            type='text'
+            value={formData.name}
+            onChange={handleChange}
+          />
+          <Input
+            id='email'
+            name='email'
+            placeholder='Your Email'
+            type='email'
+            value={formData.email}
+            onChange={handleChange}
+          />
+          <Input
+            id='title'
+            name='title'
+            required
+            placeholder='Subject'
+            type='text'
+            value={formData.title}
+            onChange={handleChange}
+          />
+          <Input
+            id='message'
+            name='message'
+            required
+            placeholder='Your Message'
+            type='textarea'
             cols='30'
             rows='10'
-            placeholder='Your Message'
-          ></textarea>
-          <button>Submit</button>
-        </form>
+            value={formData.message}
+            onChange={handleChange}
+          />
+
+          <Button color='primary' disabled={pending}>
+            {pending ? (
+              <>
+                <Spinner
+                  className='me-25 text-center'
+                  color='light'
+                  size='sm'
+                />{' '}
+                Submitting...
+              </>
+            ) : (
+              'Submit'
+            )}
+          </Button>
+
+          {errorMsg && (
+            <div className='text-center mt-1'>
+              <span style={{ color: 'red' }}>{errorMsg}</span>
+            </div>
+          )}
+        </Form>
         <div className='admins__cards'>
           <div className='admins__card'>
             <img

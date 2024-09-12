@@ -3,19 +3,36 @@ import { SiFacebook, SiTwitter, SiInstagram, SiTiktok } from 'react-icons/si'
 import './Footer.scss'
 import { images } from '/src/constants'
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 const Footer = () => {
+  // User From Redux
+  const userData = useSelector((state) => state.auth.userData)
+
+  const accountLinks =
+    userData && userData?.id
+      ? ['View Cart', 'My Wishlist', 'Track My Order', 'Help']
+      : ['Sign In', 'Register', 'Help']
+
+  const aboutLinks = [
+    'About Us',
+    'Contact Us',
+    'Devlivery Information',
+    'Privacy Policy',
+    'Terms & Conditions',
+  ]
   const linkToRouteMap = {
     'About Us': '/about',
     'Delivery Information': '',
     'Privacy Policy': '',
     'Terms & Conditions': '',
     'Contact Us': '/contact',
-    'Sign In': '/account',
+    'Sign In': '/login',
     'View Cart': '/cart',
-    'My Wishlist': '',
+    'My Wishlist': '/wishlist',
     'Track My Order': '',
     Help: '',
+    Register: '/register',
   }
 
   return (
@@ -53,45 +70,37 @@ const Footer = () => {
         <div className='footer__links'>
           <div className='footer__about'>
             <h2>About</h2>
-            {[
-              'About Us',
-              'Devlivery Information',
-              'Privacy Policy',
-              'Terms & Conditions',
-              'Contact Us',
-            ].map((link) => (
-              <Link
-                className='link span'
-                key={link}
-                to={linkToRouteMap[link]}
-                onClick={() =>
-                  window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-                }
-              >
-                {link}
-              </Link>
-            ))}
+            {aboutLinks.map((link) => {
+              return (
+                <Link
+                  className='link span'
+                  key={link}
+                  to={linkToRouteMap[link]}
+                  onClick={() =>
+                    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+                  }
+                >
+                  {link}
+                </Link>
+              )
+            })}
           </div>
           <div className='footer__account'>
             <h2>My Account</h2>
-            {[
-              'Sign In',
-              'View Cart',
-              'My Wishlist',
-              'Track My Order',
-              'Help',
-            ].map((link) => (
-              <Link
-                className='link span'
-                key={link}
-                to={linkToRouteMap[link]}
-                onClick={() =>
-                  window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-                }
-              >
-                {link}
-              </Link>
-            ))}
+            {accountLinks.map((link) => {
+              return (
+                <Link
+                  className='link span'
+                  key={link}
+                  to={linkToRouteMap[link]}
+                  onClick={() =>
+                    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+                  }
+                >
+                  {link}
+                </Link>
+              )
+            })}
           </div>
         </div>
         <div className='footer__others'>
@@ -105,7 +114,11 @@ const Footer = () => {
           </div>
           <div className='payment__gateways'>
             <h6>Secured Payment Gateways</h6>
-            <img src={images.pay} alt='payment gateways' />
+            <img
+              src={images.pay}
+              alt='payment gateways'
+              style={{ height: '40px' }}
+            />
           </div>
         </div>
       </div>

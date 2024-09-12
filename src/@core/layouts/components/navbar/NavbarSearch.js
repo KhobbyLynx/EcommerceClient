@@ -27,12 +27,95 @@ const NavbarSearch = () => {
   const [navbarSearch, setNavbarSearch] = useState(false)
 
   const searchQuery = useSelector((state) => state.navbar.query)
-  // useEffect(() => {
-  //   if (navbarSearch && searchQuery) {
-  //     navigate(`/q/${searchQuery}`)
-  //     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
-  //   }
-  // }, [searchQuery])
+
+  const store = useSelector((state) => state.ecommerce)
+
+  useEffect(() => {
+    setSuggestions([
+      {
+        groupTitle: 'Pages',
+        searchLimit: 2,
+        data: [
+          {
+            id: 1,
+            name: 'wishist',
+            title: 'WishList',
+            icon: 'Heart',
+            link: '/wishlist',
+          },
+          {
+            id: 2,
+            name: 'cart',
+            title: 'Cart',
+            icon: 'ShoppingCart',
+            link: '/cart',
+          },
+          {
+            id: 3,
+            name: 'about',
+            title: 'About',
+            icon: 'BookOpen',
+            link: '/about',
+          },
+          {
+            id: 4,
+            name: 'contact',
+            title: 'Contact',
+            icon: 'Phone',
+            link: '/contact',
+          },
+          {
+            id: 5,
+            name: 'shop',
+            title: 'Shop',
+            icon: 'ShoppingCart',
+            link: '/shop',
+          },
+          {
+            id: 6,
+            name: 'profile',
+            title: 'My Profile',
+            icon: 'File',
+            link: '/profile',
+          },
+
+          {
+            id: 7,
+            name: 'inboxmessageschat',
+            title: 'Inbox',
+            icon: 'Inbox',
+            link: '/inbox',
+          },
+          {
+            id: 8,
+            name: 'allproducts',
+            title: 'All Products',
+            icon: 'ShoppingCart',
+            link: '/shop',
+          },
+          {
+            id: 9,
+            name: 'settings',
+            title: 'Settings',
+            icon: 'Settings',
+            link: '/settings',
+          },
+          {
+            id: 10,
+            name: 'faqfrequentlyaskedquestions',
+            title: 'FAQ',
+            icon: 'Info',
+            link: '/faq',
+          },
+        ],
+      },
+      {
+        groupTitle: 'Products',
+        searchLimit: 5,
+        data: store.allProducts,
+      },
+    ])
+  }, [store.allProducts])
 
   const dispatchSearch = () => {
     if (navbarSearch && searchQuery) {
@@ -40,6 +123,7 @@ const NavbarSearch = () => {
       window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
     }
   }
+
   // ** Removes query in store
   const handleClearQueryInStore = () => dispatch(handleSearchQuery(''))
 
@@ -48,7 +132,6 @@ const NavbarSearch = () => {
     if (navbarSearch === true) {
       setNavbarSearch(false)
       handleClearQueryInStore()
-      dispatchSearch()
     }
   }
 
@@ -61,14 +144,16 @@ const NavbarSearch = () => {
   }
 
   // ** Function to close search on ESC & ENTER Click
-  const onKeyDown = (e) => {
-    if (e.keyCode === 27 || e.keyCode === 13) {
-      dispatchSearch()
+  // Enter key not working sometimes hence the async
+  // Enter Key Code 13
+  // Esc key code 27
+  const onKeyDown = async (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault()
 
-      // setTimeout(() => {
-      //   setNavbarSearch(false)
-      //   handleClearQueryInStore()
-      // }, 1)
+      await dispatchSearch()
+      setNavbarSearch(false)
+      handleClearQueryInStore()
     }
   }
 
@@ -79,8 +164,15 @@ const NavbarSearch = () => {
   }
 
   // ** Function to handle search list Click
-  const handleListItemClick = (func, link, e) => {
-    func(link, e)
+  const handleListItemClick = (func, link, e, productId, brand) => {
+    // get brand to check if item is product not page
+
+    if (brand) {
+      func(`product-detail/${productId}`, e)
+    } else {
+      func(link, e)
+    }
+
     setTimeout(() => {
       setNavbarSearch(false)
     }, 1)
@@ -104,9 +196,8 @@ const NavbarSearch = () => {
           <Autocomplete
             className='form-control'
             suggestions={suggestions}
-            filterKey='title'
+            filterKey='name'
             filterHeaderKey='groupTitle'
-            grouped={true}
             placeholder='What are you looking for?...'
             autoFocus={true}
             onSuggestionItemClick={handleSuggestionItemClick}
@@ -132,7 +223,13 @@ const NavbarSearch = () => {
                   })}
                   key={i}
                   onClick={(e) =>
-                    handleListItemClick(onSuggestionItemClick, item.link, e)
+                    handleListItemClick(
+                      onSuggestionItemClick,
+                      item.link,
+                      e,
+                      item.id,
+                      item.brand
+                    )
                   }
                   onMouseEnter={() =>
                     onSuggestionItemHover(filteredData.indexOf(item))
@@ -141,44 +238,41 @@ const NavbarSearch = () => {
                   <div
                     className={classnames({
                       'd-flex justify-content-between align-items-center':
-                        item.file || item.img,
+                        item.productImgs,
                     })}
                   >
                     <div className='item-container d-flex'>
                       {item.icon ? (
                         <IconTag size={17} />
-                      ) : item.file ? (
+                      ) : item.productImgs ? (
                         <img
-                          src={item.file}
+                          src={item.productImgs[0]}
                           height='36'
                           width='28'
-                          alt={item.title}
-                        />
-                      ) : item.img ? (
-                        <img
-                          className='rounded-circle mt-25'
-                          src={item.img}
-                          height='28'
-                          width='28'
-                          alt={item.title}
+                          alt={item.name}
                         />
                       ) : null}
                       <div className='item-info ms-1'>
                         <p className='align-middle mb-0'>{item.title}</p>
-                        {item.by || item.email ? (
-                          <small className='text-muted'>
-                            {item.by ? item.by : item.email ? item.email : null}
-                          </small>
+                        {item.salePrice ? (
+                          <>
+                            <p className='align-middle mb-0'>{item.name}</p>
+                            <small className='text-muted'>{item.brand}</small>
+                          </>
                         ) : null}
                       </div>
                     </div>
-                    {item.size || item.date ? (
+                    {item.salePrice && (
                       <div className='meta-container'>
-                        <small className='text-muted'>
-                          {item.size ? item.size : item.date ? item.date : null}
+                        <small>
+                          $
+                          {item.salePrice.toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
                         </small>
                       </div>
-                    ) : null}
+                    )}
                   </div>
                 </li>
               )
@@ -186,14 +280,16 @@ const NavbarSearch = () => {
           />
         ) : null}
         <div className='search-input-close'>
-          <Icon.X
-            className='ficon'
-            onClick={(e) => {
-              e.stopPropagation()
-              setNavbarSearch(false)
-              handleClearQueryInStore()
-            }}
-          />
+          {searchQuery && (
+            <Icon.ArrowRightCircle
+              className='ficon'
+              onClick={(e) => {
+                e.stopPropagation()
+                setNavbarSearch(false)
+                handleClearQueryInStore()
+              }}
+            />
+          )}
         </div>
       </div>
     </NavItem>

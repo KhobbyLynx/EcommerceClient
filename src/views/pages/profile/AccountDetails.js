@@ -31,14 +31,16 @@ import { db } from '../../../configs/firebase'
 // ** Redux Imports
 import { updateAddresses, updateUserName } from '../../../redux/authentication'
 
-// ** React Hook Form
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
+// ** Default Avatar
+import DefaultAvatar from '@src/assets/images/avatars/user.svg'
+
 import toast from 'react-hot-toast'
 
-const AccountDetails = ({ data }) => {
+const AccountDetails = ({ currentUser }) => {
   // ** States
-  const [avatar, setAvatar] = useState(data.avatar ? data.avatar : '')
+  const [avatar, setAvatar] = useState(
+    currentUser && currentUser.avatar ? currentUser.avatar : DefaultAvatar
+  )
   const [submitting, setSubmitting] = useState(false)
   const [formErrors, setFormErrors] = useState({})
 
@@ -46,69 +48,17 @@ const AccountDetails = ({ data }) => {
   const dispatch = useDispatch()
 
   const addressInfo =
-    data?.address?.length > 0 && data.address?.find((ad) => ad.default === true)
+    currentUser?.address?.length > 0 &&
+    currentUser?.address?.find((ad) => ad.default === true)
 
-  // const profileSchema = yup.object().shape({
-  //   firstName: yup.string().required('First name is required'),
-  //   lastName: yup.string().required('Last name is required'),
-  //   phone: yup
-  //     .string()
-  //     .required('Mobile Number is required')
-  //     .matches(
-  //       /^0\d{9}$/,
-  //       'Mobile number must be 10 digits starting with zero eg. 0234567891'
-  //     ),
-  //   addressInfo: yup.string().required('Address is required'),
-  //   city: yup.string().required('City is required'),
-  //   region: yup
-  //     .string()
-  //     .required('Region is required')
-  //     .oneOf(
-  //       [
-  //         '253',
-  //         '242',
-  //         '251',
-  //         '252',
-  //         '244',
-  //         '245',
-  //         '241',
-  //         '254',
-  //         '246',
-  //         '257',
-  //         '255',
-  //         '248',
-  //         '258',
-  //         '247',
-  //         '250',
-  //         '256',
-  //       ],
-  //       'Please select a valid region'
-  //     ),
-  //   digitalAddress: yup
-  //     .string()
-  //     .notRequired()
-  //     .nullable()
-  //     .test(
-  //       'matches-regex',
-  //       'Digital address must be in the format XX-000-0000',
-  //       (value) => {
-  //         // If the value is empty or null, skip validation
-  //         if (!value) return true
-  //         // Otherwise, validate against regex pattern
-  //         return /^[A-Za-z]{2}-\d{3}-\d{4}$/.test(value)
-  //       }
-  //     ),
-  // })
-
-  // ** Hooks
   const defaultValues = {
     address: addressInfo?.address,
     region: addressInfo?.region,
     city: addressInfo?.city,
     digitalAddress: addressInfo?.digitalAddress,
     phone: addressInfo?.number,
-    lastName: data.fullname && data.fullname.split(' ')[1],
-    firstName: data.fullname && data.fullname.split(' ')[0],
+    lastName: currentUser?.fullname && currentUser.fullname.split(' ')[1],
+    firstName: currentUser?.fullname && currentUser.fullname.split(' ')[0],
   }
 
   const { control, handleSubmit, reset } = useForm({ defaultValues })
@@ -124,7 +74,7 @@ const AccountDetails = ({ data }) => {
     const isFormChanged =
       JSON.stringify(watchedValues) !== JSON.stringify(defaultValues)
     setHasChanged(isFormChanged)
-    console.log('Passed User Data', data)
+    console.log('Passed User Data', currentUser)
   }, [watchedValues, defaultValues])
 
   // Avatar Change
@@ -138,6 +88,7 @@ const AccountDetails = ({ data }) => {
   }
 
   const onSubmit = async (data) => {
+    console.log('User Id @ Account Details', currentUser?.id)
     setSubmitting(true)
 
     // Custom validation
@@ -172,10 +123,10 @@ const AccountDetails = ({ data }) => {
         firstName = '',
         digitalAddress = '',
       } = data
-      const userId = data.id
-      const userProfileRef = doc(db, 'profiles', userId)
 
-      console.log('PROFILE UPDATE DATA', data)
+      console.log('PROFILE UPDATE DATA', currentUser)
+
+      const userProfileRef = doc(db, 'profiles', currentUser.id)
 
       const docSnap = await getDoc(userProfileRef)
 
@@ -270,7 +221,7 @@ const AccountDetails = ({ data }) => {
   }
 
   const handleImgReset = () => {
-    setAvatar(data.avatar)
+    setAvatar(currentUser && currentUser.avatar)
   }
 
   return (
@@ -372,7 +323,7 @@ const AccountDetails = ({ data }) => {
                   type='email'
                   name='email'
                   placeholder='Email'
-                  defaultValue={data.email}
+                  defaultValue={currentUser && currentUser.email}
                   disabled
                 />
               </Col>

@@ -14,8 +14,8 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Mail, Trash } from 'react-feather'
 
 // ** Reactstrap Imports
-import { Input, Label } from 'reactstrap'
-import { markAsRead } from './store'
+import { Button, Input, Label } from 'reactstrap'
+import { isMessageReply, markAsRead } from './store'
 
 const Messages = (props) => {
   // ** Props
@@ -32,6 +32,7 @@ const Messages = (props) => {
     selectMessage,
     selectAllMessage,
     resetSelectedMessage,
+    setSidebarOpen,
   } = props
 
   const { messages } = store
@@ -83,6 +84,14 @@ const Messages = (props) => {
   }
   /*eslint-enable */
 
+  // ** Handles Toggle Create Message
+  const handleCreateMsg = () => {
+    // Call with Empty string to set isReply: false
+    dispatch(isMessageReply(''))
+    toggleCreateMsg()
+    setSidebarOpen(false)
+  }
+
   // ** Renders Mail
   const renderMessages = () => {
     if (messages?.length) {
@@ -111,6 +120,16 @@ const Messages = (props) => {
     <Fragment>
       <div className='email-app-list'>
         <div className='app-action'>
+          <div className='form-group-compose text-center compose-btn d-lg-none'>
+            <Button
+              className='compose-email'
+              color='primary'
+              block
+              onClick={handleCreateMsg}
+            >
+              Send Message
+            </Button>
+          </div>
           <div className='action-left form-check'>
             <Input
               type='checkbox'

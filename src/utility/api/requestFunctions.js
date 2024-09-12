@@ -4,7 +4,7 @@ import newRequest from './newRequest'
 // ** Paystack import
 import PaystackPop from '@paystack/inline-js'
 
-const handlePaymentRequest = (totalPayment) => {
+const handlePaymentRequest = ({ totalPayment, setPending, navigate }) => {
   setTimeout(() => {
     const request = async () => {
       try {
@@ -36,6 +36,8 @@ const handlePaymentRequest = (totalPayment) => {
       } catch (error) {
         console.error('ERROR PROCESSING PAYMENT', error)
       } finally {
+        setPending(false)
+        // navigate('/cart')
       }
     }
 

@@ -1,4 +1,11 @@
+// ** React Imports
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+// ** Utils
 import { handlePaymentRequest } from '../../../../../utility/api/requestFunctions'
+
+// ** Images
 import { images } from '/src/constants'
 
 // ** Reactstrap Imports
@@ -18,6 +25,11 @@ import {
 } from 'reactstrap'
 
 const Payment = ({ store }) => {
+  // ** States
+  const [pending, setPending] = useState(false)
+
+  // ** Navigate
+  const navigate = useNavigate()
   return (
     <>
       <Form
@@ -44,18 +56,11 @@ const Payment = ({ store }) => {
                       id='mobile-money'
                     />
                     <Label className='form-label fw-bold' for='mobile-money'>
-                      Mobile Money
+                      Mobile Money / Credit / Debit Card
                     </Label>
                   </div>
                 </li>
-                <li className='py-50'>
-                  <div className='form-check'>
-                    <Input type='radio' name='paymentMethod' id='credit-card' />
-                    <Label className='form-label fw-bold' for='credit-card'>
-                      Credit / Debit Card
-                    </Label>
-                  </div>
-                </li>
+
                 <li className='py-50'>
                   <div>
                     <div className='form-check'>
@@ -81,7 +86,11 @@ const Payment = ({ store }) => {
               </ul>
               <hr className='my-2' />
               <div className='mb-25'>
-                <img src={images.pay} alt='' />
+                <img
+                  src={images.pay}
+                  alt='payment gateways'
+                  style={{ height: '40px' }}
+                />
               </div>
             </CardBody>
           </Card>
@@ -177,12 +186,19 @@ const Payment = ({ store }) => {
                     block
                     color='primary'
                     classnames='btn-next place-order'
-                    onClick={(e) => {
+                    disabled={pending}
+                    onClick={async (e) => {
                       e.preventDefault()
-                      handlePaymentRequest(store.overallTotal)
+                      setPending(true)
+
+                      await handlePaymentRequest({
+                        totalPayment: store.overallTotal,
+                        setPending,
+                        navigate,
+                      })
                     }}
                   >
-                    Confirm Order
+                    {pending ? 'Loading...' : 'Confirm Order'}
                   </Button>
                 </div>
               </CardBody>

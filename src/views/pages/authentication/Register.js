@@ -105,7 +105,11 @@ const RegisterBasic = () => {
       } else {
         // Handle the case where the action was rejected
         if (resultAction.payload.includes('auth/email-already-in-use')) {
-          setErrorMsg('Email Already In Use')
+          setErrorMsg('Email Already In Use - Login')
+        } else if (
+          resultAction.payload.includes('auth/network-request-failed')
+        ) {
+          setErrorMsg('Network Error')
         } else {
           setErrorMsg('Registration failed. Please try again.')
         }
@@ -113,9 +117,8 @@ const RegisterBasic = () => {
     } catch (error) {
       // Handle errors
       setErrorMsg('An unexpected error occurred.')
-      console.log('Error At Register Page', error.message, error.code)
+      console.log('Error At Register Page', error, error.code)
     } finally {
-      // Ensure submitting state is reset regardless of success or failure
       setSubmitting(false)
     }
   }

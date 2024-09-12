@@ -182,7 +182,7 @@ export const contactBanner = {
   title: "#let's_talk",
   subText: 'Leave a message, We love to hear from you!',
   bgImg:
-    'https://res.cloudinary.com/khobbylynx/image/upload/v1682616430/samples/imagecon-group.jpg',
+    'https://res.cloudinary.com/khobbylynx/image/upload/c_fill,w_800,h_450,ar_16:9/v1726093691/DALL_E_2024-09-11_22.26.31_-_A_wide_cover_picture_for_a_contact_page_of_an_e-commerce_website_that_sells_electronics_generators_and_water_pumps._The_image_features_sleek_icons_o_wjmvqj.webp',
 }
 
 export const cartBanner = {

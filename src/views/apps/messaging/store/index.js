@@ -177,6 +177,7 @@ export const markNotificationAsRead = createAsyncThunk(
   async (noteIds, { dispatch, getState }) => {
     try {
       const userId = getState().auth.userData.id
+
       if (!Array.isArray(noteIds) || noteIds.length === 0) {
         throw new Error('No notifications selected - MARKASREAD NOTIFICATIONS.')
       }
@@ -273,6 +274,8 @@ export const createMessage = createAsyncThunk(
       // UserId from Redux State
       const userId = getState().auth.userData.id
 
+      console.log('@Create Msg', userId, messageId, data)
+
       // Messages Ref in Firebase
       const messagesRef = doc(db, 'messaging', userId)
 
@@ -305,6 +308,7 @@ export const createMessage = createAsyncThunk(
           avatarIcon: 'done',
         })
       )
+
       toast((t) => (
         <ToastContentSuccess
           t={t}
@@ -316,7 +320,7 @@ export const createMessage = createAsyncThunk(
       dispatch(createMessageSuccess(allMessages))
       dispatch(getAllMessages())
     } catch (error) {
-      console.log('Error creating message- CREATEMESSAGE')
+      console.log('Error creating message- CREATEMESSAGE', error)
 
       toast((t) => (
         <ToastContentError

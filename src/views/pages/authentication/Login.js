@@ -16,7 +16,7 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Default Avatar
-import DefaultAvatar from '@src/assets/images/avatars/avatar-blank.png'
+import DefaultAvatar from '@src/assets/images/avatars/user.svg'
 
 // ** Reactstrap Imports
 import {
@@ -40,10 +40,16 @@ import '@styles/react/pages/page-authentication.scss'
 
 // ** Auth
 import { handleGoogleAuth, handleLogin } from '../../../redux/authentication'
-import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth'
+import {
+  browserSessionPersistence,
+  fetchSignInMethodsForEmail,
+  onAuthStateChanged,
+  setPersistence,
+  signInWithEmailAndPassword,
+} from 'firebase/auth'
 import {
   ToastContentLogin,
-  logoutFirebase,
+  // logoutFirebase,
   splitEmail,
 } from '../../../utility/Utils'
 import { useDispatch } from 'react-redux'
@@ -80,7 +86,7 @@ const LoginBasic = () => {
 
   // ** Login Function
   const handleLoginFunc = async (user) => {
-    logoutFirebase()
+    // logoutFirebase()
     try {
       const { email: authEmail, uid: userId, photoURL } = user
       const { accessToken, refreshToken } = user.stsTokenManager
@@ -104,7 +110,7 @@ const LoginBasic = () => {
 
         if (userData.role !== 'client' && userData.role !== 'admin') {
           setErrorMsg('Account is not valid')
-          logoutFirebase()
+          // logoutFirebase()
           return
         }
       }
@@ -140,18 +146,43 @@ const LoginBasic = () => {
     setSubmitting(true)
     const { email, password } = data
     try {
+      const signInMethods = await fetchSignInMethodsForEmail(auth, email)
+      console.log('signInMethods 1', signInMethods)
+
       const userCredentials = await signInWithEmailAndPassword(
         auth,
         email,
         password
       )
       const user = userCredentials.user
+
+      setPersistence(auth, browserSessionPersistence)
+        .then(() => {
+          console.log('@browserSessionPersistence')
+        })
+        .catch((error) => {
+          console.error('Error setting persistence:', error)
+        })
+
       handleLoginFunc(user)
       setSubmitting(false)
     } catch (error) {
       setSubmitting(false)
       console.log('Error', error)
-      if (error.message.includes('auth/invalid-credential')) {
+      if (error.message.includes('auth/wrong-password')) {
+        const signInMethods = await fetchSignInMethodsForEmail(auth, email)
+        console.log('signInMethods', signInMethods)
+
+        if (signInMethods.length === 0) {
+          setErrorMsg('Invalid User Credentials')
+        } else {
+          setErrorMsg('User Registered with Google')
+        }
+      } else if (error.message.includes('auth/network-request-failed')) {
+        setErrorMsg('Network Error')
+      } else if (error.message.includes('auth/invalid-credential')) {
+        setErrorMsg('Invalid User Credentials')
+      } else if (error.message.includes('auth/user-not-found')) {
         setErrorMsg('Invalid User Credentials')
       } else {
         setErrorMsg('Error Logging In')
@@ -183,8 +214,17 @@ const LoginBasic = () => {
   }, [auth, errorMsg])
 
   const handleCreateAccountWithGoogle = async () => {
-    await dispatch(handleGoogleAuth())
-    navigate('/home')
+    try {
+      await dispatch(handleGoogleAuth())
+      navigate('/home')
+    } catch (error) {
+      console.log('Login Google Auth error', error)
+      if (error.message.includes('auth/popup-closed-by-user')) {
+        setErrorMsg('Google Auth Popup Closed')
+      } else {
+        setErrorMsg('Error Logging In')
+      }
+    }
   }
 
   return (

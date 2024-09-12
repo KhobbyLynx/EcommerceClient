@@ -33,7 +33,7 @@ import {
 } from 'reactstrap'
 
 // ** Default Avatar Image
-import defaultAvatar from '@src/assets/images/avatars/avatar-blank.png'
+import defaultAvatar from '@src/assets/images/avatars/user.svg'
 
 // ** Utils
 import { getUserData, logoutFirebase } from '../../../../utility/Utils'
@@ -54,7 +54,8 @@ const UserDropdown = () => {
   }, [])
 
   //** Vars
-  const userAvatar = (userData && userData.avatar) || defaultAvatar
+  const userAvatar =
+    userData && userData.avatar ? userData.avatar : defaultAvatar
 
   return (
     <UncontrolledDropdown

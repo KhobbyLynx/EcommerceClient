@@ -129,15 +129,18 @@ const Product = (props) => {
           ) : null}
         </ul>
         <hr />
-        <div className='product-details'>
-          <h6>Details</h6>
-          <ul>
-            <li>Good</li>
-            <li>Better</li>
-            <li>Best</li>
-          </ul>
-        </div>
-        <hr />
+        {data?.details?.length > 0 && (
+          <div className='product-details'>
+            <h6>Specifications</h6>
+            <ul>
+              {data.details.map((spec, index) => (
+                <li key={index}>{spec}</li>
+              ))}
+            </ul>
+            <hr />
+          </div>
+        )}
+
         <div className='d-flex flex-column flex-sm-row pt-1'>
           <Button
             tag={CartBtnTag}

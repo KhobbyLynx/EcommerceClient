@@ -31,7 +31,7 @@ const AppRoutes = [
     element: <EcommerceWishlist />,
     path: '/wishlist',
     meta: {
-      publicRoute: true,
+      publicRoute: false,
       className: 'ecommerce-application',
     },
   },
@@ -47,7 +47,7 @@ const AppRoutes = [
     path: '/cart',
     element: <EcommerceCheckout />,
     meta: {
-      publicRoute: true,
+      publicRoute: false,
       className: 'ecommerce-application',
     },
   },
@@ -88,7 +88,7 @@ const AppRoutes = [
     element: <Profile />,
     path: '/profile',
     meta: {
-      publicRoute: true,
+      publicRoute: false,
     },
   },
 
@@ -97,7 +97,7 @@ const AppRoutes = [
     element: <Inbox />,
     path: '/inbox',
     meta: {
-      publicRoute: true,
+      publicRoute: false,
       appLayout: true,
       className: 'email-application',
     },
@@ -106,6 +106,7 @@ const AppRoutes = [
     element: <Inbox />,
     path: '/inbox/:folder',
     meta: {
+      publicRoute: false,
       appLayout: true,
       className: 'email-application',
     },
@@ -116,7 +117,7 @@ const AppRoutes = [
     element: <Settings />,
     path: '/settings',
     meta: {
-      publicRoute: true,
+      publicRoute: false,
     },
   },
 

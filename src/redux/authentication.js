@@ -8,6 +8,7 @@ import { collection, doc, getDoc, setDoc } from 'firebase/firestore'
 
 // ** Utils
 import {
+  ToastContentError,
   ToastContentLogin,
   ToastContentRegister,
   getUserData,
@@ -19,13 +20,14 @@ import {
 import toast from 'react-hot-toast'
 
 // ** Default Avatar
-import DefaultAvatar from '@src/assets/images/avatars/avatar-blank.png'
+import DefaultAvatar from '@src/assets/images/avatars/user.svg'
 
 // **  Intial collections data
 const wishlistItems = []
 const cartItems = []
 const orders = []
 const notifications = []
+const chat = []
 
 // ** REGISTER NEW USER
 export const handleRegisterUser = createAsyncThunk(
@@ -80,6 +82,7 @@ export const handleRegisterUser = createAsyncThunk(
       await setDoc(doc(db, 'cart', userId), { cartItems })
       await setDoc(doc(db, 'orders', userId), { orders })
       await setDoc(doc(db, 'notifications', userId), { notifications })
+      await setDoc(doc(db, 'messaging', userId), { chat })
 
       toast((t) => (
         <ToastContentRegister
@@ -115,10 +118,40 @@ export const handleGoogleAuth = createAsyncThunk(
       const { createdAt, lastLoginAt } = user.metadata
       const username = displayName
 
+      // ** Profiles ref
+      const userRef = doc(db, 'profiles', userId)
+
+      // ** Get user data
+      const userFromFirebaseDocs = await getDoc(userRef)
+
+      // Determines which function to run
+      // Either register or login
+      let authType // login || register
+
+      // Check if the user is new
+      // If user is new it will have no data in the profiles
+      if (!userFromFirebaseDocs.exists()) {
+        // Unregistered Users using google auth at Login will get a toast prompting them
+        // their email is not register so a new account was created for them
+        if (urlPath === 'login') {
+          toast((t) => (
+            <ToastContentError
+              t={t}
+              title='Account'
+              msg={`No account registered with email - ${authEmail}, Creating New Account...`}
+            />
+          ))
+        }
+
+        authType = 'register'
+      } else {
+        authType = 'login'
+      }
+
       let createdUserData = {}
       let localUserData = {}
 
-      if (urlPath === 'register') {
+      if (authType === 'register') {
         createdUserData = {
           email: authEmail,
           id: userId,
@@ -152,6 +185,7 @@ export const handleGoogleAuth = createAsyncThunk(
         await setDoc(doc(db, 'cart', userId), { cartItems })
         await setDoc(doc(db, 'orders', userId), { orders })
         await setDoc(doc(db, 'notifications', userId), { notifications })
+        await setDoc(doc(db, 'messaging', userId), { chat })
 
         toast((t) => (
           <ToastContentRegister
@@ -162,15 +196,8 @@ export const handleGoogleAuth = createAsyncThunk(
         ))
 
         return localUserData
-      } else if (urlPath === 'login') {
-        // ** users collections ref
-        const userCollectionRef = collection(db, 'profiles')
-
-        // ** single user ref
-        const userRef = doc(userCollectionRef, userId)
-
-        // ** get user data
-        const userFromFirebaseDocs = await getDoc(userRef)
+      } else if (authType === 'login') {
+        // Get User Data
         const userData = userFromFirebaseDocs.data()
 
         // ** Set Avatar
@@ -207,7 +234,6 @@ export const handleGoogleAuth = createAsyncThunk(
       const errorCode = error.code
       const errorMessage = error.message
       console.log('Error Google Auth', errorMessage, errorCode)
-      setErrorMsg(errorMessage)
     }
   }
 )

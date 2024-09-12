@@ -83,7 +83,6 @@ const CreateMessage = (props) => {
     if (isReply) {
       const msgId = store.msgToReplyId
       dispatch(replyMessage({ ...formData, msgId }))
-      isMessageReply('') // Reset the reply state
     } else {
       dispatch(createMessage(formData)) // Create a new message
     }
