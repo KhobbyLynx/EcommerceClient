@@ -32,7 +32,7 @@ import { db } from '../../../configs/firebase'
 import { updateAddresses, updateUserName } from '../../../redux/authentication'
 
 // ** Default Avatar
-import DefaultAvatar from '@src/assets/images/avatars/user.svg'
+import DefaultAvatar from '@src/assets/images/avatars/avatar-blank.png'
 
 import toast from 'react-hot-toast'
 
