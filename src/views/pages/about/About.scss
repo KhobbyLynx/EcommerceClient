@@ -1,54 +1,53 @@
-.about__page{
-    .about__banner{
+.about__page {
+    .about__banner {
         display: flex;
         align-items: center;
         padding: 60px;
-        @media screen and (max-width: '777px') {
+        @media screen and (max-width: "777px") {
             flex-wrap: wrap;
-            padding:  60px 100px;
+            padding: 60px 100px;
         }
-        @media screen and (max-width: '577px') {
-            padding:  60px;
+        @media screen and (max-width: "577px") {
+            padding: 60px;
         }
-        @media screen and (max-width: '477px') {
-            padding:  20px;
+        @media screen and (max-width: "477px") {
+            padding: 20px;
         }
-        img{
+        img {
             width: 50%;
             height: auto;
             margin-right: 30px;
             border-radius: 0 30px 0 30px;
-            @media screen and (max-width: '777px') {
+            @media screen and (max-width: "777px") {
                 width: 100%;
             }
         }
-        .about__details{
+        .about__details {
             padding-left: 40px;
-            @media screen and (max-width: '1120px') {
+            @media screen and (max-width: "1120px") {
                 padding-left: 0;
             }
-            @media screen and (max-width: '777px') {
+            @media screen and (max-width: "777px") {
                 padding-top: 50px;
             }
-            h2{
-                font-size: 46px;
+            h2 {
+                font-size: 28px;
                 line-height: 24px;
-                color: #222;
                 white-space: nowrap;
-                @media screen and (max-width: '1120px') {
+                margin-bottom: 40px;
+                @media screen and (max-width: "1120px") {
                     font-size: 36px;
                     line-height: 4px;
                 }
-                @media screen and (max-width: '477px') {
+                @media screen and (max-width: "477px") {
                     font-size: 26px;
                 }
             }
-            p{
+            p {
                 font-size: 16px;
-                color: var(--cl-gray-700);
-                margin: 15px  0 20px 0;
-                line-height: 20px;
-                @media screen and (max-width: '1120px') {
+                margin: 15px 0 20px 0;
+                line-height: 26px;
+                @media screen and (max-width: "1120px") {
                     font-size: 14px;
                     line-height: 16px;
                     margin: 10px 0;
@@ -56,7 +55,7 @@
             }
         }
     }
-    .features__grid{
+    .features__grid {
         display: flex;
         align-items: start;
         justify-content: space-between;
@@ -64,47 +63,46 @@
         padding: 0 60px 50px;
         width: 100%;
 
-        @media screen and (max-width: '1120px') {
+        @media screen and (max-width: "1120px") {
             justify-content: center;
             gap: 10px;
         }
-        @media screen and (max-width: '657px') {
+        @media screen and (max-width: "657px") {
             flex-wrap: nowrap;
             padding: 20px;
             overflow: scroll;
             justify-content: start;
         }
-        
     }
-    .about__app{
+    .about__app {
         text-align: center;
         padding: 60px 20px 60px;
 
-        @media screen and (max-width: '577px') {
+        @media screen and (max-width: "577px") {
             padding: 40px 16px 20px;
         }
-        h1{
+        h1 {
             font-size: 50px;
             font-weight: 600;
             line-height: 64px;
             color: var(--cl-gray-800);
-            @media screen and (max-width: '577px') {
+            @media screen and (max-width: "577px") {
                 font-size: 38px;
             }
-            a{
+            a {
                 color: var(--cl-orange-500);
             }
         }
-        .video__box{
-            video{
+        .video__box {
+            video {
                 width: 70%;
                 height: 100%;
                 margin-top: 30px;
                 border-radius: 20px;
-                @media screen and (max-width: '999px') {
+                @media screen and (max-width: "999px") {
                     width: 90%;
                 }
-                @media screen and (max-width: '577px') {
+                @media screen and (max-width: "577px") {
                     width: 100%;
                     margin-top: 20px;
                 }
