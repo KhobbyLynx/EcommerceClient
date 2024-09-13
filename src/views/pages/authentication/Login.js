@@ -16,7 +16,7 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Default Avatar
-import DefaultAvatar from '@src/assets/images/avatars/user.svg'
+import DefaultAvatar from '@src/assets/images/avatars/avatar-blank.png'
 
 // ** Reactstrap Imports
 import {
