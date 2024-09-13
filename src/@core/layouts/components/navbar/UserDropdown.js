@@ -33,7 +33,7 @@ import {
 } from 'reactstrap'
 
 // ** Default Avatar Image
-import defaultAvatar from '@src/assets/images/avatars/user.svg'
+import defaultAvatar from '@src/assets/images/avatars/avatar-blank.png'
 
 // ** Utils
 import { getUserData, logoutFirebase } from '../../../../utility/Utils'
