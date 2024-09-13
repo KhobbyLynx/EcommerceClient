@@ -48,13 +48,13 @@ export const getProducts = createAsyncThunk(
           sortedData = filteredData.sort((a, b) => a.salePrice - b.salePrice)
         }
 
-        const paginatedData = paginateArray(sortedData, perPage, page)
+        // const paginatedData = paginateArray(sortedData, perPage, page)
 
         dispatch({
           type: 'appEcommerce/getProductsSuccess',
           payload: {
             params,
-            products: paginatedData,
+            products: sortedData,
             allProducts: allData,
             total: filteredData.length,
             totalFilteredProducts: allData.length,

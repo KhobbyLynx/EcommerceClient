@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 // ** Product components
 import ProductCards from './ProductCards'
@@ -29,47 +29,60 @@ const ProductsPage = (props) => {
     deleteWishlistItem,
   } = props
 
-  // ** Handles pagination
-  const handlePageChange = (val) => {
-    if (val === 'next') {
-      dispatch(getProducts({ ...store.params, page: store.params.page + 1 }))
-    } else if (val === 'prev') {
-      dispatch(getProducts({ ...store.params, page: store.params.page - 1 }))
-    } else {
-      dispatch(getProducts({ ...store.params, page: val }))
+  // ** States
+  const [paginatedData, setPaginatedData] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(0)
+
+  // ** Custom Pagination from ReconX
+  const itemsData = store.products
+
+  // Calculate the start and end index of the current page's data
+  const pageSize = 9
+
+  const maxPaginationButtons = 10
+
+  useEffect(() => {
+    // Calculate totalPages based on the totalItems and pageSize
+    setTotalPages(Math.ceil(itemsData.length / pageSize))
+
+    // Update paginatedData whenever data or currentPage changes
+    const startIndex = (currentPage - 1) * pageSize
+    const endIndex = startIndex + pageSize
+    if (startIndex < itemsData.length) {
+      setPaginatedData(itemsData.slice(startIndex, endIndex))
     }
+  }, [itemsData, currentPage])
+
+  // Define the handlePageChange function
+  const onPageChange = (pageNumber) => {
+    setCurrentPage(pageNumber)
   }
 
-  // ** Render pages
-  const renderPageItems = () => {
-    const arrLength =
-      store.totalFilteredProducts !== 0 && store.products.length !== 0
-        ? Number(store.totalFilteredProducts) / store.products.length
-        : 3
+  const renderPaginationButtons = () => {
+    let startPage = Math.max(
+      1,
+      currentPage - Math.floor(maxPaginationButtons / 2)
+    )
+    const endPage = Math.min(totalPages, startPage + maxPaginationButtons - 1)
 
-    return new Array(Math.trunc(arrLength)).fill().map((item, index) => {
-      return (
-        <PaginationItem
-          key={index}
-          active={store.params.page === index + 1}
-          onClick={() => handlePageChange(index + 1)}
-        >
-          <PaginationLink href='/' onClick={(e) => e.preventDefault()}>
-            {index + 1}
+    if (endPage - startPage < maxPaginationButtons - 1) {
+      startPage = Math.max(1, endPage - maxPaginationButtons + 1)
+    }
+
+    const buttons = []
+
+    for (let i = startPage; i <= endPage; i++) {
+      buttons.push(
+        <PaginationItem active={i === currentPage} key={i}>
+          <PaginationLink href='#' onClick={() => onPageChange(i)}>
+            {i}
           </PaginationLink>
         </PaginationItem>
       )
-    })
-  }
-
-  // ** handle next page click
-  const handleNext = () => {
-    if (
-      store.params.page !==
-      Number(store.totalFilteredProducts) / store.products.length
-    ) {
-      handlePageChange('next')
     }
+
+    return buttons
   }
 
   return (
@@ -101,40 +114,61 @@ const ProductsPage = (props) => {
               dispatch={dispatch}
               addToCart={addToCart}
               activeView={activeView}
-              products={store.products}
+              products={paginatedData}
               getProducts={getProducts}
               getCartItems={getCartItems}
               addToWishlist={addToWishlist}
               deleteCartItem={deleteCartItem}
               deleteWishlistItem={deleteWishlistItem}
             />
+
             <Pagination className='d-flex justify-content-center ecommerce-shop-pagination mt-2'>
-              <PaginationItem
-                disabled={store.params.page === 1}
+              {/* Uncomment to activate First Pagination Button */}
+              {/* <PaginationItem
+                disabled={currentPage === 1}
                 className='prev-item'
-                onClick={() =>
-                  store.params.page !== 1 ? handlePageChange('prev') : null
-                }
               >
                 <PaginationLink
-                  href='/'
-                  onClick={(e) => e.preventDefault()}
+                  href='#'
+                  onClick={() => onPageChange(1)}
                 ></PaginationLink>
-              </PaginationItem>
-              {renderPageItems()}
+              </PaginationItem> */}
+
+              {/* Previous Pagination Button - disabled if currentPage === 1 */}
               <PaginationItem
-                className='next-item'
-                onClick={() => handleNext()}
-                disabled={
-                  store.params.page ===
-                  Number(store.totalFilteredProducts) / store.products.length
-                }
+                disabled={currentPage === 1}
+                className='prev-item'
               >
                 <PaginationLink
-                  href='/'
-                  onClick={(e) => e.preventDefault()}
-                ></PaginationLink>
+                  href='#'
+                  onClick={() => onPageChange(currentPage - 1)}
+                />
               </PaginationItem>
+
+              {/* All Pagination Buttons */}
+              {renderPaginationButtons()}
+
+              {/* Next Pagination Button */}
+              <PaginationItem
+                disabled={currentPage === totalPages}
+                className='next-item'
+              >
+                <PaginationLink
+                  href='#'
+                  onClick={() => onPageChange(totalPages)}
+                />
+              </PaginationItem>
+
+              {/* Uncomment to render Last Page Button */}
+              {/* <PaginationItem
+                disabled={currentPage === 1}
+                className='next-item'
+              >
+                <PaginationLink
+                  href='#'
+                  onClick={() => onPageChange(1)}
+                ></PaginationLink>
+              </PaginationItem> */}
             </Pagination>
           </Fragment>
         ) : (
