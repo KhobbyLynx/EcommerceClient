@@ -14,30 +14,34 @@ const About = () => {
       <PageBanner {...aboutBanner} />
       <section className='about__banner'>
         <img
-          src='https://res.cloudinary.com/khobbylynx/image/upload/v1683975686/lynxmart/img/about/a6_m4jfkj.jpg'
+          src='https://res.cloudinary.com/khobbylynx/image/upload/v1726188945/ABOUTIMAGE_plkuzy.jpg'
           alt=''
         />
         <div className='about__details'>
-          <h2>Who We Are?</h2>
+          <h2>Why Choose Us</h2>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod iusto
-            est Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Temporibus, fugiat. explicabo. Lorem ipsum dolor sit amet
-            consectetur adipisicing elit. Quis ipsum excepturi cumque tempora
-            fugiat atque. Possimus incidunt culpa magnam quod?Lorem ipsum dolor
-            sit amet consectetur adipisicing elit. Omnis voluptates, sunt
-            voluptatum nam aspernatur eaque voluptatem ullam? Aperiam, voluptate
-            dolorem.
+            Welcome to Lynx, your one-stop destination for top-quality
+            electronics and appliances! We specialize in offering a wide range
+            of products, including the latest televisions, fridges, mobile
+            phones, generators, and water pumps. Whether you’re upgrading your
+            home appliances or looking for cutting-edge electronics, we have
+            something to meet your needs. At Lynx, we are committed to providing
+            high-quality products at competitive prices. Our carefully curated
+            selection ensures that you get the best brands, advanced technology,
+            and reliable performance in every product. With a focus on customer
+            satisfaction, we offer a seamless shopping experience, from browsing
+            to delivery, with fast and efficient service. Thank you for choosing
+            Lynx —we’re here to make your life easier and more connected through
+            technology and innovation.
           </p>
-          <abbr title=''>
-            Create stunning images with as much or as little control as you like
-            thanks to a choice of Basic and Creative modes.
-          </abbr>
           <br />
           <br />
-          <marquee bgcolor='#ccc' loop='-1' scrollamount='5' width='100%'>
-            Create stunning images with as much or as little control as you like
-            thanks to a choice of Basic and Creative modes.
+          <marquee bgcolor='#000' loop='-1' scrollamount='5' width='100%'>
+            <p className='text-primary'>
+              Exclusive Deals on TVs, Fridges, Phones, Generators, and Water
+              Pumps – Shop Now! --- Unbeatable Prices on the Latest Electronics
+              & Appliances – Fast Delivery Guaranteed!
+            </p>
           </marquee>
         </div>
       </section>
