@@ -20,7 +20,7 @@ import {
 import toast from 'react-hot-toast'
 
 // ** Default Avatar
-import DefaultAvatar from '@src/assets/images/avatars/user.svg'
+import DefaultAvatar from '@src/assets/images/avatars/avatar-blank.png'
 
 // **  Intial collections data
 const wishlistItems = []
