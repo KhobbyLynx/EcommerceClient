@@ -14,7 +14,7 @@ const About = () => {
       <PageBanner {...aboutBanner} />
       <section className='about__banner'>
         <img
-          src='https://res.cloudinary.com/khobbylynx/image/upload/v1726188945/ABOUTIMAGE_plkuzy.jpg'
+          src='https://res.cloudinary.com/khobbylynx/image/upload/v1726239540/umps._T_ad948z.png'
           alt=''
         />
         <div className='about__details'>
@@ -23,21 +23,21 @@ const About = () => {
             Welcome to Lynx, your one-stop destination for top-quality
             electronics and appliances! We specialize in offering a wide range
             of products, including the latest televisions, fridges, mobile
-            phones, generators, and water pumps. Whether you’re upgrading your
-            home appliances or looking for cutting-edge electronics, we have
-            something to meet your needs. At Lynx, we are committed to providing
-            high-quality products at competitive prices. Our carefully curated
-            selection ensures that you get the best brands, advanced technology,
-            and reliable performance in every product. With a focus on customer
-            satisfaction, we offer a seamless shopping experience, from browsing
-            to delivery, with fast and efficient service. Thank you for choosing
-            Lynx —we’re here to make your life easier and more connected through
-            technology and innovation.
+            phones, generators, and water pumps. At Lynx, we are committed to
+            providing high-quality products at competitive prices. With a focus
+            on customer satisfaction, we offer a seamless shopping experience,
+            from browsing to delivery, with fast and efficient service. Thank
+            you for choosing Lynx —we’re here to make your life easier and more
+            connected through technology and innovation.
           </p>
-          <br />
-          <br />
-          <marquee bgcolor='#000' loop='-1' scrollamount='5' width='100%'>
-            <p className='text-primary'>
+          <marquee
+            bgcolor='#000'
+            loop='-1'
+            scrollamount='5'
+            width='100%'
+            className='m-0'
+          >
+            <p className='text-primary m-1'>
               Exclusive Deals on TVs, Fridges, Phones, Generators, and Water
               Pumps – Shop Now! --- Unbeatable Prices on the Latest Electronics
               & Appliances – Fast Delivery Guaranteed!
