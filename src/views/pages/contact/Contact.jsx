@@ -8,17 +8,17 @@ import {
 import './Contact.scss'
 import { contactBanner } from '../../apps/ecommerce/home/data'
 import PageBanner from '../../../@core/components/ecom/pageBanner/PageBanner'
-import { Button, Col, Form, Input, Spinner } from 'reactstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import { createMessage, replyMessage } from '../../apps/messaging/store'
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
+import { Button, Form, Input, Spinner } from 'reactstrap'
+import { useDispatch } from 'react-redux'
+import { createMessage } from '../../apps/messaging/store'
+import { addDoc, collection } from 'firebase/firestore'
 import {
   generateRandomId,
   ToastContentError,
   ToastContentSuccess,
 } from '../../../utility/Utils'
 import toast from 'react-hot-toast'
-import { db } from '../../../configs/firebase'
+import { auth, db } from '../../../configs/firebase'
 
 const defaultValues = {
   title: '',
@@ -35,9 +35,8 @@ const Contact = () => {
   // ** Dispatch
   const dispatch = useDispatch()
 
-  // ** Redux
-  const store = useSelector((state) => state)
-  const userData = store.auth.userData
+  // ** user data
+  const userData = auth.currentUser
 
   // Reset Error Msg
   setTimeout(() => {
