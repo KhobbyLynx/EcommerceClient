@@ -4,14 +4,13 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 // ** UseJWT import to get config
 import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
 import { auth, db, googleProvider } from '../configs/firebase'
-import { collection, doc, getDoc, setDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc } from 'firebase/firestore'
 
 // ** Utils
 import {
   ToastContentError,
   ToastContentLogin,
   ToastContentRegister,
-  getUserData,
   logoutFirebase,
   splitEmail,
 } from '../utility/Utils'
@@ -237,6 +236,32 @@ export const handleGoogleAuth = createAsyncThunk(
     }
   }
 )
+
+// Copied it from Utils to prevent ReferenceError: Cannot access 'getUserData' before initialization
+const getUserData = () => {
+  const item = localStorage.getItem('userData')
+
+  // Check if the item is null or the string "undefined"
+  if (item === null || item === 'undefined') {
+    // Remove the item from localStorage
+    localStorage.removeItem('userData')
+    return null // Return an empty object if no valid data is found
+  }
+
+  try {
+    // Attempt to parse the JSON string
+    const parsedItem = JSON.parse(item)
+
+    // Check if parsedItem is undefined or any unexpected value
+    return parsedItem !== undefined ? parsedItem : null
+  } catch (error) {
+    // Handle JSON parsing errors (e.g., corrupted data)
+    console.error('Error parsing JSON from localStorage:', error)
+    // Remove the item from localStorage
+    localStorage.removeItem('userData')
+    return null // Return an empty object if parsing fails
+  }
+}
 
 const initialUser = () => {
   const userData = getUserData()
