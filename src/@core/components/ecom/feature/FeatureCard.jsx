@@ -6,7 +6,7 @@ const FeatureCard = ({ url, title }) => {
     <section className='feature__card'>
       <div className='feature__box'>
         <img src={url} alt='feature image' />
-        <h6>{title}</h6>
+        <h6 className='bg-secondary text-black'>{title}</h6>
       </div>
     </section>
   )
