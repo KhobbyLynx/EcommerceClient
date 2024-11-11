@@ -517,7 +517,7 @@ export const filterProductsByPrice = createAsyncThunk(
     const state = getState()
 
     const params = state.ecommerce.params
-    const { sortBy, perPage, page } = params
+    const { sortBy } = params
     let sortedData = state.ecommerce.allProducts
     if (sortBy === 'price-desc') {
       sortedData = filteredData.sort((a, b) => b.salePrice - a.salePrice)
