@@ -7,7 +7,6 @@ import classnames from 'classnames'
 import {
   Star,
   ShoppingCart,
-  DollarSign,
   Heart,
   Share2,
   Facebook,
@@ -21,7 +20,6 @@ import {
   Row,
   Col,
   Button,
-  CardText,
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
@@ -89,7 +87,7 @@ const Product = (props) => {
       </Col>
       <Col md='7' xs='12'>
         <h4>{data.name}</h4>
-        <CardText tag='span' className='item-company'>
+        <h6 tag='span' className='item-company'>
           By
           <a
             className='company-name'
@@ -98,7 +96,7 @@ const Product = (props) => {
           >
             {data.brand}
           </a>
-        </CardText>
+        </h6>
         <div className='ecommerce-details-price d-flex flex-wrap mt-1'>
           <h4 className='item-price me-1'>${data.salePrice}</h4>
           <ul className='unstyled-list list-inline'>
@@ -116,10 +114,10 @@ const Product = (props) => {
             })}
           </ul>
         </div>
-        <CardText>
+        <h6>
           Available -<span className='text-success ms-25'>In stock</span>
-        </CardText>
-        <CardText>{data.desc}</CardText>
+        </h6>
+        <h6>{data.desc}</h6>
         <ul className='product-features list-unstyled'>
           {data.hasFreeShipping ? (
             <li>
@@ -131,7 +129,7 @@ const Product = (props) => {
         <hr />
         {data?.details?.length > 0 && (
           <div className='product-details'>
-            <h6>Specifications</h6>
+            <h6 className='fw-bold'>SPECIFICATIONS</h6>
             <ul>
               {data.details.map((spec, index) => (
                 <li key={index}>{spec}</li>
