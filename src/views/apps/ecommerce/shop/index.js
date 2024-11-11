@@ -38,8 +38,6 @@ const Shop = () => {
       getProducts({
         q: '',
         sortBy: 'featured',
-        perPage: 9,
-        page: 1,
       })
     )
     dispatch(getAllMessages())
